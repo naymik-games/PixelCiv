@@ -1,6 +1,11 @@
 class Country {
   constructor(capital, color, id) {
     this.capital = capital
+    this.gold = 10
+    this.production = 10
+    this.happiness = 10
+    this.strength = 10
+    this.food = 10
     this.color = color
     this.id = id
     this.tiles = [capital]

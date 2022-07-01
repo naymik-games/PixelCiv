@@ -6,14 +6,14 @@ const COLOR_DARK = 0x007ac1;
 let civNames = ['ROME', 'AMERICA', 'RUSSIA', 'FRANCE', 'CHINA', 'ENGLAND']
 let improvementNames = ['FARM', 'LUMBER MILL', 'QUARY', 'ARCHERY', 'BLACK SMITH', 'FORT', 'MINE', 'CAPITAL']
 let improvementInfo = [
-  { description: 'Increase food production', productionFactor: 1.5, costProduction: 5, costGold: 5 },
-  { description: 'Improve industry', productionFactor: 1.5, costProduction: 5, costGold: 5 },
-  { description: 'Increase industry', productionFactor: 1.5, costProduction: 5, costGold: 5 },
-  { description: 'Improve military strength', productionFactor: 1.25, costProduction: 5, costGold: 5 },
-  { description: 'Increase industry', productionFactor: 2, costProduction: 7, costGold: 7 },
-  { description: 'Increase military strength', productionFactor: 2, costProduction: 10, costGold: 10 },
-  { description: 'Increase industry', productionFactor: 2, costProduction: 10, costGold: 10 },
-  { description: 'City Center', productionFactor: 5, costProduction: 100, costGold: 100 },
+  { description: 'Increase food production', productionFactor: 1.5, costProduction: 5, costGold: 5, days: 3 },
+  { description: 'Improve industry', productionFactor: 1.5, costProduction: 5, costGold: 5, days: 3 },
+  { description: 'Increase industry', productionFactor: 1.5, costProduction: 5, costGold: 5, days: 3 },
+  { description: 'Improve military strength', productionFactor: 1.25, costProduction: 5, costGold: 5, days: 5 },
+  { description: 'Increase industry', productionFactor: 2, costProduction: 7, costGold: 7, days: 4 },
+  { description: 'Increase military strength', productionFactor: 2, costProduction: 10, costGold: 10, days: 10 },
+  { description: 'Increase industry', productionFactor: 2, costProduction: 10, costGold: 10, days: 5 },
+  { description: 'City Center', productionFactor: 1, costProduction: 100, costGold: 100, days: 15 },
 
 ]
 var colorArray = [0xFF6633, 0xFFB399, 0xFF33FF, 0xFFFF99, 0x00B3E6,

@@ -55,23 +55,22 @@ class build extends Phaser.Scene {
 
 
     //show build improvements
-    for (let i = 0; i < this.select.improvements.length; i++) {
-      var test = this.add.image(210 + i * 160, 1425, 'improvements', this.select.improvements[i]).setScale(.75)
-      this.previewBox.add(test);
-      var nameLabel = this.add.bitmapText(210 + i * 160, test.y - 95, 'topaz', improvementNames[this.select.improvements[i]], 35).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-      this.previewBox.add(nameLabel);
+    this.showCurrentImprovements(0, this.select.id)
 
+    if (this.Main.countries[0].improvements.length < 4) {
+      this.buildButton = this.add.image(150, 1000, 'icons', 0).setInteractive().setScale(.8);
+      this.buildButton.type = 0
+      this.previewBox.add(this.buildButton);
+      this.buildButton.on('pointerdown', this.buildImprovement, this)
     }
 
-    this.buildButton = this.add.image(450, 1200, 'icons', 0).setInteractive().setScale(.8);
-    this.buildButton.type = 0
-    this.previewBox.add(this.buildButton);
-    this.buildButton.on('pointerdown', this.buildImprovement, this)
     //improvement menu
     this.nameLabel = this.add.bitmapText(450, 675, 'topaz', improvementNames[0], 25).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
     this.previewBox.add(this.nameLabel);
-    this.infoLabel = this.add.bitmapText(450, 975, 'topaz', '--', 25).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.infoLabel = this.add.bitmapText(450, 1000, 'topaz', '--', 30).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
     this.previewBox.add(this.infoLabel);
+    this.message = this.add.bitmapText(50, 1100, 'topaz', '--', 40).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+    this.previewBox.add(this.message);
     this.scrollingMap = this.add.tileSprite(-game.config.width, 825, game.config.width * 2 + improvementNames.length * 160, 200, "transp").setOrigin(0, .5).setTint(0x333333);
     this.scrollingMap.setInteractive();
     this.input.setDraggable(this.scrollingMap);
@@ -117,7 +116,7 @@ class build extends Phaser.Scene {
       console.log('drag stop')
     }, this);
 
-
+    //console.log(this.getTileImprovementsByID(0, this.select.id))
 
   }
   update() {
@@ -136,14 +135,38 @@ class build extends Phaser.Scene {
   }
   buildImprovement() {
     console.log('build ' + this.buildButton.type + ' on ' + this.Main.selectedTile + ' for' + '0')
-    this.Main.addImprovement(0, this.Main.selectedTile, this.buildButton.type)
+    this.infoLabel.setAlpha(0)
+    this.buildButton.setAlpha(0)
+    this.message.setText('Building ' + improvementNames[this.buildButton.type] + ' in ' + improvementInfo[this.buildButton.type].days + ' days.')
+    this.Main.addImprovement(0, this.Main.selectedTile, this.buildButton.type, false)
+    console.log(this.Main.countries[0].improvements.length)
+  }
+  getTileImprovementsByID(owner, tileID) {
+    //myArray.filter(x => x.id === '45');
+    let impr = this.Main.countries[owner].improvements.filter(x => x.tileID === tileID);
+    return impr
+  }
+  showCurrentImprovements(owner, tileID) {
+    let tileImprovements = this.getTileImprovementsByID(owner, tileID)
+    for (let i = 0; i < tileImprovements.length; i++) {
+      if (tileImprovements[i].complete) {
+        var alpha = 1
+      } else {
+        var alpha = .5
+      }
+      var test = this.add.image(210 + i * 160, 1425, 'improvements', tileImprovements[i].id).setScale(.75).setAlpha(alpha)
+      this.previewBox.add(test);
+      var nameLabel = this.add.bitmapText(210 + i * 160, test.y - 95, 'topaz', improvementNames[tileImprovements[i].id], 30).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+      this.previewBox.add(nameLabel);
+
+    }
   }
   makeInfo(id) {
     var text = ''
     text += improvementInfo[id].description + '\n'
     text += 'COST: Gold: ' + improvementInfo[id].costGold + ', Production: ' + improvementInfo[id].costProduction + '\n'
-    text += 'Bonus: ' + improvementInfo[id].productionFactor
-
+    text += 'Bonus: ' + improvementInfo[id].productionFactor + '\n'
+    text += 'Build Time: ' + improvementInfo[id].days
     return text
   }
   showPreview() {

@@ -26,6 +26,13 @@ class UI extends Phaser.Scene {
     this.dayLabel = this.add.bitmapText(85, 40, 'topaz', 'DAY', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
     this.dayText = this.add.bitmapText(85, 120, 'topaz', '1', 80).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
 
+    this.statusIcons = this.add.image(900, 0, 'status').setOrigin(1, 0)
+    this.productionLabel = this.add.bitmapText(450, 120, 'topaz', '0', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.goldLabel = this.add.bitmapText(550, 120, 'topaz', '0', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.happinessLabel = this.add.bitmapText(650, 120, 'topaz', '0', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.strengthLabel = this.add.bitmapText(750, 120, 'topaz', '0', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.foodLabel = this.add.bitmapText(850, 120, 'topaz', '0', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+
     this.currentPlayerText = this.add.bitmapText(10, 250, 'topaz', civNames[0], 55).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1).setInteractive();
     this.currentPlayerText.on('pointerdown', function () {
       this.Main.currentPlayer++
@@ -57,7 +64,7 @@ class UI extends Phaser.Scene {
         this.Main.board.setInteractive(true)
       }
     }, this)
-    this.build = this.add.image(750, 100, 'blank').setInteractive().setAlpha(.5)
+    this.build = this.add.image(75, 1490, 'icons', 4).setInteractive().setAlpha(0)
     this.build.on('pointerdown', function () {
       if (this.Main.currentPlayer > 0) { return }
       if (this.Main.selectedTile == null) { return }
@@ -76,7 +83,14 @@ class UI extends Phaser.Scene {
   update() {
 
   }
+  setStatusLabels() {
 
+    this.productionLabel.setText(this.Main.countries[0].production)
+    this.goldLabel.setText(this.Main.countries[0].gold)
+    this.happinessLabel.setText(this.Main.countries[0].happiness)
+    this.strengthLabel.setText(this.Main.countries[0].strength)
+    this.foodLabel.setText(this.Main.countries[0].food)
+  }
 
 
 }

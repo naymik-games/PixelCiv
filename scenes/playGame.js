@@ -98,11 +98,11 @@ class playGame extends Phaser.Scene {
 
     }, this);
 
-    console.log(this.countries)
+    //console.log(this.countries)
 
     //console.log(darray)
     //console.log(board)
-
+    this.UI = this.scene.get('UI');
 
     // var out = board.getNeighborTileXY({ x: 5, y: 7 }, null);
     // console.log(out)
@@ -112,7 +112,11 @@ class playGame extends Phaser.Scene {
       on('tileup', function (pointer, tileXY) {
         // console.log('down ' + tileXY.x + ',' + tileXY.y);
         this.selectedTile = tileXY
-        console.log(this.tileData[tileXY.y][tileXY.x])
+        //console.log(this.tileData[tileXY.y][tileXY.x])
+        // console.log(this.tileData[tileXY.y][tileXY.x].id)
+        var y = Math.floor(this.tileData[tileXY.y][tileXY.x].id / 20);
+        var x = this.tileData[tileXY.y][tileXY.x].id % 20;
+        //console.log('x: ' + x + ', y: ' + y)
         if (this.tileData[tileXY.y][tileXY.x].terrain == 0) {
           var type = 'water'
         } else if (this.tileData[tileXY.y][tileXY.x].terrain == 1) {
@@ -129,6 +133,11 @@ class playGame extends Phaser.Scene {
           // console.log(country.getTile(pickedRow, pickedCol))
         } else {
           var owner = 'n/a'
+        }
+        if (this.tileData[tileXY.y][tileXY.x].owner == 0) {
+          this.UI.build.setAlpha(1)
+        } else {
+          this.UI.build.setAlpha(0)
         }
         var text = 'Owner: ' + owner + ', ' + type + ', ID: ' + this.tileData[tileXY.y][tileXY.x].id;
         this.events.emit('info', text);
@@ -206,6 +215,7 @@ class playGame extends Phaser.Scene {
       maxSpeed: 0.3
     });
     this.zoomTo(0)
+    this.UI.setStatusLabels()
 
   }
 
@@ -229,7 +239,7 @@ class playGame extends Phaser.Scene {
     this.countries.forEach(function (country) {
       //var chess = this.board.tileXYZToChess(country.capital.x, country.capital.y, 0);
       // console.log(chess)
-      this.addImprovement(country.id, country.tiles[0], 7)
+      this.addImprovement(country.id, country.tiles[0], 7, true)
       var out = this.board.getNeighborTileXY(country.capital, null);
       for (var i = 0; i < out.length; i++) {
 
@@ -245,9 +255,11 @@ class playGame extends Phaser.Scene {
     }.bind(this));
     console.log(this.countries)
   }
-  addImprovement(owner, tile, type) {
+  //myArray.filter(x => x.id === '45');
+  addImprovement(owner, tile, type, complete) {
     this.tileData[tile.y][tile.x].improvements.push(type)
-    var imp = { id: type, tile: tile }
+    var tileid = tile.x + 20 * tile.y;
+    var imp = { tileID: tileid, id: type, tile: tile, turnAdded: this.day, complete: complete }
     this.countries[owner].improvements.push(imp)
     console.log(this.countries)
   }
