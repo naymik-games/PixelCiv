@@ -10,11 +10,30 @@ class Country {
     this.id = id
     this.tiles = [capital]
     this.improvements = []
-
+    this.maintenance = 10
+    this.population = 5
   }
   getTile(row, col) {
     for (let i = 0; i < this.tiles; i++) {
       const element = this.tiles[i];
+
+
+    }
+  }
+  doBuild(day) {
+    for (let i = 0; i < this.improvements.length; i++) {
+      //{x: 4, y: 3}
+      //var imp = { tileID: tileid, id: type, tile: tile, turnAdded: this.day, complete: complete }
+      const improvement = this.improvements[i];
+      if (!improvement.complete) {
+        if (day - improvement.turnAdded == improvementInfo[improvement.id].days) {
+          improvement.complete = true
+          this.maintenance += improvementInfo[improvement.id].maintenance
+          this.trade -= improvementInfo[improvement.id].costGold
+          this.production = improvementInfo[improvement.id].costProduction
+          console.log(improvementNames[improvement.id] + ' built')
+        }
+      }
 
 
     }

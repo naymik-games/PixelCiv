@@ -33,13 +33,13 @@ class Tiles {
       rec.Iron = 0
     } else if (terrain == 1) {
       //grass
-      rec.Food = Phaser.Math.Between(1, 5)
+      rec.Food = Phaser.Math.Between(1, 3)
       rec.Production = Phaser.Math.Between(1, 3)
-      rec.Trade = Phaser.Math.Between(1, 4)
+      rec.Trade = Phaser.Math.Between(1, 3)
       rec.Oil = Phaser.Math.Between(0, 2)
       rec.Coal = Phaser.Math.Between(0, 2)
       rec.Gold = 0
-      rec.Wood = Phaser.Math.Between(1, 5)
+      rec.Wood = Phaser.Math.Between(1, 3)
       rec.Stone = Phaser.Math.Between(0, 2)
       rec.Iron = 0
     } else if (terrain == 2) {

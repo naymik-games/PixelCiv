@@ -86,7 +86,7 @@ class playGame extends Phaser.Scene {
 
 
       // var chess = rexBoardAdd.shape(board, tileXY.x, tileXY.y, 0, color, 0.7);
-      var obj = this.add.image(0, 0, 'tile').setTint(color)
+      var obj = this.add.image(0, 0, 'tile_test2').setTint(color).setOrigin(.5, .75)
       board.addChess(obj, tileXY.x, tileXY.y, 0, true);
       /*   this.add.text(chess.x, chess.y, tileXY.x + ',' + tileXY.y).
           setOrigin(0.5).
@@ -216,7 +216,9 @@ class playGame extends Phaser.Scene {
     });
     this.zoomTo(0)
     this.UI.setStatusLabels()
-
+    this.UI.updatePop()
+    var obj = this.add.image(0, 0, 'tile_test').setOrigin(.5, .75)
+    this.board.addChess(obj, 2, 2, 0, true);
   }
 
   update(time, delta) {
@@ -231,13 +233,25 @@ class playGame extends Phaser.Scene {
   }
   endRound() {
     console.log('end round')
+    this.countries[0].doBuild(this.day)
+    //in
     var newFood = this.countries[0].getBaseFood(this.tileData)
     var newProduction = this.countries[0].getBaseProduction(this.tileData)
     var newTrade = this.countries[0].getBaseTrade(this.tileData)
     this.countries[0].food += newFood
     this.countries[0].production += newProduction
     this.countries[0].trade += newTrade
+    //out
+    var foodOut = this.countries[0].population * 2
+    this.countries[0].food -= foodOut
+    //maint
+    var minuGold = 0
+    minuGold += this.countries[0].tiles.length * 5
+    minuGold + this.countries[0].maintenance
+    this.countries[0].trade -= minuGold
+
     this.UI.setStatusLabels()
+    this.UI.updatePop()
   }
   zoomTo(owner) {
     var worldXY = this.board.tileXYToWorldXY(this.countries[owner].capital.x, this.countries[owner].capital.y)
@@ -274,6 +288,9 @@ class playGame extends Phaser.Scene {
     var imp = { tileID: tileid, id: type, tile: tile, turnAdded: this.day, complete: complete }
     this.countries[owner].improvements.push(imp)
     console.log(this.countries)
+  }
+  completeImprovement() {
+
   }
   makeCoo(row, col) {
     return { x: col, y: row }

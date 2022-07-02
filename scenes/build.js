@@ -190,7 +190,8 @@ class build extends Phaser.Scene {
     text += improvementInfo[id].description + '\n'
     text += 'COST: Gold: ' + improvementInfo[id].costGold + ', Production: ' + improvementInfo[id].costProduction + '\n'
     text += 'Bonus: ' + improvementInfo[id].productionFactor + '\n'
-    text += 'Build Time: ' + improvementInfo[id].days
+    text += 'Build Time: ' + improvementInfo[id].days + '\n'
+    text += 'Maintenance: ' + improvementInfo[id].maintenance
     return text
   }
   showPreview() {

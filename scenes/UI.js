@@ -24,7 +24,9 @@ class UI extends Phaser.Scene {
     this.footer.displayHeight = 100;
 
     this.dayLabel = this.add.bitmapText(85, 40, 'topaz', 'DAY', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-    this.dayText = this.add.bitmapText(85, 120, 'topaz', '1', 80).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.dayText = this.add.bitmapText(85, 120, 'topaz', '1', 60).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.popLabel = this.add.bitmapText(185, 40, 'topaz', 'POP', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.popText = this.add.bitmapText(185, 120, 'topaz', '0', 60).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
 
     this.statusIcons = this.add.image(900, 0, 'status').setOrigin(1, 0)
     this.productionLabel = this.add.bitmapText(450, 120, 'topaz', '0', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
@@ -35,14 +37,17 @@ class UI extends Phaser.Scene {
 
     this.currentPlayerText = this.add.bitmapText(10, 250, 'topaz', civNames[0], 55).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1).setInteractive();
     this.currentPlayerText.on('pointerdown', function () {
-      this.Main.currentPlayer++
-      if (this.Main.currentPlayer == this.Main.countries.length) {
-        this.Main.currentPlayer = 0
-        this.Main.day++
-        this.dayText.setText(this.Main.day)
-        this.Main.endRound()
-      }
-      this.Main.endPlayerTurn()
+      this.Main.day++
+      this.dayText.setText(this.Main.day)
+      this.Main.endRound()
+      // this.Main.currentPlayer++
+      /*     if (this.Main.currentPlayer == this.Main.countries.length) {
+            this.Main.currentPlayer = 0
+            this.Main.day++
+            this.dayText.setText(this.Main.day)
+            this.Main.endRound()
+          }
+          this.Main.endPlayerTurn() */
       this.currentPlayerText.setText(civNames[this.Main.currentPlayer])
     }, this)
 
@@ -85,6 +90,9 @@ class UI extends Phaser.Scene {
 
   update() {
 
+  }
+  updatePop() {
+    this.popText.setText(this.Main.countries[0].population)
   }
   setStatusLabels() {
 
