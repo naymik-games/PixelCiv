@@ -38,6 +38,9 @@ class UI extends Phaser.Scene {
       this.Main.currentPlayer++
       if (this.Main.currentPlayer == this.Main.countries.length) {
         this.Main.currentPlayer = 0
+        this.Main.day++
+        this.dayText.setText(this.Main.day)
+        this.Main.endRound()
       }
       this.Main.endPlayerTurn()
       this.currentPlayerText.setText(civNames[this.Main.currentPlayer])
@@ -86,7 +89,7 @@ class UI extends Phaser.Scene {
   setStatusLabels() {
 
     this.productionLabel.setText(this.Main.countries[0].production)
-    this.goldLabel.setText(this.Main.countries[0].gold)
+    this.goldLabel.setText(this.Main.countries[0].trade)
     this.happinessLabel.setText(this.Main.countries[0].happiness)
     this.strengthLabel.setText(this.Main.countries[0].strength)
     this.foodLabel.setText(this.Main.countries[0].food)

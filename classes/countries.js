@@ -1,7 +1,7 @@
 class Country {
   constructor(capital, color, id) {
     this.capital = capital
-    this.gold = 10
+    this.trade = 10
     this.production = 10
     this.happiness = 10
     this.strength = 10
@@ -19,5 +19,45 @@ class Country {
 
     }
   }
+  getBaseFood(data) {
+    var food = 0
+    for (let i = 0; i < this.tiles.length; i++) {
+      //{x: 4, y: 3}
+      const tile = this.tiles[i];
 
+      food += data[tile.y][tile.x].resources.Food
+
+    }
+    return food
+  }
+  getBaseProduction(data) {
+    var production = 0
+    for (let i = 0; i < this.tiles.length; i++) {
+      //{x: 4, y: 3}
+      const tile = this.tiles[i];
+      production += data[tile.y][tile.x].resources.Production
+      production += data[tile.y][tile.x].resources.Oil
+      production += data[tile.y][tile.x].resources.Coal
+      production += data[tile.y][tile.x].resources.Stone
+      production += data[tile.y][tile.x].resources.Wood
+      production += data[tile.y][tile.x].resources.Iron
+      production += data[tile.y][tile.x].resources.Gold
+    }
+    return production
+  }
+  getBaseTrade(data) {
+    var trade = 0
+    for (let i = 0; i < this.tiles.length; i++) {
+      //{x: 4, y: 3}
+      const tile = this.tiles[i];
+      trade += data[tile.y][tile.x].resources.Trade
+      trade += data[tile.y][tile.x].resources.Oil
+      trade += data[tile.y][tile.x].resources.Coal
+      trade += data[tile.y][tile.x].resources.Stone
+      trade += data[tile.y][tile.x].resources.Wood
+      trade += data[tile.y][tile.x].resources.Iron
+      trade += data[tile.y][tile.x].resources.Gold
+    }
+    return trade
+  }
 }

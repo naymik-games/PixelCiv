@@ -229,6 +229,16 @@ class playGame extends Phaser.Scene {
   endPlayerTurn() {
     this.zoomTo(this.currentPlayer)
   }
+  endRound() {
+    console.log('end round')
+    var newFood = this.countries[0].getBaseFood(this.tileData)
+    var newProduction = this.countries[0].getBaseProduction(this.tileData)
+    var newTrade = this.countries[0].getBaseTrade(this.tileData)
+    this.countries[0].food += newFood
+    this.countries[0].production += newProduction
+    this.countries[0].trade += newTrade
+    this.UI.setStatusLabels()
+  }
   zoomTo(owner) {
     var worldXY = this.board.tileXYToWorldXY(this.countries[owner].capital.x, this.countries[owner].capital.y)
     this.cameras.main.pan(worldXY.x, worldXY.y, 2000, 'Power2');
@@ -240,6 +250,8 @@ class playGame extends Phaser.Scene {
       //var chess = this.board.tileXYZToChess(country.capital.x, country.capital.y, 0);
       // console.log(chess)
       this.addImprovement(country.id, country.tiles[0], 7, true)
+      //mark captial
+      this.tileData[country.tiles[0].y][country.tiles[0].x].capital = true
       var out = this.board.getNeighborTileXY(country.capital, null);
       for (var i = 0; i < out.length; i++) {
 

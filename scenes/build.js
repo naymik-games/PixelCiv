@@ -38,6 +38,7 @@ class build extends Phaser.Scene {
 
     this.previewBox.add(background);
     this.select = this.Main.tileData[this.Main.selectedTile.y][this.Main.selectedTile.x]
+    console.log(this.select)
     var titleText = this.add.bitmapText(450, 375, 'topaz', 'Build ', 80).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
     this.previewBox.add(titleText);
 
@@ -45,11 +46,81 @@ class build extends Phaser.Scene {
     cancelIcon.on('pointerdown', this.cancel, this);
     this.previewBox.add(cancelIcon);
 
+    if (!this.select.capital) {
+      var resourcesLabel = this.add.bitmapText(75, 480, 'topaz', 'TILE RESOURCES:', 45).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+      this.previewBox.add(resourcesLabel);
+      var foodIcon = this.add.image(75, 560, 'icons', 9).setOrigin(0, .5).setScale(.5)
+      this.previewBox.add(foodIcon)
+      var foodLabel = this.add.bitmapText(135, 560, 'topaz', this.select.resources.Food, 45).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+      this.previewBox.add(foodLabel)
+      var productionIcon = this.add.image(250, 560, 'icons', 5).setOrigin(0, .5).setScale(.5)
+      this.previewBox.add(productionIcon)
+      var productionLabel = this.add.bitmapText(315, 560, 'topaz', this.select.resources.Production, 45).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+      this.previewBox.add(productionLabel)
+      var tradeIcon = this.add.image(425, 560, 'icons', 6).setOrigin(0, .5).setScale(.5)
+      this.previewBox.add(tradeIcon)
+      var tradeLabel = this.add.bitmapText(490, 560, 'topaz', this.select.resources.Production, 45).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+      this.previewBox.add(tradeLabel)
+      var resourcesText = this.add.bitmapText(75, 625, 'topaz', this.makeResourceInfo(this.select.resources), 38).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+      this.previewBox.add(resourcesText);
 
-    var resourcesLabel = this.add.bitmapText(75, 480, 'topaz', 'TILE RESOURCES:', 45).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
-    this.previewBox.add(resourcesLabel);
-    var resourcesText = this.add.bitmapText(75, 575, 'topaz', this.objToString(this.select.resources), 40).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
-    this.previewBox.add(resourcesText);
+      //improvement menu
+      this.nameLabel = this.add.bitmapText(450, 725, 'topaz', improvementNames[0], 25).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+      this.previewBox.add(this.nameLabel);
+      this.infoLabel = this.add.bitmapText(450, 1025, 'topaz', '--', 30).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+      this.previewBox.add(this.infoLabel);
+      this.message = this.add.bitmapText(50, 1150, 'topaz', '--', 40).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+      this.previewBox.add(this.message);
+      this.scrollingMap = this.add.tileSprite(-game.config.width, 850, game.config.width * 2 + improvementNames.length * 160, 200, "transp").setOrigin(0, .5).setTint(0x333333);
+      this.scrollingMap.setInteractive();
+      this.input.setDraggable(this.scrollingMap);
+      this.itemGroup = this.add.group(0, 0)
+      this.isBeingDragged = false;
+      for (let i = 0; i < improvementNames.length; i++) {
+        var test = this.add.image(450 + i * 160, 850, 'improvements', i).setScale(.75)
+        test.id = i
+        this.previewBox.add(test);
+        this.itemGroup.add(test)
+
+      }
+      this.selecter = this.add.image(450, 850, 'selecter').setScale(1)
+      this.previewBox.add(this.selecter);
+      this.input.on("dragstart", function (pointer, gameObject) {
+        gameObject.startPosition = gameObject.x;
+        gameObject.currentPosition = gameObject.x;
+        this.isBeingDragged = true;
+        console.log('start drag')
+      }, this);
+      this.input.on("drag", function (pointer, gameObject, dragX, dragY) {
+        gameObject.x = dragX;
+
+        var delta = gameObject.x - gameObject.currentPosition;
+        gameObject.currentPosition = dragX;
+        this.itemGroup.children.iterate(function (item) {
+          item.x += delta;
+        });
+
+      }, this);
+      this.input.on("dragend", function (pointer, gameObject) {
+        this.isBeingDragged = false;
+        this.itemGroup.children.iterate(function (item) {
+
+          item.x = Phaser.Math.Snap.To(item.x, 160) - 40;
+          if (item.x == 450) {
+            // item.setScale(1.5)
+          } else {
+            //item.setScale(1)
+          }
+        });
+
+        console.log('drag stop')
+      }, this);
+
+
+    } else {
+
+    }
+
 
 
 
@@ -64,74 +135,27 @@ class build extends Phaser.Scene {
       this.buildButton.on('pointerdown', this.buildImprovement, this)
     }
 
-    //improvement menu
-    this.nameLabel = this.add.bitmapText(450, 675, 'topaz', improvementNames[0], 25).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-    this.previewBox.add(this.nameLabel);
-    this.infoLabel = this.add.bitmapText(450, 1000, 'topaz', '--', 30).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-    this.previewBox.add(this.infoLabel);
-    this.message = this.add.bitmapText(50, 1100, 'topaz', '--', 40).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
-    this.previewBox.add(this.message);
-    this.scrollingMap = this.add.tileSprite(-game.config.width, 825, game.config.width * 2 + improvementNames.length * 160, 200, "transp").setOrigin(0, .5).setTint(0x333333);
-    this.scrollingMap.setInteractive();
-    this.input.setDraggable(this.scrollingMap);
-    this.itemGroup = this.add.group(0, 0)
-    this.isBeingDragged = false;
-    for (let i = 0; i < improvementNames.length; i++) {
-      var test = this.add.image(450 + i * 160, 825, 'improvements', i).setScale(.75)
-      test.id = i
-      this.previewBox.add(test);
-      this.itemGroup.add(test)
 
-    }
-    this.selecter = this.add.image(450, 825, 'selecter').setScale(1)
-    this.previewBox.add(this.selecter);
-    this.input.on("dragstart", function (pointer, gameObject) {
-      gameObject.startPosition = gameObject.x;
-      gameObject.currentPosition = gameObject.x;
-      this.isBeingDragged = true;
-      console.log('start drag')
-    }, this);
-    this.input.on("drag", function (pointer, gameObject, dragX, dragY) {
-      gameObject.x = dragX;
-
-      var delta = gameObject.x - gameObject.currentPosition;
-      gameObject.currentPosition = dragX;
-      this.itemGroup.children.iterate(function (item) {
-        item.x += delta;
-      });
-
-    }, this);
-    this.input.on("dragend", function (pointer, gameObject) {
-      this.isBeingDragged = false;
-      this.itemGroup.children.iterate(function (item) {
-
-        item.x = Phaser.Math.Snap.To(item.x, 160) - 40;
-        if (item.x == 450) {
-          // item.setScale(1.5)
-        } else {
-          //item.setScale(1)
-        }
-      });
-
-      console.log('drag stop')
-    }, this);
 
     //console.log(this.getTileImprovementsByID(0, this.select.id))
 
   }
   update() {
-    this.itemGroup.children.iterate(function (item) {
+    if (!this.select.capital) {
+      this.itemGroup.children.iterate(function (item) {
 
-      // item.x = Phaser.Math.Snap.To(item.x, 90);
-      if (item.x < 495 && item.x > 405) {
-        // item.setScale(1.5)
-        this.nameLabel.setText(improvementNames[item.id])
-        this.infoLabel.setText(this.makeInfo(item.id))
-        this.buildButton.type = item.id
-      } else {
-        //item.setScale(1)
-      }
-    }, this);
+        // item.x = Phaser.Math.Snap.To(item.x, 90);
+        if (item.x < 495 && item.x > 405) {
+          // item.setScale(1.5)
+          this.nameLabel.setText(improvementNames[item.id])
+          this.infoLabel.setText(this.makeInfo(item.id))
+          this.buildButton.type = item.id
+        } else {
+          //item.setScale(1)
+        }
+      }, this);
+    }
+
   }
   buildImprovement() {
     console.log('build ' + this.buildButton.type + ' on ' + this.Main.selectedTile + ' for' + '0')
@@ -176,6 +200,16 @@ class build extends Phaser.Scene {
       x: 0,
       ease: 'bounce'
     })
+  }
+  makeResourceInfo(rec) {
+    var str = ''
+    str += 'Oil: ' + rec.Oil + ', '
+    str += 'Coal: ' + rec.Coal + ', '
+    str += 'Gold: ' + rec.Gold + ',\n'
+    str += 'Wood: ' + rec.Wood + ', '
+    str += 'Stone: ' + rec.Stone + ', '
+    str += 'Iron: ' + rec.Iron
+    return str
   }
   objToString(obj) {
     let str = '';
