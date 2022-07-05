@@ -11,103 +11,120 @@ class playGame extends Phaser.Scene {
   preload() {
     this.load.scenePlugin({
       key: 'rexboardplugin',
-      url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexboardplugin.min.js',
+      url: 'plugins/rexboard.min.js',
       sceneKey: 'rexBoard'
     });
     var url;
 
     url = 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexpinchplugin.min.js';
+    //'plugins/rexpinch.min.js'
     this.load.plugin('rexpinchplugin', url, true);
 
   }
   create() {
-    this.day = 1
+
+
+
+
+    //create new game
+    if (gameLoad == 'new') {
+      this.theGame = new GAME(gameWidth, gameHeight, 5)
+      this.tileData = new Array(this.theGame.height).fill(null).map(() => new Array(this.theGame.width).fill(null));
+    } else {
+      this.theGame = gameData.game
+      this.tileData = gameData.tiles
+    }
+
+    console.log(this.theGame)
+    //this.day = 1
     this.currentPlayer = 0
-    var gridGraphics = this.add.graphics({
-      lineStyle: {
-        width: 1,
-        color: COLOR_DARK,
-        alpha: 1
-      }
-    });
+    this.countries = []
 
-    /* this.map = Generator.generateMap(
-      {
-        chanceToStartAlive: 0.4,
-        deathLimit: 5,
-        birthLimit: 4,
-        numberOfSteps: 2,
-        worldWidth: 20,
-        worldHeight: 20,
-        numCountries: 5
-      }
-    );
-    console.log(this.map) */
-    this.map = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 0], [0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [0, 1, 1, 1, 3, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 2, 1, 1, 0, 0, 1, 1], [1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 3, 1, 1], [1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1], [1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 0, 1, 1, 1, 1, 1, 1, 1], [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 1], [1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 2, 2, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 2, 1], [1, 1, 2, 3, 1, 1, 1, 0, 2, 1, 1, 1, 1, 1, 1, 1, 3, 0, 2, 1], [1, 1, 1, 1, 1, 1, 1, 0, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
 
-    var board = this.rexBoard.add.board({
+
+
+
+    //create new map
+    if (gameLoad == 'new') {
+      this.map = new Map(this.theGame.width, this.theGame.height, 34147)
+    }
+
+
+    //create new board
+    this.board = this.rexBoard.add.board({
       //grid: getHexagonGrid(this),
       grid: getQuadGrid(this),
-      width: 20,
-      height: 20
+      width: this.theGame.width,
+      height: this.theGame.height,
+      dir: 4
     });
-    this.countries = []
-    this.tileData = new Array(20).fill(null).map(() => new Array(20).fill(null));
+    //add tile images to board and make tile data
+    this.board.forEachTileXY(function (tileXY, board) {
+      var onwer = null
+      if (gameLoad == 'new') {
+        var obj = this.add.image(0, 0, 'tiles', this.map.mapArray[tileXY.y][tileXY.x].index).setOrigin(.5, .75)
+        board.addChess(obj, tileXY.x, tileXY.y, 0, true);
 
-    var rexBoardAdd = this.rexBoard.add;
-    //var points = board.getGridPoints(0, 0, true)
-    //console.log(points)
-    /* board.forEachTileXY(function (tileXY, board) {
-      var points = board.getGridPoints(tileXY.x, tileXY.y, true)
-      gridGraphics.strokePoints(points, true);
-    }, this) */
-    var count = 0
-    board.forEachTileXY(function (tileXY, board) {
+        let id = tileXY.x + 20 * tileXY.y;
+        // y = index / width;
+        // x = index % width;
+        this.tileData[tileXY.y][tileXY.x] = new Tiles(this.map.mapArray[tileXY.y][tileXY.x], id, onwer, this.map.mapArray[tileXY.y][tileXY.x].biome)
+      } else {
 
-      if (this.map[tileXY.y][tileXY.x] == 1) {
-        var color = 0x059938
-        var onwer = null
-      } else if (this.map[tileXY.y][tileXY.x] == 2) {
-        var color = 0x808080
-        var onwer = null
-      } else if (this.map[tileXY.y][tileXY.x] == 3) {
-
-        var color = colorArray[count]
-
-        this.countries.push(new Country(this.makeCoo(tileXY.y, tileXY.x), color, count))
-        var onwer = count
-        count++
-
-
-      } else if (this.map[tileXY.y][tileXY.x] == 0) {
-        var color = 0x0000ff
-        var onwer = null
+        var obj = this.add.image(0, 0, 'tiles', this.tileData[tileXY.y][tileXY.x].terrain.index).setOrigin(.5, .75)
+        board.addChess(obj, tileXY.x, tileXY.y, 0, true);
       }
 
-
-      // var chess = rexBoardAdd.shape(board, tileXY.x, tileXY.y, 0, color, 0.7);
-      var obj = this.add.image(0, 0, 'tile_test2').setTint(color).setOrigin(.5, .75)
-      board.addChess(obj, tileXY.x, tileXY.y, 0, true);
-      /*   this.add.text(chess.x, chess.y, tileXY.x + ',' + tileXY.y).
-          setOrigin(0.5).
-          setTint(0x0); */
-      let id = tileXY.x + 20 * tileXY.y;
-      // y = index / width;
-      // x = index % width;
-      this.tileData[tileXY.y][tileXY.x] = new Tiles(this.map[tileXY.y][tileXY.x], id, onwer)
 
     }, this);
 
-    //console.log(this.countries)
 
-    //console.log(darray)
-    //console.log(board)
+    console.log(this.tileData)
+
+
+    if (gameLoad == 'new') {
+      //get starting locations and create countries
+      var startingPoints = this.getStartLcation(this.theGame.players)
+      for (let i = 0; i < startingPoints.length; i++) {
+        var obj = this.add.image(0, 0, 'cities', 0).setOrigin(.5, .75)
+        this.board.addChess(obj, startingPoints[i].x, startingPoints[i].y, 1, true);
+        this.countries.push(new Country(startingPoints[i], colorArray[i], i))
+        this.tileData[startingPoints[i].y][startingPoints[i].x].owner = i
+      }
+      // console.log(this.countries)
+      //initial border expansion
+      this.expandCountries()
+    } else {
+      this.countries = gameData.countries
+      for (let i = 0; i < this.theGame.players; i++) {
+        var obj = this.add.image(0, 0, 'cities', 0).setOrigin(.5, .75)
+        this.board.addChess(obj, this.countries[i].capital.x, this.countries[i].capital.y, 1, true);
+      }
+    }
+
+
+
+
+    //set up graphics
+    this.graphicsP0 = this.add.graphics({ lineStyle: { width: 6, color: colorArray[0], alpha: .8 } });
+    this.graphicsP1 = this.add.graphics({ lineStyle: { width: 6, color: colorArray[1], alpha: .8 } });
+    this.graphicsP2 = this.add.graphics({ lineStyle: { width: 6, color: colorArray[2], alpha: .8 } });
+    this.graphicsP3 = this.add.graphics({ lineStyle: { width: 6, color: colorArray[3], alpha: .8 } });
+    this.graphicsP4 = this.add.graphics({ lineStyle: { width: 6, color: colorArray[4], alpha: .8 } });
+    this.graphicsP5 = this.add.graphics({ lineStyle: { width: 6, color: colorArray[5], alpha: .8 } });
+
+    this.highlight = this.add.graphics({ lineStyle: { width: 4, color: 0xFFFF00, alpha: 1 } });
+    //draw boorders around each country
+    this.drawBorders()
+
     this.UI = this.scene.get('UI');
 
-    // var out = board.getNeighborTileXY({ x: 5, y: 7 }, null);
-    // console.log(out)
+
+
+    //set up inputs
+
     this.selectedTile = null
-    board.
+    this.board.
       setInteractive().
       on('tileup', function (pointer, tileXY) {
         // console.log('down ' + tileXY.x + ',' + tileXY.y);
@@ -117,15 +134,7 @@ class playGame extends Phaser.Scene {
         var y = Math.floor(this.tileData[tileXY.y][tileXY.x].id / 20);
         var x = this.tileData[tileXY.y][tileXY.x].id % 20;
         //console.log('x: ' + x + ', y: ' + y)
-        if (this.tileData[tileXY.y][tileXY.x].terrain == 0) {
-          var type = 'water'
-        } else if (this.tileData[tileXY.y][tileXY.x].terrain == 1) {
-          var type = 'grass'
-        } else if (this.tileData[tileXY.y][tileXY.x].terrain == 2) {
-          var type = 'rock'
-        } else {
-          var type = 'captial'
-        }
+        var type = this.tileData[tileXY.y][tileXY.x].biome
 
         if (this.tileData[tileXY.y][tileXY.x].owner != undefined) {
           var owner = civNames[this.tileData[tileXY.y][tileXY.x].owner]
@@ -141,6 +150,7 @@ class playGame extends Phaser.Scene {
         }
         var text = 'Owner: ' + owner + ', ' + type + ', ID: ' + this.tileData[tileXY.y][tileXY.x].id;
         this.events.emit('info', text);
+        this.highlightTile(tileXY)
         console.log(this.selectedTile)
       }, this).
       on('tiledown', function (pointer, tileXY) {
@@ -169,12 +179,7 @@ class playGame extends Phaser.Scene {
         // console.log(`swipe-${swipe.direction} ` + tileXY.x + ',' + tileXY.y);
       });
 
-    this.board = board;
-    this.print = this.add.text(0, 0, '').setScrollFactor(0);
-    this.expandCountries()
-    this.graphicsC0 = this.add.graphics({ lineStyle: { width: 6, color: colorArray[0], alpha: .8 } })
-    this.drawBordersTest()
-    //this.drawBorders()
+
 
 
     this.board.setInteractive(true)
@@ -210,30 +215,84 @@ class playGame extends Phaser.Scene {
       zoomIn: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
       zoomOut: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
 
-      acceleration: 0.06,
+      acceleration: 0.2,
       drag: 0.003,
-      maxSpeed: 0.3
+      maxSpeed: 0.4
     });
+
+
+    //zoom to player
     this.zoomTo(0)
+    //update UI
     this.UI.setStatusLabels()
     this.UI.updatePop()
-    var obj = this.add.image(0, 0, 'tile_test').setOrigin(.5, .75)
-    this.board.addChess(obj, 2, 2, 0, true);
+
+    //var points = this.board.getGridPoints(5, 5)
+    //console.log(points)
+    //console.log(this.board)
+
+    // initial save
+    this.saveGame()
+
   }
 
   update(time, delta) {
     this.cameraController.update(delta);
 
-    var pointer = this.input.activePointer;
-    var out = this.board.worldXYToTileXY(pointer.worldX, pointer.worldY, true);
-    this.print.setText(out.x + ',' + out.y);
+    //var pointer = this.input.activePointer;
+    // var out = this.board.worldXYToTileXY(pointer.worldX, pointer.worldY, true);
+    //this.print.setText(out.x + ',' + out.y);
   }
+  getStartLcation(num) {
+    let results = []
+    for (let i = 0; i < num; i++) {
+      var done = false
+      while (!done) {
+        var x = Phaser.Math.Between(3, this.theGame.width - 3)
+        var y = Phaser.Math.Between(3, this.theGame.height - 3)
+        if (this.map.mapArray[y][x].value > 0.45 && this.map.mapArray[y][x].value < 0.68 && this.isNew(x, y, results) && this.dGreaterThan(20, x, y, results)) {
+          done = true
+          results.push({ x: x, y: y })
+          if (results.length > 1) {
+            console.log()
+          }
+        }
+      }
+    }
+    return results
+  }
+  isNew(x, y, results) {
+    if (results.length == 0) {
+      return true
+    } else {
+      for (let i = 0; i < results.length; i++) {
+        if (results[i].x == x && results[i].y == y) {
+          return false
+        }
+      }
+      return true
+    }
+  }
+  dGreaterThan(amount, x, y, results) {
+    if (results.length == 0) {
+      return true
+    } else {
+      for (let i = 0; i < results.length; i++) {
+        if (this.board.getDistance({ x: x, y: y }, results[i]) < amount) {
+          return false
+        }
+
+      }
+      return true
+    }
+  }
+
   endPlayerTurn() {
     this.zoomTo(this.currentPlayer)
   }
   endRound() {
     console.log('end round')
-    this.countries[0].doBuild(this.day)
+    this.countries[0].doBuild(this.theGame.day, this.tileData)
     //in
     var newFood = this.countries[0].getBaseFood(this.tileData)
     var newProduction = this.countries[0].getBaseProduction(this.tileData)
@@ -249,7 +308,7 @@ class playGame extends Phaser.Scene {
     minuGold += this.countries[0].tiles.length * 5
     minuGold + this.countries[0].maintenance
     this.countries[0].trade -= minuGold
-
+    // this.expandBorder(0)
     this.UI.setStatusLabels()
     this.UI.updatePop()
   }
@@ -270,8 +329,11 @@ class playGame extends Phaser.Scene {
       for (var i = 0; i < out.length; i++) {
 
         //this.gameMap[country.capital.row + dirs8[i].r][country.capital.col + dirs8[i].c].image.setAlpha(.7)
-        this.tileData[out[i].y][out[i].x].owner = country.id
-        country.tiles.push(out[i])
+        if (this.board.contains(out[i].x, out[i].y)) {
+          this.tileData[out[i].y][out[i].x].owner = country.id
+          country.tiles.push(out[i])
+        }
+
 
 
       }
@@ -285,15 +347,38 @@ class playGame extends Phaser.Scene {
   addImprovement(owner, tile, type, complete) {
     this.tileData[tile.y][tile.x].improvements.push(type)
     var tileid = tile.x + 20 * tile.y;
-    var imp = { tileID: tileid, id: type, tile: tile, turnAdded: this.day, complete: complete }
+    var imp = { tileID: tileid, id: type, tile: tile, turnAdded: this.theGame.day, complete: complete }
     this.countries[owner].improvements.push(imp)
-    console.log(this.countries)
+    //console.log(this.countries)
   }
   completeImprovement() {
 
   }
   makeCoo(row, col) {
     return { x: col, y: row }
+  }
+  expandBorder(player) {
+    var hArray = this.countries[player].tiles;
+    var newTiles = [];
+    //console.log(this.players[player].tiles)
+    for (var h = 0; h < hArray.length; h++) {
+      for (var dir = 0; dir < 4; dir++) {
+        //var neighbor = this.getNeighborHex(hex, dir);
+        var neighbor = this.board.getNeighborTileXY(hArray[h], dir);
+        // var neighbor = this.getHexObjectByHex(nei);
+        if (neighbor != null && this.tileData[neighbor.y][neighbor.x].owner == null) {
+          this.tileData[neighbor.y][neighbor.x].owner = player
+          newTiles.push(neighbor);
+          // this.setOwner(neighbor, player);
+
+        }
+      }
+
+    }
+    this.countries[player].tiles.push(...newTiles);
+    //console.log(newTiles);
+
+    this.drawBorder(player)
   }
   drawBordersTest() {
     for (var c = 0; c < this.countries.length; c++) {
@@ -310,35 +395,68 @@ class playGame extends Phaser.Scene {
     // var points = this.board.getGridPoints(this.countries[owner].capital.x, this.countries[owner].capital.y)
     // this.graphicsC0.strokePoints(points, true);
   }
+  highlightTile(tile) {
+    this.highlight.clear()
+    var points = this.board.getGridPoints(tile.x, tile.y)
+    this.highlight.strokePoints(points, true)
+  }
   drawBorders() {
-    this.graphicsC0.clear()
+    // this.graphicsC0.clear()
     for (var c = 0; c < this.countries.length; c++) {
 
       this.drawBorder(c)
     }
   }
   drawBorder(owner) {
-    //this.graphicsC0.clear()
+    var graph
+    if (owner == 0) {
+      this.graphicsP0.clear();
+      graph = this.graphicsP0
+    } else if (owner == 1) {
+      this.graphicsP1.clear();
+      graph = this.graphicsP1
+    } else if (owner == 2) {
+      this.graphicsP2.clear();
+      graph = this.graphicsP2
+    } else if (owner == 3) {
+      this.graphicsP3.clear();
+      graph = this.graphicsP3
+    } else if (owner == 4) {
+      this.graphicsP4.clear();
+      graph = this.graphicsP4
+    } else if (owner == 5) {
+      this.graphicsP5.clear();
+      graph = this.graphicsP5
+    }
     var cArray = this.countries[owner].tiles;
     for (var c = 0; c < cArray.length; c++) {
       for (var d = 0; d < 4; d++) {
         //get neighbor in direction
         var temp = this.board.getNeighborTileXY(cArray[c], d)
 
-        if (nTile.owner != owner) {
-          //console.log('border')
-          var corners = this.getCornerPoints(this.gameMap[cArray[c].row][cArray[c].col].image, d)
-          var line = new Phaser.Geom.Line(corners.x1, corners.y1, corners.x2, corners.y2)
-          this.graphicsC0.lineStyle(6, colorArray[owner], .8)
+        if (temp != null) {
+          var nTile = this.tileData[temp.y][temp.x]
+          if (nTile.owner != owner) {
+            //console.log('border')
+            // var corners = this.getCornerPoints(this.gameMap[cArray[c].row][cArray[c].col].image, d)
+            var points = this.board.getGridPoints(cArray[c].x, cArray[c].y)
+            //var line = new Phaser.Geom.Line(corners.x1, corners.y1, corners.x2, corners.y2)
+            if (d == 2) {
+              var line = new Phaser.Geom.Line(points[2].x, points[2].y, points[3].x, points[3].y)
+            } else if (d == 1) {
+              var line = new Phaser.Geom.Line(points[1].x, points[1].y, points[2].x, points[2].y)
+            } else if (d == 0) {
+              var line = new Phaser.Geom.Line(points[0].x, points[0].y, points[1].x, points[1].y)
+            } else if (d == 3) {
+              var line = new Phaser.Geom.Line(points[3].x, points[3].y, points[0].x, points[0].y)
+            }
+            //    this.graphicsC0.lineStyle(6, colorArray[owner], .8)
 
-          this.graphicsC0.strokeLineShape(line)
-          //console.log(corners)
+            graph.strokeLineShape(line)
+            //console.log(corners)
+          }
         }
-        //up, right, down, left
-        //if valid and owner of carray is different than neighbor
-        //get corner one
-        //get corner two
-        //make and draw line
+
       }
     }
 
@@ -372,7 +490,12 @@ class playGame extends Phaser.Scene {
     }
   }
 
-
+  saveGame() {
+    gameData.game = this.theGame
+    gameData.tiles = this.tileData
+    gameData.countries = this.countries
+    localStorage.setItem('PCSave', JSON.stringify(gameData));
+  }
 
 }
 

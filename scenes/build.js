@@ -189,9 +189,25 @@ class build extends Phaser.Scene {
     var text = ''
     text += improvementInfo[id].description + '\n'
     text += 'COST: Gold: ' + improvementInfo[id].costGold + ', Production: ' + improvementInfo[id].costProduction + '\n'
-    text += 'Bonus: ' + improvementInfo[id].productionFactor + '\n'
-    text += 'Build Time: ' + improvementInfo[id].days + '\n'
-    text += 'Maintenance: ' + improvementInfo[id].maintenance
+
+    text += 'Build Time: ' + improvementInfo[id].days + ', Maintenance: ' + improvementInfo[id].maintenance + '\n'
+    text += 'Bonus: '
+    if (improvementInfo[id].foodBonus > 0) {
+      text += '+' + improvementInfo[id].foodBonus + ' Food '
+    }
+    if (improvementInfo[id].productionBonus > 0) {
+      text += '+' + improvementInfo[id].productionBonus + ' Production '
+    }
+    if (improvementInfo[id].tradeBonus > 0) {
+      text += '+' + improvementInfo[id].tradeBonus + ' Trade '
+    }
+    if (improvementInfo[id].strengthBonus > 0) {
+      text += '+' + improvementInfo[id].strengthBonus + ' Strength '
+    }
+    if (improvementInfo[id].cultureBonus > 0) {
+      text += '+' + improvementInfo[id].cultureBonus + ' Culture '
+    }
+
     return text
   }
   showPreview() {

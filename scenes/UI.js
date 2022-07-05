@@ -37,8 +37,8 @@ class UI extends Phaser.Scene {
 
     this.currentPlayerText = this.add.bitmapText(10, 250, 'topaz', civNames[0], 55).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1).setInteractive();
     this.currentPlayerText.on('pointerdown', function () {
-      this.Main.day++
-      this.dayText.setText(this.Main.day)
+      this.Main.theGame.day++
+      this.dayText.setText(this.Main.theGame.day)
       this.Main.endRound()
       // this.Main.currentPlayer++
       /*     if (this.Main.currentPlayer == this.Main.countries.length) {
@@ -51,7 +51,7 @@ class UI extends Phaser.Scene {
       this.currentPlayerText.setText(civNames[this.Main.currentPlayer])
     }, this)
 
-    this.infoText = this.add.bitmapText(15, game.config.height - 50, 'topaz', 'status', 60).setOrigin(0, .5).setTint(0xcbf7ff).setAlpha(1);
+    this.infoText = this.add.bitmapText(15, game.config.height - 50, 'topaz', 'status', 50).setOrigin(0, .5).setTint(0xcbf7ff).setAlpha(1);
 
 
 

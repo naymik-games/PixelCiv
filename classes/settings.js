@@ -4,17 +4,21 @@ const COLOR_LIGHT = 0x67daff;
 const COLOR_DARK = 0x007ac1;
 
 let civNames = ['ROME', 'AMERICA', 'RUSSIA', 'FRANCE', 'CHINA', 'ENGLAND']
-let improvementNames = ['FARM', 'LUMBER MILL', 'QUARY', 'ARCHERY', 'BLACK SMITH', 'FORT', 'MINE', 'CAPITAL']
+let ageNames = ['Ancient', 'Medival', 'Industrial', 'Electric', 'Modern', 'Future']
+let improvementNames = ['FARM', 'LUMBER MILL', 'QUARY', 'ARCHERY', 'BLACK SMITH', 'FORT', 'MINE', 'TEMPLE', 'GRANARY', 'PALACE', 'AQUADUCT', 'COLUSEUM']
 let improvementInfo = [
-  { description: 'Increase food production', productionFactor: 1.5, costProduction: 10, costGold: 5, days: 3, maintenance: 1 },
-  { description: 'Improve industry', productionFactor: 1.5, costProduction: 10, costGold: 5, days: 3, maintenance: 1 },
-  { description: 'Increase industry', productionFactor: 1.5, costProduction: 10, costGold: 5, days: 3, maintenance: 1 },
-  { description: 'Improve military strength', productionFactor: 1.25, costProduction: 15, costGold: 5, days: 5, maintenance: 1 },
-  { description: 'Increase industry', productionFactor: 2, costProduction: 17, costGold: 7, days: 4, maintenance: 1 },
-  { description: 'Increase military strength', productionFactor: 2, costProduction: 50, costGold: 10, days: 10, maintenance: 5 },
-  { description: 'Increase industry', productionFactor: 5, costProduction: 30, costGold: 10, days: 5, maintenance: 2 },
-  { description: 'City Center', productionFactor: 1, costProduction: 100, costGold: 100, days: 15, maintenance: 10 },
-
+  { description: 'Increase food production', foodBonus: 1, productionBonus: 0, tradeBonus: 0, strengthBonus: 0, cultureBonus: 0, costProduction: 10, costGold: 5, days: 3, maintenance: 1 },
+  { description: 'Improve industry', foodBonus: 0, productionBonus: 2, tradeBonus: 0, strengthBonus: 0, cultureBonus: 0, costProduction: 10, costGold: 5, days: 3, maintenance: 1 },
+  { description: 'Increase industry', foodBonus: 0, productionBonus: 1, tradeBonus: 0, strengthBonus: 0, cultureBonus: 0, costProduction: 10, costGold: 5, days: 3, maintenance: 1 },
+  { description: 'Improve military strength', foodBonus: 0, productionBonus: 0, tradeBonus: 0, strengthBonus: 1, cultureBonus: 0, costProduction: 15, costGold: 5, days: 5, maintenance: 1 },
+  { description: 'Increase industry', foodBonus: 0, productionBonus: 1, tradeBonus: 1, strengthBonus: 0, cultureBonus: 0, costProduction: 17, costGold: 7, days: 4, maintenance: 1 },
+  { description: 'Increase military strength', foodBonus: 0, productionBonus: 0, tradeBonus: 0, strengthBonus: 2, cultureBonus: 0, costProduction: 50, costGold: 10, days: 10, maintenance: 5 },
+  { description: 'Increase industry', foodBonus: 1, productionBonus: 1, tradeBonus: 1, strengthBonus: 0, cultureBonus: 0, costProduction: 30, costGold: 10, days: 5, maintenance: 2 },
+  { description: 'Provide spiritual satisfaction', foodBonus: 0, productionBonus: 0, tradeBonus: 0, strengthBonus: 0, cultureBonus: 1, costProduction: 100, costGold: 100, days: 15, maintenance: 10 },
+  { description: 'Icreease food storage', foodBonus: 1, productionBonus: 0, tradeBonus: 1, strengthBonus: 0, cultureBonus: 1, costProduction: 50, costGold: 8, days: 5, maintenance: 1 },
+  { description: 'Palace', foodBonus: 0, productionBonus: 0, tradeBonus: 1, strengthBonus: 0, cultureBonus: 1, costProduction: 100, costGold: 100, days: 15, maintenance: 10 },
+  { description: 'Increase farming and health', foodBonus: 1, productionBonus: 0, tradeBonus: 0, strengthBonus: 0, cultureBonus: 1, costProduction: 75, costGold: 12, days: 10, maintenance: 2 },
+  { description: 'Provide entertainment', foodBonus: 0, productionBonus: 0, tradeBonus: 1, strengthBonus: 0, cultureBonus: 2, costProduction: 100, costGold: 15, days: 5, maintenance: 3 },
 ]
 var colorArray = [0xFF6633, 0xFFB399, 0xFF33FF, 0xFFFF99, 0x00B3E6,
   0xE6B333, 0x3366E6, 0x999966, 0x99FF99, 0xB34D4D,
@@ -26,3 +30,14 @@ var colorArray = [0xFF6633, 0xFFB399, 0xFF33FF, 0xFFFF99, 0x00B3E6,
   0x4D8066, 0x809980, 0xE6FF80, 0x1AFF33, 0x999933,
   0xFF3380, 0xCCCC00, 0x66E64D, 0x4D80CC, 0x9900B3,
   0xE64D66, 0x4DB380, 0xFF4D4D, 0x99E6E6, 0x6666FF];
+
+let gameWidth = 100
+let gameHeight = 75
+
+let gameData
+let gameLoad = 'new'
+let defaultValues = {
+  game: {},
+  countries: [],
+  tiles: []
+}

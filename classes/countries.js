@@ -20,7 +20,7 @@ class Country {
 
     }
   }
-  doBuild(day) {
+  doBuild(day, data) {
     for (let i = 0; i < this.improvements.length; i++) {
       //{x: 4, y: 3}
       //var imp = { tileID: tileid, id: type, tile: tile, turnAdded: this.day, complete: complete }
@@ -30,7 +30,12 @@ class Country {
           improvement.complete = true
           this.maintenance += improvementInfo[improvement.id].maintenance
           this.trade -= improvementInfo[improvement.id].costGold
-          this.production = improvementInfo[improvement.id].costProduction
+          this.production -= improvementInfo[improvement.id].costProduction
+          data[improvement.tile.y][improvement.tile.x].resources.Food += improvementInfo[improvement.id].foodBonus
+          data[improvement.tile.y][improvement.tile.x].resources.Production += improvementInfo[improvement.id].productionBonus
+          data[improvement.tile.y][improvement.tile.x].resources.Trade += improvementInfo[improvement.id].tradeBonus
+          this.strength += improvementInfo[improvement.id].strengthBonus
+          this.happiness += improvementInfo[improvement.id].cultureBonus
           console.log(improvementNames[improvement.id] + ' built')
         }
       }
