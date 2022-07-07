@@ -68,7 +68,7 @@ class playGame extends Phaser.Scene {
         let id = tileXY.x + 20 * tileXY.y;
         // y = index / width;
         // x = index % width;
-        this.tileData[tileXY.y][tileXY.x] = new Tiles(this.map.mapArray[tileXY.y][tileXY.x], id, onwer, this.map.mapArray[tileXY.y][tileXY.x].biome)
+        this.tileData[tileXY.y][tileXY.x] = new Tiles(this.map.mapArray[tileXY.y][tileXY.x], id, onwer, onwer, this.map.mapArray[tileXY.y][tileXY.x].biome)
       } else {
 
         var obj = this.add.image(0, 0, 'tiles', this.tileData[tileXY.y][tileXY.x].terrain.index).setOrigin(.5, .75)
@@ -89,6 +89,7 @@ class playGame extends Phaser.Scene {
         var obj = this.add.image(0, 0, 'cities', 0).setOrigin(.5, .75)
         this.board.addChess(obj, startingPoints[i].x, startingPoints[i].y, 1, true);
         this.countries.push(new Country(startingPoints[i], colorArray[i], i))
+        this.countries[i].cities.push(new City(startingPoints[i], colorArray[i], i, 0))
         this.tileData[startingPoints[i].y][startingPoints[i].x].owner = i
       }
       // console.log(this.countries)
@@ -135,23 +136,29 @@ class playGame extends Phaser.Scene {
         var x = this.tileData[tileXY.y][tileXY.x].id % 20;
         //console.log('x: ' + x + ', y: ' + y)
         var type = this.tileData[tileXY.y][tileXY.x].biome
-
+        console.log(JSON.stringify(this.tileData[this.selectedTile.y][this.selectedTile.x]))
         if (this.tileData[tileXY.y][tileXY.x].owner != undefined) {
           var owner = civNames[this.tileData[tileXY.y][tileXY.x].owner]
           var country = this.countries[owner]
+          var city = cityNames[this.tileData[tileXY.y][tileXY.x].owner][this.tileData[tileXY.y][tileXY.x].city]
           // console.log(country.getTile(pickedRow, pickedCol))
+          this.UI.setStatusLabels(this.selectedTile)
+          this.UI.updatePop(this.selectedTile)
         } else {
           var owner = 'n/a'
+          var city = 'n/a'
+          this.UI.setStatusLabels(null)
+          this.UI.updatePop(null)
         }
         if (this.tileData[tileXY.y][tileXY.x].owner == 0) {
           this.UI.build.setAlpha(1)
         } else {
           this.UI.build.setAlpha(0)
         }
-        var text = 'Owner: ' + owner + ', ' + type + ', ID: ' + this.tileData[tileXY.y][tileXY.x].id;
+        var text = owner + ', ' + city + ', ' + type + ', ID: ' + this.tileData[tileXY.y][tileXY.x].id;
         this.events.emit('info', text);
         this.highlightTile(tileXY)
-        console.log(this.selectedTile)
+
       }, this).
       on('tiledown', function (pointer, tileXY) {
         // console.log('up ' + tileXY.x + ',' + tileXY.y);
@@ -224,8 +231,8 @@ class playGame extends Phaser.Scene {
     //zoom to player
     this.zoomTo(0)
     //update UI
-    this.UI.setStatusLabels()
-    this.UI.updatePop()
+    this.UI.setStatusLabels(this.selectedTile)
+    this.UI.updatePop(this.selectedTile)
 
     //var points = this.board.getGridPoints(5, 5)
     //console.log(points)
@@ -292,25 +299,49 @@ class playGame extends Phaser.Scene {
   }
   endRound() {
     console.log('end round')
-    this.countries[0].doBuild(this.theGame.day, this.tileData)
-    //in
-    var newFood = this.countries[0].getBaseFood(this.tileData)
-    var newProduction = this.countries[0].getBaseProduction(this.tileData)
-    var newTrade = this.countries[0].getBaseTrade(this.tileData)
-    this.countries[0].food += newFood
-    this.countries[0].production += newProduction
-    this.countries[0].trade += newTrade
-    //out
-    var foodOut = this.countries[0].population * 2
-    this.countries[0].food -= foodOut
-    //maint
-    var minuGold = 0
-    minuGold += this.countries[0].tiles.length * 5
-    minuGold + this.countries[0].maintenance
-    this.countries[0].trade -= minuGold
+    //Check for improvements that are ready to build--right now just for player, todo: for computer players as well
+    this.doBuild(0)
+    //in ////////
+    //get terrain stat + improvement  bonus
+    for (let c = 0; c < this.countries.length; c++) {
+      const country = this.countries[c];
+      for (let i = 0; i < this.countries[c].cities.length; i++) {
+        const city = country.cities[i];
+        var newFood = city.getBaseFood(this.tileData)
+        newFood += city.getBonusFood()
+        var newProduction = city.getBaseProduction(this.tileData)
+        var newTrade = city.getBaseTrade(this.tileData)
+        //add to country's running total
+        city.food += newFood
+        city.production += newProduction
+        city.trade += newTrade
+        //out -- resource use
+        //2 units of food per citizen
+        var foodOut = city.population * 2
+        city.food -= foodOut
+        //maint
+        var minuGold = 0
+        //every tile cost gold to maintain
+        // minuGold += this.countries[0].tiles.length * 1
+        //plus improvment maintenance
+        minuGold += city.maintenance
+        city.trade -= minuGold
+        if (city.food - foodOut > city.foodStorage * city.size) {
+          city.population++
+          city.food -= city.foodStorage * city.size
+          if (city.population % 6 == 0) {
+            city.size++
+          }
+
+        }
+      }
+    }
+
+
     // this.expandBorder(0)
-    this.UI.setStatusLabels()
-    this.UI.updatePop()
+
+    this.UI.setStatusLabels(this.selectedTile)
+    this.UI.updatePop(this.selectedTile)
   }
   zoomTo(owner) {
     var worldXY = this.board.tileXYToWorldXY(this.countries[owner].capital.x, this.countries[owner].capital.y)
@@ -322,16 +353,18 @@ class playGame extends Phaser.Scene {
     this.countries.forEach(function (country) {
       //var chess = this.board.tileXYZToChess(country.capital.x, country.capital.y, 0);
       // console.log(chess)
-      this.addImprovement(country.id, country.tiles[0], 7, true)
+      //  this.addImprovement(country.id, country.tiles[0], 7, true)
       //mark captial
-      this.tileData[country.tiles[0].y][country.tiles[0].x].capital = true
+      this.tileData[country.capital.y][country.capital.x].cityCenter = true
+      this.tileData[country.capital.y][country.capital.x].city = 0
       var out = this.board.getNeighborTileXY(country.capital, null);
       for (var i = 0; i < out.length; i++) {
 
         //this.gameMap[country.capital.row + dirs8[i].r][country.capital.col + dirs8[i].c].image.setAlpha(.7)
         if (this.board.contains(out[i].x, out[i].y)) {
           this.tileData[out[i].y][out[i].x].owner = country.id
-          country.tiles.push(out[i])
+          this.tileData[out[i].y][out[i].x].city = 0
+          country.cities[0].tiles.push(out[i])
         }
 
 
@@ -341,17 +374,48 @@ class playGame extends Phaser.Scene {
 
 
     }.bind(this));
-    console.log(this.countries)
+    console.log(this.countries[0])
   }
   //myArray.filter(x => x.id === '45');
-  addImprovement(owner, tile, type, complete) {
+  addImprovement(owner, city, tile, type, complete) {
     this.tileData[tile.y][tile.x].improvements.push(type)
     var tileid = tile.x + 20 * tile.y;
     var imp = { tileID: tileid, id: type, tile: tile, turnAdded: this.theGame.day, complete: complete }
-    this.countries[owner].improvements.push(imp)
+    this.countries[owner].cities[city].improvements.push(imp)
+    //cost
+
+    this.countries[owner].trade -= improvementInfo[type].costGold
+    this.countries[owner].production -= improvementInfo[type].costProduction
+    this.UI.setStatusLabels()
     //console.log(this.countries)
   }
-  completeImprovement() {
+  doBuild(owner) {
+    for (let c = 0; c < this.countries[owner].cities.length; c++) {
+      for (let i = 0; i < this.countries[owner].cities[c].improvements.length; i++) {
+        //{x: 4, y: 3}
+        //var imp = { tileID: tileid, id: type, tile: tile, turnAdded: this.day, complete: complete }
+        const improvement = this.countries[owner].cities[c].improvements[i];
+        if (!improvement.complete) {
+          if (this.theGame.day - improvement.turnAdded == improvementInfo[improvement.id].days) {
+            improvement.complete = true
+            // maintenance
+            this.countries[owner].cities[i].maintenance += improvementInfo[improvement.id].maintenance
+            //add improvement bonus to to tile stats (thus every turn) added to tile stat
+            //console.log(this.tileData[improvement.tile.y][improvement.tile.x])
+            //  this.tileData[improvement.tile.y][improvement.tile.x].resources.Food += improvementInfo[improvement.id].foodBonus
+            // this.tileData[improvement.tile.y][improvement.tile.x].resources.Production += improvementInfo[improvement.id].productionBonus
+            // this.tileData[improvement.tile.y][improvement.tile.x].resources.Trade += improvementInfo[improvement.id].tradeBonus
+            //add additional one-time bonuses added to country stat
+            // this.countries[owner].strength += improvementInfo[improvement.id].strengthBonus
+            // this.countries[owner].happiness += improvementInfo[improvement.id].cultureBonus
+            console.log(improvementInfo[improvement.id].name + ' built' + improvementInfo[improvement.id].foodBonus)
+          }
+        }
+
+
+      }
+
+    }
 
   }
   makeCoo(row, col) {
@@ -428,7 +492,7 @@ class playGame extends Phaser.Scene {
       this.graphicsP5.clear();
       graph = this.graphicsP5
     }
-    var cArray = this.countries[owner].tiles;
+    var cArray = this.countries[owner].cities[0].tiles;
     for (var c = 0; c < cArray.length; c++) {
       for (var d = 0; d < 4; d++) {
         //get neighbor in direction

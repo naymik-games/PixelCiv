@@ -6,12 +6,12 @@ class Country {
     this.happiness = 10
     this.strength = 10
     this.food = 10
+
     this.color = color
     this.id = id
-    this.tiles = [capital]
-    this.improvements = []
-    this.maintenance = 10
-    this.population = 5
+    this.cities = []
+    this.population = 1
+
   }
   getTile(row, col) {
     for (let i = 0; i < this.tiles; i++) {
@@ -20,29 +20,7 @@ class Country {
 
     }
   }
-  doBuild(day, data) {
-    for (let i = 0; i < this.improvements.length; i++) {
-      //{x: 4, y: 3}
-      //var imp = { tileID: tileid, id: type, tile: tile, turnAdded: this.day, complete: complete }
-      const improvement = this.improvements[i];
-      if (!improvement.complete) {
-        if (day - improvement.turnAdded == improvementInfo[improvement.id].days) {
-          improvement.complete = true
-          this.maintenance += improvementInfo[improvement.id].maintenance
-          this.trade -= improvementInfo[improvement.id].costGold
-          this.production -= improvementInfo[improvement.id].costProduction
-          data[improvement.tile.y][improvement.tile.x].resources.Food += improvementInfo[improvement.id].foodBonus
-          data[improvement.tile.y][improvement.tile.x].resources.Production += improvementInfo[improvement.id].productionBonus
-          data[improvement.tile.y][improvement.tile.x].resources.Trade += improvementInfo[improvement.id].tradeBonus
-          this.strength += improvementInfo[improvement.id].strengthBonus
-          this.happiness += improvementInfo[improvement.id].cultureBonus
-          console.log(improvementNames[improvement.id] + ' built')
-        }
-      }
 
-
-    }
-  }
   getBaseFood(data) {
     var food = 0
     for (let i = 0; i < this.tiles.length; i++) {
@@ -54,18 +32,31 @@ class Country {
     }
     return food
   }
+  //var imp = { tileID: tileid, id: type, tile: tile, turnAdded: this.day, complete: complete }
+  getBonusFood() {
+    let bonusFood = 0
+    for (let i = 0; i < this.improvements.length; i++) {
+      const improvement = this.improvements[i]
+      if (improvement.complete) {
+        if (improvement.id == 0) {
+          bonusFood += improvementInfo[improvement.id].foodBonus
+        }
+      }
+    }
+    return bonusFood
+  }
   getBaseProduction(data) {
     var production = 0
     for (let i = 0; i < this.tiles.length; i++) {
       //{x: 4, y: 3}
       const tile = this.tiles[i];
       production += data[tile.y][tile.x].resources.Production
-      production += data[tile.y][tile.x].resources.Oil
-      production += data[tile.y][tile.x].resources.Coal
-      production += data[tile.y][tile.x].resources.Stone
-      production += data[tile.y][tile.x].resources.Wood
-      production += data[tile.y][tile.x].resources.Iron
-      production += data[tile.y][tile.x].resources.Gold
+      // production += data[tile.y][tile.x].resources.Oil
+      // production += data[tile.y][tile.x].resources.Coal
+      //  production += data[tile.y][tile.x].resources.Stone
+      //  production += data[tile.y][tile.x].resources.Wood
+      //  production += data[tile.y][tile.x].resources.Iron
+      //  production += data[tile.y][tile.x].resources.Gold
     }
     return production
   }
@@ -75,12 +66,12 @@ class Country {
       //{x: 4, y: 3}
       const tile = this.tiles[i];
       trade += data[tile.y][tile.x].resources.Trade
-      trade += data[tile.y][tile.x].resources.Oil
-      trade += data[tile.y][tile.x].resources.Coal
-      trade += data[tile.y][tile.x].resources.Stone
-      trade += data[tile.y][tile.x].resources.Wood
-      trade += data[tile.y][tile.x].resources.Iron
-      trade += data[tile.y][tile.x].resources.Gold
+      //  trade += data[tile.y][tile.x].resources.Oil
+      //  trade += data[tile.y][tile.x].resources.Coal
+      //   trade += data[tile.y][tile.x].resources.Stone
+      //  trade += data[tile.y][tile.x].resources.Wood
+      //  trade += data[tile.y][tile.x].resources.Iron
+      //  trade += data[tile.y][tile.x].resources.Gold
     }
     return trade
   }

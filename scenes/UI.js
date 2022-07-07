@@ -23,17 +23,23 @@ class UI extends Phaser.Scene {
     this.footer.displayWidth = game.config.width;
     this.footer.displayHeight = 100;
 
-    this.dayLabel = this.add.bitmapText(85, 40, 'topaz', 'DAY', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-    this.dayText = this.add.bitmapText(85, 120, 'topaz', '1', 60).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-    this.popLabel = this.add.bitmapText(185, 40, 'topaz', 'POP', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-    this.popText = this.add.bitmapText(185, 120, 'topaz', '0', 60).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.dayLabel = this.add.bitmapText(85, 340, 'topaz', 'DAY', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.dayText = this.add.bitmapText(85, 420, 'topaz', '1', 60).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
 
+
+
+    this.sizeText = this.add.bitmapText(225, 115, 'topaz', '1', 40).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
     this.statusIcons = this.add.image(900, 0, 'status').setOrigin(1, 0)
-    this.productionLabel = this.add.bitmapText(450, 120, 'topaz', '0', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-    this.goldLabel = this.add.bitmapText(550, 120, 'topaz', '0', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-    this.happinessLabel = this.add.bitmapText(650, 120, 'topaz', '0', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-    this.strengthLabel = this.add.bitmapText(750, 120, 'topaz', '0', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-    this.foodLabel = this.add.bitmapText(850, 120, 'topaz', '0', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+
+    this.cityLabel = this.add.bitmapText(25, 50, 'topaz', ' ', 60).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+
+    this.popLabel = this.add.bitmapText(350, 120, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.foodLabel = this.add.bitmapText(450, 120, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.productionLabel = this.add.bitmapText(550, 120, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.goldLabel = this.add.bitmapText(650, 120, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.happinessLabel = this.add.bitmapText(750, 120, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.strengthLabel = this.add.bitmapText(850, 120, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+
 
     this.currentPlayerText = this.add.bitmapText(10, 250, 'topaz', civNames[0], 55).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1).setInteractive();
     this.currentPlayerText.on('pointerdown', function () {
@@ -91,16 +97,38 @@ class UI extends Phaser.Scene {
   update() {
 
   }
-  updatePop() {
-    this.popText.setText(this.Main.countries[0].population)
-  }
-  setStatusLabels() {
+  updatePop(selected) {
+    if (selected != null) {
+      var owner = this.Main.tileData[selected.y][selected.x].owner
+      var city = this.Main.tileData[selected.y][selected.x].city
+      this.popLabel.setText(this.Main.countries[owner].cities[city].population)
+    } else {
 
-    this.productionLabel.setText(this.Main.countries[0].production)
-    this.goldLabel.setText(this.Main.countries[0].trade)
-    this.happinessLabel.setText(this.Main.countries[0].happiness)
-    this.strengthLabel.setText(this.Main.countries[0].strength)
-    this.foodLabel.setText(this.Main.countries[0].food)
+      this.popLabel.setText('-')
+    }
+  }
+  setStatusLabels(selected) {
+    console.log(selected)
+    if (selected != null) {
+      var owner = this.Main.tileData[selected.y][selected.x].owner
+      var city = this.Main.tileData[selected.y][selected.x].city
+      this.cityLabel.setText(this.Main.countries[owner].cities[city].name)
+      this.productionLabel.setText(this.Main.countries[owner].cities[city].production)
+      this.goldLabel.setText(this.Main.countries[owner].cities[city].trade)
+      this.happinessLabel.setText(this.Main.countries[owner].cities[city].happiness)
+      this.strengthLabel.setText(this.Main.countries[owner].cities[city].strength)
+      this.foodLabel.setText(this.Main.countries[owner].cities[city].food)
+      this.popLabel.setText(this.Main.countries[owner].cities[city].population)
+    } else {
+      this.cityLabel.setText('')
+      this.productionLabel.setText('-')
+      this.goldLabel.setText('-')
+      this.happinessLabel.setText('-')
+      this.strengthLabel.setText('-')
+      this.foodLabel.setText('-')
+      this.popLabel.setText('-')
+    }
+
   }
 
 

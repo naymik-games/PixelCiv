@@ -1,14 +1,16 @@
 class Tiles {
-  constructor(index, id, owner, biome) {
+  constructor(index, id, owner, ownerCity, biome) {
 
 
 
 
 
     this.id = id
-    this.capital = false
-
+    this.cityCenter = false
+    //id of countyr
     this.owner = owner
+    //id of city
+    this.city = ownerCity
     this.image = null
     this.biome = biome
     this.terrain = index
@@ -83,7 +85,7 @@ class Tiles {
       rec.Oil = 0
       rec.Coal = 0
       rec.Gold = 0
-      rec.Wood = 0
+      rec.Wood = Phaser.Math.Between(2, 5)
       rec.Stone = 0
       rec.Iron = 0
 
@@ -112,7 +114,7 @@ class Tiles {
       rec.Iron = 0
 
     } else if (terrain == 7) {
-      //flood plain
+      //hill
       rec.Food = 1
       rec.Production = 1
       rec.Trade = 0
@@ -124,7 +126,7 @@ class Tiles {
       rec.Iron = 0
 
     } else if (terrain == 8) {
-      //flood plain
+      //mountain
       rec.Food = 0
       rec.Production = Phaser.Math.Between(1, 2)
       rec.Trade = 0
@@ -136,7 +138,7 @@ class Tiles {
       rec.Iron = 0
 
     } else if (terrain == 9) {
-      //flood plain
+      //snow
       rec.Food = 0
       rec.Production = 1
       rec.Trade = 0

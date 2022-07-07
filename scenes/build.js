@@ -39,14 +39,14 @@ class build extends Phaser.Scene {
     this.previewBox.add(background);
     this.select = this.Main.tileData[this.Main.selectedTile.y][this.Main.selectedTile.x]
     console.log(this.select)
-    var titleText = this.add.bitmapText(450, 375, 'topaz', 'Build ', 80).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    var titleText = this.add.bitmapText(450, 375, 'topaz', cityNames[this.select.owner][this.select.city], 80).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
     this.previewBox.add(titleText);
 
     var cancelIcon = this.add.image(760, 375, 'icons', 2).setInteractive().setScale(.8);
     cancelIcon.on('pointerdown', this.cancel, this);
     this.previewBox.add(cancelIcon);
 
-    if (!this.select.capital) {
+    if (!this.select.cityCenter) {
       var resourcesLabel = this.add.bitmapText(75, 480, 'topaz', 'TILE RESOURCES:', 45).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
       this.previewBox.add(resourcesLabel);
       var foodIcon = this.add.image(75, 560, 'icons', 9).setOrigin(0, .5).setScale(.5)
@@ -59,24 +59,24 @@ class build extends Phaser.Scene {
       this.previewBox.add(productionLabel)
       var tradeIcon = this.add.image(425, 560, 'icons', 6).setOrigin(0, .5).setScale(.5)
       this.previewBox.add(tradeIcon)
-      var tradeLabel = this.add.bitmapText(490, 560, 'topaz', this.select.resources.Production, 45).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+      var tradeLabel = this.add.bitmapText(490, 560, 'topaz', this.select.resources.Trade, 45).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
       this.previewBox.add(tradeLabel)
       var resourcesText = this.add.bitmapText(75, 625, 'topaz', this.makeResourceInfo(this.select.resources), 38).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
       this.previewBox.add(resourcesText);
 
       //improvement menu
-      this.nameLabel = this.add.bitmapText(450, 725, 'topaz', improvementNames[0], 25).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+      this.nameLabel = this.add.bitmapText(450, 725, 'topaz', improvementInfo[0], 25).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
       this.previewBox.add(this.nameLabel);
       this.infoLabel = this.add.bitmapText(450, 1025, 'topaz', '--', 30).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
       this.previewBox.add(this.infoLabel);
       this.message = this.add.bitmapText(50, 1150, 'topaz', '--', 40).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
       this.previewBox.add(this.message);
-      this.scrollingMap = this.add.tileSprite(-game.config.width, 850, game.config.width * 2 + improvementNames.length * 160, 200, "transp").setOrigin(0, .5).setTint(0x333333);
+      this.scrollingMap = this.add.tileSprite(-game.config.width, 850, game.config.width * 2 + improvementInfo.length * 160, 200, "transp").setOrigin(0, .5).setTint(0x333333);
       this.scrollingMap.setInteractive();
       this.input.setDraggable(this.scrollingMap);
       this.itemGroup = this.add.group(0, 0)
       this.isBeingDragged = false;
-      for (let i = 0; i < improvementNames.length; i++) {
+      for (let i = 0; i < improvementInfo.length; i++) {
         var test = this.add.image(450 + i * 160, 850, 'improvements', i).setScale(.75)
         test.id = i
         this.previewBox.add(test);
@@ -118,7 +118,57 @@ class build extends Phaser.Scene {
 
 
     } else {
+      //unit menu
+      this.nameLabel = this.add.bitmapText(450, 715, 'topaz', unitInfo[0], 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+      this.previewBox.add(this.nameLabel);
+      this.infoLabel = this.add.bitmapText(450, 1025, 'topaz', '--', 30).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+      this.previewBox.add(this.infoLabel);
+      this.message = this.add.bitmapText(50, 1150, 'topaz', '--', 40).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+      this.previewBox.add(this.message);
+      this.scrollingMap = this.add.tileSprite(-game.config.width, 850, game.config.width * 2 + improvementInfo.length * 160, 200, "transp").setOrigin(0, .5).setTint(0x333333);
+      this.scrollingMap.setInteractive();
+      this.input.setDraggable(this.scrollingMap);
+      this.itemGroup = this.add.group(0, 0)
+      this.isBeingDragged = false;
+      for (let i = 0; i < improvementInfo.length; i++) {
+        var test = this.add.image(450 + i * 160, 850, 'units', i).setScale(3)
+        test.id = i
+        this.previewBox.add(test);
+        this.itemGroup.add(test)
 
+      }
+      this.selecter = this.add.image(450, 850, 'selecter').setScale(1)
+      this.previewBox.add(this.selecter);
+      this.input.on("dragstart", function (pointer, gameObject) {
+        gameObject.startPosition = gameObject.x;
+        gameObject.currentPosition = gameObject.x;
+        this.isBeingDragged = true;
+        console.log('start drag')
+      }, this);
+      this.input.on("drag", function (pointer, gameObject, dragX, dragY) {
+        gameObject.x = dragX;
+
+        var delta = gameObject.x - gameObject.currentPosition;
+        gameObject.currentPosition = dragX;
+        this.itemGroup.children.iterate(function (item) {
+          item.x += delta;
+        });
+
+      }, this);
+      this.input.on("dragend", function (pointer, gameObject) {
+        this.isBeingDragged = false;
+        this.itemGroup.children.iterate(function (item) {
+
+          item.x = Phaser.Math.Snap.To(item.x, 160) - 40;
+          if (item.x == 450) {
+            // item.setScale(1.5)
+          } else {
+            //item.setScale(1)
+          }
+        });
+
+        console.log('drag stop')
+      }, this);
     }
 
 
@@ -126,9 +176,9 @@ class build extends Phaser.Scene {
 
 
     //show build improvements
-    this.showCurrentImprovements(0, this.select.id)
+    this.showCurrentImprovements(0, this.select.city, this.select.id)
 
-    if (this.Main.countries[0].improvements.length < 4) {
+    if (this.select.improvements.length < 4) {
       this.buildButton = this.add.image(150, 1000, 'icons', 0).setInteractive().setScale(.8);
       this.buildButton.type = 0
       this.previewBox.add(this.buildButton);
@@ -141,14 +191,27 @@ class build extends Phaser.Scene {
 
   }
   update() {
-    if (!this.select.capital) {
+    if (!this.select.cityCenter) {
       this.itemGroup.children.iterate(function (item) {
 
         // item.x = Phaser.Math.Snap.To(item.x, 90);
         if (item.x < 495 && item.x > 405) {
           // item.setScale(1.5)
-          this.nameLabel.setText(improvementNames[item.id])
+          this.nameLabel.setText(improvementInfo[item.id].name)
           this.infoLabel.setText(this.makeInfo(item.id))
+          this.buildButton.type = item.id
+        } else {
+          //item.setScale(1)
+        }
+      }, this);
+    } else {
+      this.itemGroup.children.iterate(function (item) {
+
+        // item.x = Phaser.Math.Snap.To(item.x, 90);
+        if (item.x < 495 && item.x > 405) {
+          // item.setScale(1.5)
+          this.nameLabel.setText(unitInfo[item.id].name)
+          // this.infoLabel.setText(this.makeInfo(item.id))
           this.buildButton.type = item.id
         } else {
           //item.setScale(1)
@@ -161,17 +224,17 @@ class build extends Phaser.Scene {
     console.log('build ' + this.buildButton.type + ' on ' + this.Main.selectedTile + ' for' + '0')
     this.infoLabel.setAlpha(0)
     this.buildButton.setAlpha(0)
-    this.message.setText('Building ' + improvementNames[this.buildButton.type] + ' in ' + improvementInfo[this.buildButton.type].days + ' days.')
-    this.Main.addImprovement(0, this.Main.selectedTile, this.buildButton.type, false)
-    console.log(this.Main.countries[0].improvements.length)
+    this.message.setText('Building ' + improvementInfo[this.buildButton.type].name + ' in ' + improvementInfo[this.buildButton.type].days + ' days.')
+    this.Main.addImprovement(this.select.owner, this.select.city, this.Main.selectedTile, this.buildButton.type, false)
+    console.log(this.Main.countries[0].cities[this.select.city].improvements.length)
   }
-  getTileImprovementsByID(owner, tileID) {
+  getTileImprovementsByID(owner, city, tileID) {
     //myArray.filter(x => x.id === '45');
-    let impr = this.Main.countries[owner].improvements.filter(x => x.tileID === tileID);
+    let impr = this.Main.countries[owner].cities[city].improvements.filter(x => x.tileID === tileID);
     return impr
   }
-  showCurrentImprovements(owner, tileID) {
-    let tileImprovements = this.getTileImprovementsByID(owner, tileID)
+  showCurrentImprovements(owner, city, tileID) {
+    let tileImprovements = this.getTileImprovementsByID(owner, city, tileID)
     for (let i = 0; i < tileImprovements.length; i++) {
       if (tileImprovements[i].complete) {
         var alpha = 1
@@ -180,7 +243,7 @@ class build extends Phaser.Scene {
       }
       var test = this.add.image(210 + i * 160, 1425, 'improvements', tileImprovements[i].id).setScale(.75).setAlpha(alpha)
       this.previewBox.add(test);
-      var nameLabel = this.add.bitmapText(210 + i * 160, test.y - 95, 'topaz', improvementNames[tileImprovements[i].id], 30).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+      var nameLabel = this.add.bitmapText(210 + i * 160, test.y - 95, 'topaz', improvementInfo[tileImprovements[i].id].name, 30).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
       this.previewBox.add(nameLabel);
 
     }

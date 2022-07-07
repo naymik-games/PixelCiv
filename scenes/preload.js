@@ -104,6 +104,10 @@ class preloadGame extends Phaser.Scene {
       frameWidth: 100,
       frameHeight: 100
     });
+    this.load.spritesheet("units", "assets/sprites/units.png", {
+      frameWidth: 50,
+      frameHeight: 50
+    });
     this.load.spritesheet("improvements", "assets/sprites/improvement_icons.png", {
       frameWidth: 160,
       frameHeight: 160,
