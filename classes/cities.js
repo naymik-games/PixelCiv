@@ -25,14 +25,16 @@ class City {
 
     }
   }
-
-  getBaseFood(data) {
+  getRandomCityTile() {
+    return this.tiles[2]
+  }
+  getBaseFood() {
     var food = 0
     for (let i = 0; i < this.tiles.length; i++) {
       //{x: 4, y: 3}
       const tile = this.tiles[i];
 
-      food += data[tile.y][tile.x].resources.Food
+      food += theGame.tileData[tile.y][tile.x].resources.Food
 
     }
     return food
@@ -50,12 +52,12 @@ class City {
     }
     return bonusFood
   }
-  getBaseProduction(data) {
+  getBaseProduction() {
     var production = 0
     for (let i = 0; i < this.tiles.length; i++) {
       //{x: 4, y: 3}
       const tile = this.tiles[i];
-      production += data[tile.y][tile.x].resources.Production
+      production += theGame.tileData[tile.y][tile.x].resources.Production
       // production += data[tile.y][tile.x].resources.Oil
       // production += data[tile.y][tile.x].resources.Coal
       //  production += data[tile.y][tile.x].resources.Stone
@@ -65,12 +67,12 @@ class City {
     }
     return production
   }
-  getBaseTrade(data) {
+  getBaseTrade() {
     var trade = 0
     for (let i = 0; i < this.tiles.length; i++) {
       //{x: 4, y: 3}
       const tile = this.tiles[i];
-      trade += data[tile.y][tile.x].resources.Trade
+      trade += theGame.tileData[tile.y][tile.x].resources.Trade
       //  trade += data[tile.y][tile.x].resources.Oil
       //  trade += data[tile.y][tile.x].resources.Coal
       //   trade += data[tile.y][tile.x].resources.Stone

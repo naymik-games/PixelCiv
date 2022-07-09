@@ -13,18 +13,18 @@ class UI extends Phaser.Scene {
     this.Main = this.scene.get('playGame');
     this.header = this.add.image(game.config.width / 2, 0, 'blank').setOrigin(.5, 0).setTint(0xe1c59e);
     this.header.displayWidth = 900;
-    this.header.displayHeight = 200;
+    this.header.displayHeight = 175;
 
-    this.subHeader = this.add.image(game.config.width / 2, 200, 'blank').setOrigin(.5, 0).setTint(0x000000).setAlpha(.7);
+    this.subHeader = this.add.image(game.config.width / 2, 175, 'blank').setOrigin(.5, 0).setTint(0x000000).setAlpha(.7);
     this.subHeader.displayWidth = game.config.width;
     this.subHeader.displayHeight = 100;
 
     this.footer = this.add.image(game.config.width / 2, game.config.height, 'blank').setOrigin(.5, 1).setTint(0x000000).setAlpha(.7);
     this.footer.displayWidth = game.config.width;
     this.footer.displayHeight = 100;
+    this.turn = this.add.image(850, 225, 'icons', 11).setInteractive().setAlpha(1)
 
-    this.dayLabel = this.add.bitmapText(85, 340, 'topaz', 'DAY', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-    this.dayText = this.add.bitmapText(85, 420, 'topaz', '1', 60).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.dayText = this.add.bitmapText(this.turn.x, this.turn.y - 5, 'topaz', '1', 60).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
 
 
 
@@ -33,28 +33,28 @@ class UI extends Phaser.Scene {
 
     this.cityLabel = this.add.bitmapText(25, 50, 'topaz', ' ', 60).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
 
-    this.popLabel = this.add.bitmapText(350, 120, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-    this.foodLabel = this.add.bitmapText(450, 120, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-    this.productionLabel = this.add.bitmapText(550, 120, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-    this.goldLabel = this.add.bitmapText(650, 120, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-    this.happinessLabel = this.add.bitmapText(750, 120, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-    this.strengthLabel = this.add.bitmapText(850, 120, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.popLabel = this.add.bitmapText(350, 125, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.foodLabel = this.add.bitmapText(450, 125, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.productionLabel = this.add.bitmapText(550, 125, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.goldLabel = this.add.bitmapText(650, 125, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.happinessLabel = this.add.bitmapText(750, 125, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.strengthLabel = this.add.bitmapText(850, 125, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
 
 
-    this.currentPlayerText = this.add.bitmapText(10, 250, 'topaz', civNames[0], 55).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1).setInteractive();
-    this.currentPlayerText.on('pointerdown', function () {
-      this.Main.theGame.day++
-      this.dayText.setText(this.Main.theGame.day)
+    this.currentPlayerText = this.add.bitmapText(10, 225, 'topaz', civNames[0], 55).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1).setInteractive();
+    this.turn.on('pointerdown', function () {
+      theGame.day++
+      this.dayText.setText(theGame.day)
       this.Main.endRound()
       // this.Main.currentPlayer++
-      /*     if (this.Main.currentPlayer == this.Main.countries.length) {
+      /*     if (this.Main.currentPlayer == theGame.countries.length) {
             this.Main.currentPlayer = 0
             this.Main.day++
             this.dayText.setText(this.Main.day)
             this.Main.endRound()
           }
           this.Main.endPlayerTurn() */
-      this.currentPlayerText.setText(civNames[this.Main.currentPlayer])
+      this.currentPlayerText.setText(civNames[theGame.currentPlayer])
     }, this)
 
     this.infoText = this.add.bitmapText(15, game.config.height - 50, 'topaz', 'status', 50).setOrigin(0, .5).setTint(0xcbf7ff).setAlpha(1);
@@ -86,7 +86,14 @@ class UI extends Phaser.Scene {
       this.scene.pause();
       this.scene.launch('build');
     }, this)
-
+    this.buildUnit = this.add.image(175, 1490, 'icons', 10).setInteractive().setAlpha(0)
+    this.buildUnit.on('pointerdown', function () {
+      if (this.Main.currentPlayer > 0) { return }
+      if (this.Main.selectedTile == null) { return }
+      this.scene.pause('playGame');
+      this.scene.pause();
+      this.scene.launch('buildUnit');
+    }, this)
     this.Main.events.on('info', function (data) {
       this.infoText.setText(data)
     }, this);
@@ -97,28 +104,49 @@ class UI extends Phaser.Scene {
   update() {
 
   }
-  updatePop(selected) {
+  updatePop(selected, type) {
     if (selected != null) {
-      var owner = this.Main.tileData[selected.y][selected.x].owner
-      var city = this.Main.tileData[selected.y][selected.x].city
-      this.popLabel.setText(this.Main.countries[owner].cities[city].population)
+      if (type == 'city') {
+        var owner = theGame.tileData[selected.y][selected.x].owner
+        var city = theGame.tileData[selected.y][selected.x].city
+        this.popLabel.setText(theGame.countries[owner].cities[city].population)
+      } else {
+        var owner = theGame.tileData[selected.y][selected.x].owner
+        var city = theGame.tileData[selected.y][selected.x].city
+        this.popLabel.setText(theGame.countries[owner].population)
+      }
+
+
     } else {
 
       this.popLabel.setText('-')
     }
   }
-  setStatusLabels(selected) {
+  setStatusLabels(selected, type) {
     console.log(selected)
     if (selected != null) {
-      var owner = this.Main.tileData[selected.y][selected.x].owner
-      var city = this.Main.tileData[selected.y][selected.x].city
-      this.cityLabel.setText(this.Main.countries[owner].cities[city].name)
-      this.productionLabel.setText(this.Main.countries[owner].cities[city].production)
-      this.goldLabel.setText(this.Main.countries[owner].cities[city].trade)
-      this.happinessLabel.setText(this.Main.countries[owner].cities[city].happiness)
-      this.strengthLabel.setText(this.Main.countries[owner].cities[city].strength)
-      this.foodLabel.setText(this.Main.countries[owner].cities[city].food)
-      this.popLabel.setText(this.Main.countries[owner].cities[city].population)
+      if (type == 'city') {
+        var owner = theGame.tileData[selected.y][selected.x].owner
+        var city = theGame.tileData[selected.y][selected.x].city
+        this.cityLabel.setText(theGame.countries[owner].cities[city].name)
+        this.productionLabel.setText(theGame.countries[owner].cities[city].production)
+        this.goldLabel.setText(theGame.countries[owner].cities[city].trade)
+        this.happinessLabel.setText(theGame.countries[owner].cities[city].happiness)
+        this.strengthLabel.setText(theGame.countries[owner].cities[city].strength)
+        this.foodLabel.setText(theGame.countries[owner].cities[city].food)
+        this.popLabel.setText(theGame.countries[owner].cities[city].population)
+      } else {
+        var owner = theGame.tileData[selected.y][selected.x].owner
+        var city = theGame.tileData[selected.y][selected.x].city
+        this.cityLabel.setText(civNames[owner])
+        this.productionLabel.setText(theGame.countries[owner].production)
+        this.goldLabel.setText(theGame.countries[owner].trade)
+        this.happinessLabel.setText(theGame.countries[owner].happiness)
+        this.strengthLabel.setText(theGame.countries[owner].strength)
+        this.foodLabel.setText(theGame.countries[owner].food)
+        this.popLabel.setText(theGame.countries[owner].population)
+      }
+
     } else {
       this.cityLabel.setText('')
       this.productionLabel.setText('-')

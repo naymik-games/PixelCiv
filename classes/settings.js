@@ -2,7 +2,12 @@ const Random = Phaser.Math.Between;
 const COLOR_PRIMARY = 0x03a9f4;
 const COLOR_LIGHT = 0x67daff;
 const COLOR_DARK = 0x007ac1;
-
+const FARM = 0
+const MINE = 1
+const GOTO = 2
+const DISBAND = 3
+const SETTLE = 4
+const FORTIFY = 5
 let civNames = ['ROME', 'AMERICA', 'RUSSIA', 'FRANCE', 'CHINA', 'ENGLAND']
 let cityNames = [['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX']]
 let ageNames = ['Ancient', 'Medival', 'Industrial', 'Electric', 'Modern', 'Future']
@@ -22,9 +27,9 @@ let improvementInfo = [
   { name: 'COLUSEUM', description: 'Provide entertainment', foodBonus: 0, productionBonus: 0, tradeBonus: 1, strengthBonus: 0, cultureBonus: 2, costProduction: 100, costGold: 15, days: 5, maintenance: 3 },
 ]
 let unitInfo = [
-  { name: 'WORKER', description: 'Prepare tiles adjacent to the city for improvement', costFood: 1, costProduction: 10, days: 5 },
-  { name: 'SETTLER', description: 'Settles a new City', costFood: 1, costProduction: 20, days: 10 },
-  { name: 'WARRIOR', description: 'Settles a new City', costFood: 1, costProduction: 5, days: 5 }
+  { name: 'WORKER', description: 'Prepare tiles adjacent to the city for improvement', costFood: 1, costProduction: 10, days: 5, workTime: 3, actions: [FARM, MINE, GOTO] },
+  { name: 'SETTLER', description: 'Settles a new City', costFood: 1, costProduction: 20, days: 10, actions: [GOTO, SETTLE] },
+  { name: 'WARRIOR', description: 'Basic defense and attack', costFood: 1, costProduction: 5, days: 5, actions: [GOTO, FORTIFY] }
 ]
 var colorArray = [0xFF6633, 0xFFB399, 0xFF33FF, 0xFFFF99, 0x00B3E6,
   0xE6B333, 0x3366E6, 0x999966, 0x99FF99, 0xB34D4D,
@@ -39,7 +44,8 @@ var colorArray = [0xFF6633, 0xFFB399, 0xFF33FF, 0xFFFF99, 0x00B3E6,
 
 let gameWidth = 100
 let gameHeight = 75
-
+let theGame;
+let tileData;
 let gameData
 let gameLoad = 'new'
 let defaultValues = {
