@@ -15,6 +15,7 @@ class Tiles {
     this.biome = biome
     this.terrain = index
     this.improvements = []
+    this.units = []
 
     this.resources = this.makeResources(index.index)
 

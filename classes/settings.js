@@ -8,8 +8,9 @@ const GOTO = 2
 const DISBAND = 3
 const SETTLE = 4
 const FORTIFY = 5
-let civNames = ['ROME', 'AMERICA', 'RUSSIA', 'FRANCE', 'CHINA', 'ENGLAND']
-let cityNames = [['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX']]
+let civIndex = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+let civNames = ['ROME', 'AMERICA', 'RUSSIA', 'FRANCE', 'CHINA', 'ENGLAND', 'EGYPT', 'GREECE', 'VIKING']
+let cityNames = [['ONE r', 'TWO r', 'THREE r', 'FOUR r', 'FIVE r', 'SIX r'], ['ONE a', 'TWO a', 'THREE a', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX']]
 let ageNames = ['Ancient', 'Medival', 'Industrial', 'Electric', 'Modern', 'Future']
 let improvementNames = ['FARM', 'LUMBER MILL', 'QUARY', 'ARCHERY', 'BLACK SMITH', 'FORT', 'MINE', 'TEMPLE', 'GRANARY', 'PALACE', 'AQUADUCT', 'COLUSEUM']
 let improvementInfo = [
@@ -27,10 +28,11 @@ let improvementInfo = [
   { name: 'COLUSEUM', description: 'Provide entertainment', foodBonus: 0, productionBonus: 0, tradeBonus: 1, strengthBonus: 0, cultureBonus: 2, costProduction: 100, costGold: 15, days: 5, maintenance: 3 },
 ]
 let unitInfo = [
-  { name: 'WORKER', description: 'Prepare tiles adjacent to the city for improvement', costFood: 1, costProduction: 10, days: 5, workTime: 3, actions: [FARM, MINE, GOTO] },
-  { name: 'SETTLER', description: 'Settles a new City', costFood: 1, costProduction: 20, days: 10, actions: [GOTO, SETTLE] },
-  { name: 'WARRIOR', description: 'Basic defense and attack', costFood: 1, costProduction: 5, days: 5, actions: [GOTO, FORTIFY] }
+  { name: 'WORKER', description: 'Prepare tiles adjacent to the city for improvement', costFood: 1, costProduction: 10, days: 5, workTime: 3, actions: [FARM, MINE, GOTO, FORTIFY], a: 0, d: 0, m: 1 },
+  { name: 'SETTLER', description: 'Settles a new City', costFood: 1, costProduction: 20, days: 10, actions: [GOTO, SETTLE], a: 0, d: 0, m: 1 },
+  { name: 'WARRIOR', description: 'Basic defense and attack', costFood: 1, costProduction: 5, days: 5, actions: [GOTO, FORTIFY], a: 1, d: 1, m: 1 }
 ]
+let techAges = ['Ancient', 'Middle Ages', 'Industrial', 'Modern']
 var colorArray = [0xFF6633, 0xFFB399, 0xFF33FF, 0xFFFF99, 0x00B3E6,
   0xE6B333, 0x3366E6, 0x999966, 0x99FF99, 0xB34D4D,
   0x80B300, 0x809900, 0xE6B3B3, 0x6680B3, 0x66991A,
@@ -44,12 +46,34 @@ var colorArray = [0xFF6633, 0xFFB399, 0xFF33FF, 0xFFFF99, 0x00B3E6,
 
 let gameWidth = 100
 let gameHeight = 75
+let gameSeed = 1
+let gamePlayers = 5
+let playerCiv = 0
+let gameBoard
 let theGame;
 let tileData;
 let gameData
 let gameLoad = 'new'
-let defaultValues = {
-  game: {},
-  countries: [],
-  tiles: []
-}
+let defaultValues
+
+
+
+/* a) Attack strength is the likelihood of inflicting damage when attacking an opponent. Units with an attack strength equal to zero cannot initiate combat.
+
+b) Defense strength represents the ability of a unit to defend itself when attacked; It is the likelihood that damage will be inflicted on an attacking unit.
+
+c) Hit points indicate how much damage a unit can withstand before it is destroyed. The true number of hit points is the hit point value x10. A 2hp unit thus has 20 hit points.
+
+d) Firepower indicates how much damage a unit can inflict in one round of combat. A successful round reduces the opponent’s total hit points by the value of the unit’s firepower.
+ 
+U / (a + d), where:
+
+U = the unit’s modified factor,
+
+a = the attacker’s modified attack factor, and
+
+d = the defender’s modified defense factor
+
+
+
+*/

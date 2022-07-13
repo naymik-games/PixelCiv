@@ -38,6 +38,9 @@ class startGame extends Phaser.Scene {
     gameLoad = 'new'
     gameWidth = 50
     gameHeight = 35
+    gameSeed = 2368
+    gamePlayers = 3
+    playerCiv = 3
     this.scene.start('playGame');
     this.scene.launch('UI');
   }
@@ -45,6 +48,9 @@ class startGame extends Phaser.Scene {
     gameLoad = 'new'
     gameWidth = 90
     gameHeight = 60
+    gameSeed = 34147
+    gamePlayers = 5
+    playerCiv = 1
     this.scene.start('playGame');
     this.scene.launch('UI');
   }
@@ -52,6 +58,9 @@ class startGame extends Phaser.Scene {
     gameLoad = 'new'
     gameWidth = 125
     gameHeight = 85
+    gameSeed = 2368
+    gamePlayers = 8
+    playerCiv = 0
     this.scene.start('playGame');
     this.scene.launch('UI');
   }
