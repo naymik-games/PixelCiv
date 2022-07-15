@@ -28,13 +28,13 @@ let improvementInfo = [
   { name: 'COLUSEUM', description: 'Provide entertainment', foodBonus: 0, productionBonus: 0, tradeBonus: 1, strengthBonus: 0, cultureBonus: 2, costProduction: 100, costGold: 15, days: 5, maintenance: 3 },
 ]
 let unitInfo = [
-  { name: 'WORKER', description: 'Prepare tiles adjacent to the city for improvement', costFood: 1, costProduction: 10, days: 5, workTime: 3, actions: [FARM, MINE, GOTO, FORTIFY], a: 0, d: 0, m: 1 },
-  { name: 'SETTLER', description: 'Settles a new City', costFood: 1, costProduction: 20, days: 10, actions: [GOTO, SETTLE], a: 0, d: 0, m: 1 },
-  { name: 'WARRIOR', description: 'Basic defense and attack', costFood: 1, costProduction: 5, days: 5, actions: [GOTO, FORTIFY], a: 1, d: 1, m: 1 }
+  { name: 'WORKER', description: 'Prepare tiles adjacent to the city for improvement', costProduction: 10, days: 5, workTime: 4, actions: [FARM, MINE, GOTO, FORTIFY], a: 0, d: 0, m: 1 },
+  { name: 'SETTLER', description: 'Settles a new City', costProduction: 30, days: 10, actions: [GOTO, SETTLE], a: 0, d: 0, m: 1 },
+  { name: 'WARRIOR', description: 'Basic defense and attack', costProduction: 10, days: 5, actions: [GOTO, FORTIFY], a: 1, d: 1, m: 1 }
 ]
 let techAges = ['Ancient', 'Middle Ages', 'Industrial', 'Modern']
-var colorArray = [0xFF6633, 0xFFB399, 0xFF33FF, 0xFFFF99, 0x00B3E6,
-  0xE6B333, 0x3366E6, 0x999966, 0x99FF99, 0xB34D4D,
+var colorArray = [0x2e86c1, 0xc0392b, 0x7d3c98, 0x229954, 0xf1c40f,
+  0xdc7633, 0x7f8c8d, 0x2c3e50, 0xecf0f1, 0xB34D4D,
   0x80B300, 0x809900, 0xE6B3B3, 0x6680B3, 0x66991A,
   0xFF99E6, 0xCCFF1A, 0xFF1A66, 0xE6331A, 0x33FFCC,
   0x66994D, 0xB366CC, 0x4D8000, 0xB33300, 0xCC80CC,
@@ -56,8 +56,111 @@ let gameData
 let gameLoad = 'new'
 let defaultValues
 
+let farmBonusTerrain = [0, 0, 0, 1, 0, 1, 1, 0, 0, 0]
+let mineBonusTerrain = [0, 0, 0, 1, 0, 1, 1, 2, 2, 1]
 
+let resources = [
+  {
+    name: 'Gold',
+    type: 'Bonus',
+    id: 0,
+    bonus: { f: 0, p: 0, t: 4 },
+    prequisite: -1
+  },
+  {
+    name: 'Wheat',
+    type: 'Bonus',
+    id: 1,
+    bonus: { f: 2, p: 0, t: 0 },
+    prequisite: -1
+  },
 
+  {
+    name: 'Cattle',
+    type: 'Bonus',
+    id: 2,
+    bonus: { f: 2, p: 1, t: 0 },
+    prequisite: -1
+  },
+  {
+    name: 'Wine',
+    type: 'Luxery',
+    id: 3,
+    bonus: { f: 1, p: 0, t: 1 },
+    prequisite: -1
+  },
+  {
+    name: 'Spice',
+    type: 'Luxery',
+    id: 4,
+    bonus: { f: 0, p: 0, t: 2 },
+    prequisite: -1
+  },
+  {
+    name: 'Gems',
+    type: 'Luxery',
+    id: 5,
+    bonus: { f: 0, p: 0, t: 4 },
+    prequisite: -1
+  },
+  {
+    name: 'Silk',
+    type: 'Luxery',
+    id: 6,
+    bonus: { f: 0, p: 0, t: 3 },
+    prequisite: -1
+  },
+  {
+    name: 'Fur',
+    type: 'Luxery',
+    id: 7,
+    bonus: { f: 0, p: 1, t: 1 },
+    prequisite: -1
+  },
+  {
+    name: 'Incense',
+    type: 'Luxery',
+    id: 8,
+    bonus: { f: 0, p: 0, t: 1 },
+    prequisite: -1
+  },
+  {
+    name: 'Saltpeter',
+    type: 'Strategic',
+    id: 9,
+    bonus: { f: 0, p: 0, t: 1 },
+    prequisite: -1
+  },
+  {
+    name: 'Coal',
+    type: 'Strategic',
+    id: 10,
+    bonus: { f: 0, p: 2, t: 1 },
+    prequisite: -1
+  },
+  {
+    name: 'Oil',
+    type: 'Strategic',
+    id: 11,
+    bonus: { f: 0, p: 1, t: 2 },
+    prequisite: -1
+  },
+  {
+    name: 'Iron',
+    type: 'Strategic',
+    id: 12,
+    bonus: { f: 0, p: 1, t: 0 },
+    prequisite: -1
+  },
+  {
+    name: 'Fish',
+    type: 'Bonus',
+    id: 13,
+    bonus: { f: 2, p: 0, t: 1 },
+    prequisite: -1
+  }
+]
+let resourcePicker = [0, 0, 0, 0, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 10, 10, 10, 11, 11, 11, 12, 12, 12, 12, 13, 13, 13, 13, 13, 13, 13]
 /* a) Attack strength is the likelihood of inflicting damage when attacking an opponent. Units with an attack strength equal to zero cannot initiate combat.
 
 b) Defense strength represents the ability of a unit to defend itself when attacked; It is the likelihood that damage will be inflicted on an attacking unit.

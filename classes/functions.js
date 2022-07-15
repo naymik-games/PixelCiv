@@ -17,22 +17,26 @@ function getBaseFood(owner, city) {
     //{x: 4, y: 3}
     const tile = theGame.countries[owner].cities[city].tiles[i];
 
-    food += theGame.tileData[tile.y][tile.x].resources.Food
-
+    food += theGame.tileData[tile.y][tile.x].values.Food
+    food += getTileImprovemntFood(tile)
   }
   return food
 }
-function getBonusFood(owner, city) {
+function getTileImprovemntFood(tile) {
   let bonusFood = 0
-  for (let i = 0; i < theGame.countries[owner].cities[city].improvements.length; i++) {
-    const improvement = theGame.countries[owner].cities[city].improvements[i]
-    if (improvement.complete) {
-      if (improvement.id == 0) {
-        bonusFood += improvementInfo[improvement.id].foodBonus
+  if (theGame.tileData[tile.y][tile.x].improvements.length == 0) {
+    return bonusFood
+  } else {
+    for (let i = 0; i < theGame.tileData[tile.y][tile.x].improvements.length; i++) {
+      const improvement = theGame.tileData[tile.y][tile.x].improvements[i];
+      if (improvement == 0) {
+        bonusFood += farmBonusTerrain[theGame.tileData[tile.y][tile.x].terrain.index]
       }
     }
+
+    return bonusFood
   }
-  return bonusFood
+
 }
 
 function getBaseProduction(owner, city) {
@@ -40,28 +44,35 @@ function getBaseProduction(owner, city) {
   for (let i = 0; i < theGame.countries[owner].cities[city].tiles.length; i++) {
     //{x: 4, y: 3}
     const tile = theGame.countries[owner].cities[city].tiles[i];
-    production += theGame.tileData[tile.y][tile.x].resources.Production
-    // production += data[tile.y][tile.x].resources.Oil
-    // production += data[tile.y][tile.x].resources.Coal
-    //  production += data[tile.y][tile.x].resources.Stone
-    //  production += data[tile.y][tile.x].resources.Wood
-    //  production += data[tile.y][tile.x].resources.Iron
-    //  production += data[tile.y][tile.x].resources.Gold
+    production += theGame.tileData[tile.y][tile.x].values.Production
+    production += getTileImprovemntProduction(tile)
+
   }
   return production
+}
+function getTileImprovemntProduction(tile) {
+  let bonusProd = 0
+  if (theGame.tileData[tile.y][tile.x].improvements.length == 0) {
+    return bonusProd
+  } else {
+    for (let i = 0; i < theGame.tileData[tile.y][tile.x].improvements.length; i++) {
+      const improvement = theGame.tileData[tile.y][tile.x].improvements[i];
+      if (improvement == 1) {
+        bonusProd += mineBonusTerrain[theGame.tileData[tile.y][tile.x].terrain.index]
+      }
+    }
+
+    return bonusProd
+  }
+
 }
 function getBaseTrade(owner, city) {
   var trade = 0
   for (let i = 0; i < theGame.countries[owner].cities[city].tiles.length; i++) {
     //{x: 4, y: 3}
     const tile = theGame.countries[owner].cities[city].tiles[i];
-    trade += theGame.tileData[tile.y][tile.x].resources.Trade
-    //  trade += data[tile.y][tile.x].resources.Oil
-    //  trade += data[tile.y][tile.x].resources.Coal
-    //   trade += data[tile.y][tile.x].resources.Stone
-    //  trade += data[tile.y][tile.x].resources.Wood
-    //  trade += data[tile.y][tile.x].resources.Iron
-    //  trade += data[tile.y][tile.x].resources.Gold
+    trade += theGame.tileData[tile.y][tile.x].values.Trade
+
   }
   return trade
 }
@@ -71,7 +82,14 @@ function getRandomCityTile(owner, city) {
 }
 
 
-
+function getCityTiles(owner, city) {
+  var tiles = []
+  theGame.tileData.forEach(function (tile) {
+    if (tile.owner == owner && tile.city == city)
+      tiles.push(tile)
+  })
+  return tiles
+}
 
 function checkWork(unit) {
   console.log('checking')
@@ -79,12 +97,15 @@ function checkWork(unit) {
     if (theGame.day - unit.dayPlaced == unitInfo[unit.id].workTime) {
       console.log('land ready')
       if (unit.currentAction == 0) {
+        unit.currentAction = null
+        unit.performingAction = false
         return 'farm'
       } else if (unit.currentAction == 1) {
+        unit.currentAction = null
+        unit.performingAction = false
         return 'mine'
       }
-      unit.currentAction = null
-      unit.performingAction = false
+
 
 
       // console.log(data[this.tile.y][this.tile.x])
@@ -96,6 +117,16 @@ function checkWork(unit) {
   return null
 }
 
+function getUnitsDetailsOnTile(tileXY) {
+  var chess = gameBoard.tileXYToChessArray(tileXY.x, tileXY.y)
+  var results = []
+  for (let i = 0; i < chess.length; i++) {
+    const thing = chess[i];
+    if (thing.chessType == 'unit')
+      results.push({ unitIndex: thing.index, owner: thing.owner, city: thing.city })
+  }
+  return results
+}
 
 function getUnitsOnTile(tileXY) {
   var chess = gameBoard.tileXYToChessArray(tileXY.x, tileXY.y)
@@ -124,11 +155,23 @@ function setUnitCurrentLocationByIndex(owner, unitIndex, tileXY) {
 
 function settleNewCity(owner, tile, unit, chess, cityID) {
   console.log('settle' + tile.x)
-  theGame.countries[owner].cities.push(new City(tile, theGame.countries[owner].color, theGame.countries[owner].id, cityID))
+  theGame.countries[owner].cities.push(new City(tile, theGame.countries[owner].color, theGame.countries[owner].id, cityID, theGame.countries[owner].civ))
   console.log(this.cities)
   // chess.setAlpha(0)
 }
 
+
+
+
+function getChessForUnitIndexAtTile(index, tile) {
+  var chess = gameBoard.tileXYToChessArray(tile.x, tile.y)
+  for (let i = 0; i < chess.length; i++) {
+    const element = chess[i];
+    if (element.index == index) {
+      return element
+    }
+  }
+}
 
 
 
@@ -174,3 +217,48 @@ function shuffleArray(array) {
 
   return array;
 }
+function placeResources() {
+  for (let i = 0; i < resourcePicker.length; i++) {
+    var done = false
+    var rec = resourcePicker.pop()
+    while (!done) {
+      var x = Phaser.Math.Between(2, theGame.width - 2)
+      var y = Phaser.Math.Between(2, theGame.height - 2)
+      if (rec == 2) {
+        if (theGame.tileData[y][x].terrain.index == 1 && theGame.tileData[y][x].resource == null) {
+          done = true
+          theGame.tileData[y][x].resource = rec
+
+        }
+      } else if (rec == 13) {
+        if (theGame.tileData[y][x].terrain.index == 7 && theGame.tileData[y][x].terrain.index == 8 && theGame.tileData[y][x].resource == null) {
+          done = true
+          theGame.tileData[y][x].resource = rec
+
+        }
+      } else {
+        if (theGame.tileData[y][x].terrain.index != 1 && theGame.tileData[y][x].terrain.index != 0 && theGame.tileData[y][x].resource == null) {
+          done = true
+          theGame.tileData[y][x].resource = rec
+
+        }
+      }
+
+    }
+  }
+}
+ /*
+ theGame.tileData[tileXY.y][tileXY.x].terrain.index
+0 deep water
+1 shallow water
+2 sand
+3 flood plain
+4 forest
+5 grassland
+6 plain
+7 hills
+8 mountain
+9 snow 
+farmBonusTerrain = [0,0,0,1,0,1,1,0,0,0]
+mineBonusTerrain = [0,0,0,1,0,1,1,2,2,1]
+*/

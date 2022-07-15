@@ -16,12 +16,12 @@ class Tiles {
     this.terrain = index
     this.improvements = []
     this.units = []
-
-    this.resources = this.makeResources(index.index)
-
+    this.hasFog = true
+    this.values = this.makeValues(index.index)
+    this.resource = null
 
   }
-  makeResources(terrain) {
+  makeValues(terrain) {
     /*  0 deep water
  1 shallow water
  2 sand
@@ -31,125 +31,110 @@ class Tiles {
  6 plain
  7 hills
  8 mountain
- 9 snow */
+ 9 snow 
+ farmBonusTerrain = [0,0,0,1,0,1,1,0,0,0]
+ mineBonusTerrain = [0,0,0,1,0,1,1,2,2,1]
+ */
     let rec = {}
     if (terrain == 0) {
       //deep water 
       rec.Food = 1
       rec.Production = 0
-      rec.Trade = 0
-      rec.Oil = 0
-      rec.Coal = 0
-      rec.Gold = 0
-      rec.Wood = 0
-      rec.Stone = 0
-      rec.Iron = 0
+      rec.Trade = 1
+      rec.Resource = -1
+
     } else if (terrain == 1) {
       //shallow water
       rec.Food = 1
       rec.Production = 0
       rec.Trade = 1
-      rec.Oil = Phaser.Math.Between(0, 2)
-      rec.Coal = Phaser.Math.Between(0, 2)
-      rec.Gold = 0
-      rec.Wood = Phaser.Math.Between(1, 3)
-      rec.Stone = Phaser.Math.Between(0, 2)
-      rec.Iron = 0
+      if (Phaser.Math.Between(1, 100) > 90) {
+        rec.Resource = 13
+      } else {
+        rec.Resource = -1
+      }
+
     } else if (terrain == 2) {
       //sand
       rec.Food = 1
       rec.Production = 0
       rec.Trade = 2
-      rec.Oil = 0
-      rec.Coal = Phaser.Math.Between(0, 5)
-      rec.Gold = Phaser.Math.Between(0, 5)
-      rec.Wood = 0
-      rec.Stone = Phaser.Math.Between(2, 5)
-      rec.Iron = Phaser.Math.Between(1, 5)
+      if (Phaser.Math.Between(1, 100) > 95) {
+        rec.Resource = Phaser.Math.Between(0, 12)
+      } else {
+        rec.Resource = -1
+      }
     } else if (terrain == 3) {
       //flood plain
-      rec.Food = 2
+      rec.Food = 3
       rec.Production = 0
       rec.Trade = 0
-      rec.Oil = 0
-      rec.Coal = 0
-      rec.Gold = 0
-      rec.Wood = 0
-      rec.Stone = 0
-      rec.Iron = 0
-
+      if (Phaser.Math.Between(1, 100) > 95) {
+        rec.Resource = Phaser.Math.Between(0, 12)
+      } else {
+        rec.Resource = -1
+      }
     } else if (terrain == 4) {
       //forest
       rec.Food = 1
       rec.Production = 2
       rec.Trade = 0
-      rec.Oil = 0
-      rec.Coal = 0
-      rec.Gold = 0
-      rec.Wood = Phaser.Math.Between(2, 5)
-      rec.Stone = 0
-      rec.Iron = 0
+      if (Phaser.Math.Between(1, 100) > 95) {
+        rec.Resource = Phaser.Math.Between(0, 12)
+      } else {
+        rec.Resource = -1
+      }
 
     } else if (terrain == 5) {
       //grassland
-      rec.Food = 1
+      rec.Food = 2
       rec.Production = 1
       rec.Trade = 0
-      rec.Oil = 0
-      rec.Coal = 0
-      rec.Gold = 0
-      rec.Wood = 0
-      rec.Stone = 0
-      rec.Iron = 0
-
+      if (Phaser.Math.Between(1, 100) > 95) {
+        rec.Resource = Phaser.Math.Between(0, 12)
+      } else {
+        rec.Resource = -1
+      }
     } else if (terrain == 6) {
       //plain
       rec.Food = 1
       rec.Production = 1
       rec.Trade = 0
-      rec.Oil = 0
-      rec.Coal = 0
-      rec.Gold = 0
-      rec.Wood = 0
-      rec.Stone = 0
-      rec.Iron = 0
-
+      if (Phaser.Math.Between(1, 100) > 95) {
+        rec.Resource = Phaser.Math.Between(0, 12)
+      } else {
+        rec.Resource = -1
+      }
     } else if (terrain == 7) {
       //hill
       rec.Food = 1
       rec.Production = 1
       rec.Trade = 0
-      rec.Oil = 0
-      rec.Coal = 0
-      rec.Gold = 0
-      rec.Wood = 0
-      rec.Stone = 0
-      rec.Iron = 0
-
+      if (Phaser.Math.Between(1, 100) > 95) {
+        rec.Resource = Phaser.Math.Between(0, 12)
+      } else {
+        rec.Resource = -1
+      }
     } else if (terrain == 8) {
       //mountain
       rec.Food = 0
-      rec.Production = Phaser.Math.Between(1, 2)
+      rec.Production = 2
       rec.Trade = 0
-      rec.Oil = 0
-      rec.Coal = 0
-      rec.Gold = 0
-      rec.Wood = 0
-      rec.Stone = 0
-      rec.Iron = 0
-
+      if (Phaser.Math.Between(1, 100) > 95) {
+        rec.Resource = Phaser.Math.Between(0, 12)
+      } else {
+        rec.Resource = -1
+      }
     } else if (terrain == 9) {
       //snow
-      rec.Food = 0
-      rec.Production = 1
+      rec.Food = 1
+      rec.Production = 0
       rec.Trade = 0
-      rec.Oil = 0
-      rec.Coal = 0
-      rec.Gold = 0
-      rec.Wood = 0
-      rec.Stone = 0
-      rec.Iron = 0
-
+      if (Phaser.Math.Between(1, 100) > 95) {
+        rec.Resource = Phaser.Math.Between(0, 12)
+      } else {
+        rec.Resource = -1
+      }
     }
 
     return rec

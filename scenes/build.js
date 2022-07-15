@@ -39,17 +39,17 @@ class build extends Phaser.Scene {
       this.previewBox.add(resourcesLabel);
       var foodIcon = this.add.image(75, 560, 'icons', 9).setOrigin(0, .5).setScale(.5)
       this.previewBox.add(foodIcon)
-      var foodLabel = this.add.bitmapText(135, 560, 'topaz', this.select.resources.Food, 45).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+      var foodLabel = this.add.bitmapText(135, 560, 'topaz', this.select.values.Food, 45).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
       this.previewBox.add(foodLabel)
       var productionIcon = this.add.image(250, 560, 'icons', 5).setOrigin(0, .5).setScale(.5)
       this.previewBox.add(productionIcon)
-      var productionLabel = this.add.bitmapText(315, 560, 'topaz', this.select.resources.Production, 45).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+      var productionLabel = this.add.bitmapText(315, 560, 'topaz', this.select.values.Production, 45).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
       this.previewBox.add(productionLabel)
       var tradeIcon = this.add.image(425, 560, 'icons', 6).setOrigin(0, .5).setScale(.5)
       this.previewBox.add(tradeIcon)
-      var tradeLabel = this.add.bitmapText(490, 560, 'topaz', this.select.resources.Trade, 45).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+      var tradeLabel = this.add.bitmapText(490, 560, 'topaz', this.select.values.Trade, 45).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
       this.previewBox.add(tradeLabel)
-      var resourcesText = this.add.bitmapText(75, 625, 'topaz', this.makeResourceInfo(this.select.resources), 38).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+      var resourcesText = this.add.bitmapText(75, 625, 'topaz', this.makeResourceInfo(this.select.values), 38).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
       this.previewBox.add(resourcesText);
 
       //improvement menu

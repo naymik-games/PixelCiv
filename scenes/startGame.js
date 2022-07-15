@@ -17,7 +17,7 @@ class startGame extends Phaser.Scene {
 
     this.cameras.main.setBackgroundColor(0xf7eac6);
 
-    var title = this.add.bitmapText(game.config.width / 2, 100, 'topaz', 'SquareDots', 150).setOrigin(.5).setTint(0xc76210);
+    var title = this.add.bitmapText(game.config.width / 2, 100, 'topaz', 'PixelCiv', 150).setOrigin(.5).setTint(0xc76210);
 
     var startTime = this.add.bitmapText(game.config.width / 2 - 50, 275, 'topaz', 'New Game', 50).setOrigin(0, .5).setTint(0x000000);
     var small = this.add.bitmapText(100, 375, 'topaz', 'small', 50).setOrigin(.5).setTint(0x000000).setInteractive();
@@ -28,7 +28,13 @@ class startGame extends Phaser.Scene {
     medium.on('pointerdown', this.newMedium, this);
     large.on('pointerdown', this.newLarge, this);
 
-    var startTime2 = this.add.bitmapText(game.config.width / 2 - 50, 575, 'topaz', 'Load Game', 50).setOrigin(0, .5).setTint(0x000000);
+
+
+
+
+
+
+    var startTime2 = this.add.bitmapText(game.config.width / 2 - 50, 1575, 'topaz', 'Load Game', 50).setOrigin(0, .5).setTint(0x000000);
     startTime2.setInteractive();
     startTime2.on('pointerdown', this.loadSaved, this);
 
@@ -50,7 +56,7 @@ class startGame extends Phaser.Scene {
     gameHeight = 60
     gameSeed = 34147
     gamePlayers = 5
-    playerCiv = 1
+    playerCiv = 0
     this.scene.start('playGame');
     this.scene.launch('UI');
   }

@@ -122,6 +122,12 @@ class preloadGame extends Phaser.Scene {
       spacing: 1,
       margin: 1
     });
+    this.load.spritesheet("resources", "assets/sprites/resources.png", {
+      frameWidth: 100,
+      frameHeight: 100,
+      spacing: 1,
+      margin: 1
+    });
     this.load.image('blank', 'assets/sprites/blank.png');
     this.load.image('tile', 'assets/sprites/tile.png');
     this.load.image("transp", "assets/sprites/transp.png");
@@ -129,6 +135,7 @@ class preloadGame extends Phaser.Scene {
     this.load.image("status", "assets/sprites/status_icons.png");
     this.load.image("tile_test", "assets/sprites/tile_test.png");
     this.load.image("tile_test2", "assets/sprites/tile_test_2.png");
+    this.load.image("fog", "assets/sprites/fog.png");
   }
   create() {
     this.scene.start("startGame");

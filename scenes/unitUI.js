@@ -43,45 +43,51 @@ class unitUI extends Phaser.Scene {
     if (buttonContainer) {
       buttonContainer.destroy()
     }
-    this.unitDetails.setText(unitInfo[this.units[num].id].name + ' ' + this.units[num].index)
+    var unit = this.units[num]
+    this.unitDetails.setText(unitInfo[unit.id].name + ' ' + unit.index + ', ' + unit.isMoving + ', ' + unit.performingAction)
     for (let i = 0; i < this.chess.length; i++) {
       const element = this.chess[i];
-      if (element.index == this.units[num].index) {
+      if (element.index == unit.index) {
         element.setAlpha(.5)
         console.log(this.units[num])
         this.Main.selectedUnitChess = element
-        this.Main.selectedUnit = this.units[num].index
+        this.Main.selectedUnit = unit.index
 
       }
 
     }
-    var buttonContainer = this.add.container()
-    for (let i = 0; i < unitInfo[this.units[num].id].actions.length; i++) {
-      const action = unitInfo[this.units[num].id].actions[i];
-      var actionButton = this.add.image(200 + i * 125, 1390, 'actions', action).setInteractive().setAlpha(1)
-      actionButton.action = action
-      actionButton.unitNum = num
-      actionButton.on('pointerup', this.unitAction.bind(this, actionButton));
-      buttonContainer.add(actionButton)
+    if (!unit.performingAction && !unit.isMoving) {
+      var buttonContainer = this.add.container()
+      for (let i = 0; i < unitInfo[unit.id].actions.length; i++) {
+        const action = unitInfo[unit.id].actions[i];
+        var actionButton = this.add.image(200 + i * 125, 1390, 'actions', action).setInteractive().setAlpha(1)
+        actionButton.action = action
+        actionButton.unit = unit
+        actionButton.on('pointerup', this.unitAction.bind(this, actionButton));
+        buttonContainer.add(actionButton)
+      }
     }
+
   }
   unitAction(action) {
+
     if (action.action == 0) {
       //farm
       console.log('start farm')
-      this.units[action.unitNum].currentAction = action.action
-      this.units[action.unitNum].performingAction = true
-      this.units[action.unitNum].currentLocation = this.tile
-      this.units[action.unitNum].dayPlaced = theGame.day
-      this.units[action.unitNum].placed = true
+      action.unit.currentAction = action.action
+      action.unit.performingAction = true
+      // action.unit.currentLocation = this.tile
+      action.unit.dayPlaced = theGame.day
+      action.unit.placed = true
+      this.Main.clearSelected()
       this.scene.stop();
     } else if (action.action == 1) {
       console.log('start mine')
-      this.units[action.unitNum].currentAction = action.action
-      this.units[action.unitNum].performingAction = true
-      this.units[action.unitNum].currentLocation = this.tile
-      this.units[action.unitNum].dayPlaced = theGame.day
-      this.units[action.unitNum].placed = true
+      action.unit.currentAction = action.action
+      action.unit.performingAction = true
+      //  this.units[action.unitNum].currentLocation = this.tile
+      action.unit.dayPlaced = theGame.day
+      action.unit.placed = true
       this.scene.stop();
     } else if (action.action == 2) {
       //go to
@@ -89,23 +95,23 @@ class unitUI extends Phaser.Scene {
       this.scene.stop();
     } else if (action.action == 4) {
       //settle
-      this.units[action.unitNum].currentAction = action.action
-      this.units[action.unitNum].performingAction = true
-      this.units[action.unitNum].currentLocation = this.tile
-      this.units[action.unitNum].dayPlaced = theGame.day
-      this.units[action.unitNum].placed = true
+      action.unit.currentAction = action.action
+      action.unit.performingAction = true
+      // this.units[action.unitNum].currentLocation = this.tile
+      action.unit.dayPlaced = theGame.day
+      action.unit.placed = true
       var newID = theGame.countries[this.units[0].owner].cities.length
-      settleNewCity(this.units[action.unitNum].owner, this.tile, this.Main.selectedUnit, this.Main.selectedUnitChess, newID)
+      settleNewCity(action.unit.owner, this.tile, this.Main.selectedUnit, this.Main.selectedUnitChess, newID)
       this.Main.removeUnitChess(this.Main.selectedUnitChess)
       this.Main.addCity(this.tile, newID)
       this.scene.stop();
     } else if (action.action == 5) {
       //fortify
-      this.units[action.unitNum].currentAction = action.action
-      this.units[action.unitNum].performingAction = true
-      this.units[action.unitNum].currentLocation = this.tile
-      this.units[action.unitNum].dayPlaced = theGame.day
-      this.units[action.unitNum].placed = true
+      action.unit.currentAction = action.action
+      action.unit.performingAction = true
+      //  this.units[action.unitNum].currentLocation = this.tile
+      action.unit.dayPlaced = theGame.day
+      action.unit.placed = true
       this.scene.stop();
     }
     console.log(this.unit)

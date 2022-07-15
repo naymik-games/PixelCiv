@@ -1,10 +1,10 @@
 class City {
   constructor(capital, color, cId, id, civ) {
     this.countryID = cId
-    this.name = cityNames[civ][id]
+    this.name = civs[civ].cityNames[id]
     this.cityCenter = capital
     this.trade = 10
-    this.production = 10
+    this.production = 0
     this.happiness = 10
     this.strength = 10
     this.food = 10
@@ -17,6 +17,7 @@ class City {
     this.maintenance = 5
     this.population = 1
     this.size = 1
+    this.currentUnitProduction = null
   }
 
 

@@ -11,6 +11,7 @@ class GAME {
     this.tileData = new Array(this.height).fill(null).map(() => new Array(this.width).fill(null));
     this.currentPlayer = 0
 
+
   }
 
 }

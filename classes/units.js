@@ -13,6 +13,8 @@ class Unit {
     this.placed = placed
     this.performingAction = false
     this.currentAction = null
+    this.isMoving = false
+    this.path = null
     this.dayPlaced = null
     this.tile = null
 

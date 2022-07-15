@@ -17,8 +17,14 @@ class UI extends Phaser.Scene {
     this.subHeader.displayWidth = game.config.width;
     this.subHeader.displayHeight = 100;
 
-    this.currentPlayerText = this.add.bitmapText(10, 50, 'topaz', civNames[playerCiv], 55).setOrigin(0, .5).setTint(0xe1c59e).setAlpha(1).setInteractive();
+    this.currentPlayerText = this.add.bitmapText(10, 50, 'topaz', civs[playerCiv].name, 55).setOrigin(0, .5).setTint(0xe1c59e).setAlpha(1).setInteractive();
     // this.currentPlayerText = this.add.bitmapText(10, 50, 'topaz', civNames[0], 55).setOrigin(0, .5).setTint(0xe1c59e).setAlpha(1).setInteractive();
+    this.cityView = this.add.image(550, 50, 'icons', 16).setInteractive().setAlpha(1)
+    this.cityView.on('pointerdown', function () {
+      this.scene.pause('playGame');
+      this.scene.pause();
+      this.scene.launch('countryView');
+    }, this)
     this.saveCity = this.add.image(650, 50, 'icons', 14).setInteractive().setAlpha(1)
     this.saveCity.on('pointerdown', function () {
       this.Main.saveGame()
@@ -41,7 +47,7 @@ class UI extends Phaser.Scene {
             this.Main.endRound()
           }
           this.Main.endPlayerTurn() */
-      this.currentPlayerText.setText(civNames[theGame.currentPlayer])
+      this.currentPlayerText.setText(civs[theGame.currentPlayer].name)
     }, this)
 
 
@@ -63,7 +69,7 @@ class UI extends Phaser.Scene {
     this.statusIcons = this.add.image(900, 100, 'status').setOrigin(1, 0)
     this.cityContainer.add(this.statusIcons)
 
-    this.cityLabel = this.add.bitmapText(25, 150, 'topaz', ' ', 60).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+    this.cityLabel = this.add.bitmapText(25, 150, 'topaz', ' ', 50).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
     this.cityContainer.add(this.cityLabel)
     this.popLabel = this.add.bitmapText(350, 225, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
     this.cityContainer.add(this.popLabel)
@@ -81,9 +87,9 @@ class UI extends Phaser.Scene {
     this.cityContainer.setAlpha(0)
 
 
-    this.infoText = this.add.bitmapText(15, game.config.height - 50, 'topaz', 'status', 50).setOrigin(0, .5).setTint(0xcbf7ff).setAlpha(1);
+    this.infoText = this.add.bitmapText(15, game.config.height - 50, 'topaz', 'status', 40).setOrigin(0, .5).setTint(0xcbf7ff).setAlpha(1);
 
-
+    this.tempText = this.add.bitmapText(15, game.config.height - 250, 'topaz', 'temp', 50).setOrigin(0, .5).setTint(0xcbf7ff).setAlpha(1);
 
 
     var toggle = 0
@@ -102,7 +108,15 @@ class UI extends Phaser.Scene {
         gameBoard.setInteractive(true)
       }
     }, this)
-    this.build = this.add.image(75, 1490, 'icons', 4).setInteractive().setAlpha(0)
+    this.cityButton = this.add.image(75, 1490, 'icons', 15).setInteractive().setAlpha(0)
+    this.cityButton.on('pointerdown', function () {
+      if (this.Main.currentPlayer > 0) { return }
+      if (this.Main.selectedTile == null) { return }
+      this.scene.pause('playGame');
+      this.scene.pause();
+      this.scene.launch('cityView');
+    }, this)
+    this.build = this.add.image(175, 1490, 'icons', 4).setInteractive().setAlpha(0)
     this.build.on('pointerdown', function () {
       if (this.Main.currentPlayer > 0) { return }
       if (this.Main.selectedTile == null) { return }
@@ -110,7 +124,7 @@ class UI extends Phaser.Scene {
       this.scene.pause();
       this.scene.launch('build');
     }, this)
-    this.buildUnit = this.add.image(175, 1490, 'icons', 10).setInteractive().setAlpha(0)
+    this.buildUnit = this.add.image(275, 1490, 'icons', 10).setInteractive().setAlpha(0)
     this.buildUnit.on('pointerdown', function () {
       if (this.Main.currentPlayer > 0) { return }
       if (this.Main.selectedTile == null) { return }
@@ -126,7 +140,7 @@ class UI extends Phaser.Scene {
   }
 
   update() {
-
+    this.tempText.setText(JSON.stringify(this.Main.selectedTile))
   }
   cityStatsVisibility(status) {
     if (status == 'on') {
