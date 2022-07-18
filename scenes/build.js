@@ -17,62 +17,51 @@ class build extends Phaser.Scene {
   }
   create() {
     //this.cameras.main.setBackgroundColor(0xf7eac6);
-    var timedEvent = this.time.addEvent({ delay: 300, callback: this.showPreview, callbackScope: this, loop: false });
+
     this.Main = this.scene.get('playGame');
-    this.previewBox = this.add.container(1000, 0);
-    var background = this.add.image(450, 920, 'blank').setTint(0xe1c59e);
+
+    var background = this.add.image(450, 100, 'blank').setOrigin(.5, 0).setTint(0xe1c59e);
     background.displayWidth = 900
-    background.displayHeight = 1200
-    console.log(theGame.tileData.length)
-    this.previewBox.add(background);
+    background.displayHeight = 1440
+    this.subHeader = this.add.image(game.config.width / 2, 0, 'blank').setOrigin(.5, 0).setTint(0xAF5E49).setAlpha(1);
+    this.subHeader.displayWidth = game.config.width;
+    this.subHeader.displayHeight = 100;
+
     this.select = theGame.tileData[this.Main.selectedTile.y][this.Main.selectedTile.x]
     console.log(this.select)
-    var titleText = this.add.bitmapText(450, 375, 'topaz', cityNames[this.select.owner][this.select.city], 80).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-    this.previewBox.add(titleText);
 
-    var cancelIcon = this.add.image(760, 375, 'icons', 2).setInteractive().setScale(.8);
+    var title = this.add.bitmapText(10, 50, 'topaz', theGame.countries[this.select.owner].cities[this.select.city].name, 55).setOrigin(0, .5).setTint(0xe1c59e);
+    var cancelIcon = this.add.image(850, 50, 'icons', 2).setInteractive().setScale(.8);
     cancelIcon.on('pointerdown', this.cancel, this);
-    this.previewBox.add(cancelIcon);
 
-    if (this.select.cityCenter) {
-      var resourcesLabel = this.add.bitmapText(75, 480, 'topaz', 'TILE RESOURCES:', 45).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
-      this.previewBox.add(resourcesLabel);
-      var foodIcon = this.add.image(75, 560, 'icons', 9).setOrigin(0, .5).setScale(.5)
-      this.previewBox.add(foodIcon)
-      var foodLabel = this.add.bitmapText(135, 560, 'topaz', this.select.values.Food, 45).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
-      this.previewBox.add(foodLabel)
-      var productionIcon = this.add.image(250, 560, 'icons', 5).setOrigin(0, .5).setScale(.5)
-      this.previewBox.add(productionIcon)
-      var productionLabel = this.add.bitmapText(315, 560, 'topaz', this.select.values.Production, 45).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
-      this.previewBox.add(productionLabel)
-      var tradeIcon = this.add.image(425, 560, 'icons', 6).setOrigin(0, .5).setScale(.5)
-      this.previewBox.add(tradeIcon)
-      var tradeLabel = this.add.bitmapText(490, 560, 'topaz', this.select.values.Trade, 45).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
-      this.previewBox.add(tradeLabel)
-      var resourcesText = this.add.bitmapText(75, 625, 'topaz', this.makeResourceInfo(this.select.values), 38).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
-      this.previewBox.add(resourcesText);
+    this.menuContainer = this.add.container()
+
+    if (theGame.countries[this.select.owner].cities[this.select.city].currentImprovementProduction == null) {
+
 
       //improvement menu
-      this.nameLabel = this.add.bitmapText(450, 725, 'topaz', improvementInfo[0], 25).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-      this.previewBox.add(this.nameLabel);
-      this.infoLabel = this.add.bitmapText(450, 1025, 'topaz', '--', 30).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-      this.previewBox.add(this.infoLabel);
-      this.message = this.add.bitmapText(50, 1150, 'topaz', '--', 40).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
-      this.previewBox.add(this.message);
-      this.scrollingMap = this.add.tileSprite(-game.config.width, 850, game.config.width * 2 + improvementInfo.length * 160, 200, "transp").setOrigin(0, .5).setTint(0x333333);
+      this.nameLabel = this.add.bitmapText(450, 150, 'topaz', improvementInfo[0].name, 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+      this.menuContainer.add(this.nameLabel);
+      this.infoLabel = this.add.bitmapText(50, 550, 'topaz', '--', 40).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1).setMaxWidth(800);
+      this.menuContainer.add(this.infoLabel);
+      this.message = this.add.bitmapText(50, 500, 'topaz', '', 40).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+      // this.menuContainer.add(this.message);
+      this.scrollingMap = this.add.tileSprite(-game.config.width, 300, game.config.width * 2 + improvementInfo.length * 160, 200, "transp").setOrigin(0, .5).setTint(0x333333);
       this.scrollingMap.setInteractive();
+      this.menuContainer.add(this.message);
       this.input.setDraggable(this.scrollingMap);
       this.itemGroup = this.add.group(0, 0)
       this.isBeingDragged = false;
       for (let i = 0; i < improvementInfo.length; i++) {
-        var test = this.add.image(450 + i * 160, 850, 'improvements', i).setScale(.75)
+        var test = this.add.image(450 + i * 160, 300, 'improvements', i).setScale(.75)
         test.id = i
-        this.previewBox.add(test);
+        console.log(improvementInfo[test.id].name)
+        this.menuContainer.add(test);
         this.itemGroup.add(test)
 
       }
-      this.selecter = this.add.image(450, 850, 'selecter').setScale(1)
-      this.previewBox.add(this.selecter);
+      this.selecter = this.add.image(450, 300, 'selecter').setScale(1)
+      this.menuContainer.add(this.selecter);
       this.input.on("dragstart", function (pointer, gameObject) {
         gameObject.startPosition = gameObject.x;
         gameObject.currentPosition = gameObject.x;
@@ -105,18 +94,22 @@ class build extends Phaser.Scene {
       }, this);
 
 
+      this.buildButton = this.add.image(150, 1000, 'icons', 0).setInteractive().setScale(.8);
+      this.buildButton.type = 0
+      this.menuContainer.add(this.buildButton);
+      this.buildButton.on('pointerdown', this.buildImprovement, this)
+
+    } else {
+      this.showBuildMessage()
     }
 
 
     //show build improvements
-    this.showCurrentImprovements(0, this.select.city, this.select.id)
+    this.showCurrentImprovements(0, this.select.city)
 
-    if (this.select.improvements.length < 4) {
-      this.buildButton = this.add.image(150, 1000, 'icons', 0).setInteractive().setScale(.8);
-      this.buildButton.type = 0
-      this.previewBox.add(this.buildButton);
-      this.buildButton.on('pointerdown', this.buildImprovement, this)
-    }
+
+
+
 
 
 
@@ -124,7 +117,7 @@ class build extends Phaser.Scene {
 
   }
   update() {
-    if (!this.select.cityCenter) {
+    if (theGame.countries[this.select.owner].cities[this.select.city].currentImprovementProduction == null) {
       this.itemGroup.children.iterate(function (item) {
 
         // item.x = Phaser.Math.Snap.To(item.x, 90);
@@ -144,74 +137,86 @@ class build extends Phaser.Scene {
     console.log('build ' + this.buildButton.type + ' on ' + this.Main.selectedTile + ' for' + '0')
     this.infoLabel.setAlpha(0)
     this.buildButton.setAlpha(0)
-    this.message.setText('Building ' + improvementInfo[this.buildButton.type].name + ' in ' + improvementInfo[this.buildButton.type].days + ' days.')
-    this.Main.addImprovement(this.select.owner, this.select.city, this.Main.selectedTile, this.buildButton.type, false)
-    console.log(this.Main.countries[0].cities[this.select.city].improvements.length)
+
+    var ppt = getBaseProduction(this.select.owner, this.select.city)
+    if (improvementInfo[this.buildButton.type].cost > theGame.countries[this.select.owner].cities[this.select.city].production) {
+      var turn = Math.ceil((improvementInfo[this.buildButton.type].cost - theGame.countries[this.select.owner].cities[this.select.city].production) / ppt)
+      var infoText = turn + ' turns'
+    } else {
+      var infoText = '1 turn'
+    }
+
+
+    this.message.setText('Building ' + improvementInfo[this.buildButton.type].name + ' in ' + infoText)
+    theGame.countries[this.select.owner].cities[this.select.city].currentImprovementProduction = this.buildButton.type
+    this.Main.addImprovement(this.select.owner, this.select.city, this.buildButton.type, false)
+    this.showCurrentImprovements(0, this.select.city)
+    //console.log(this.Main.countries[0].cities[this.select.city].improvements.length)
   }
-  getTileImprovementsByID(owner, city, tileID) {
+  showBuildMessage() {
+    var unit = this.add.image(450, 300, 'improvements', theGame.countries[this.select.owner].cities[this.select.city].currentImprovementProduction).setScale(1).setAlpha(1)
+
+    var ppt = getBaseProduction(this.select.owner, this.select.city)
+    if (improvementInfo[theGame.countries[this.select.owner].cities[this.select.city].currentImprovementProduction].cost > theGame.countries[this.select.owner].cities[this.select.city].production) {
+      var turn = Math.ceil((improvementInfo[theGame.countries[this.select.owner].cities[this.select.city].currentImprovementProduction].cost - theGame.countries[this.select.owner].cities[this.select.city].production) / ppt)
+      var infoText = turn + ' turns'
+    } else {
+      var infoText = '1 turn'
+    }
+
+
+    this.message.setText('Building ' + improvementInfo[theGame.countries[this.select.owner].cities[this.select.city].currentImprovementProduction].name + ' in ' + infoText)
+  }
+  getTileImprovementsByID(owner, city) {
     //myArray.filter(x => x.id === '45');
     let impr = theGame.countries[owner].cities[city].improvements.filter(x => x.tileID === tileID);
     return impr
   }
-  showCurrentImprovements(owner, city, tileID) {
-    let tileImprovements = this.getTileImprovementsByID(owner, city, tileID)
+  showCurrentImprovements(owner, city) {
+    console.log('show current')
+    let tileImprovements = theGame.countries[owner].cities[city].improvements
+    console.log(tileImprovements)
     for (let i = 0; i < tileImprovements.length; i++) {
       if (tileImprovements[i].complete) {
         var alpha = 1
+        var infoText = '-' + improvementInfo[tileImprovements[i].id].maintenance + ' upkeep'
       } else {
         var alpha = .5
+        var ppt = getBaseProduction(this.select.owner, this.select.city)
+        if (improvementInfo[tileImprovements[i].id].cost > theGame.countries[this.select.owner].cities[this.select.city].production) {
+          var turn = Math.ceil((improvementInfo[tileImprovements[i].id].cost - theGame.countries[this.select.owner].cities[this.select.city].production) / ppt)
+          var infoText = turn + ' turns'
+        } else {
+          var infoText = '1 turn'
+        }
       }
-      var test = this.add.image(210 + i * 160, 1425, 'improvements', tileImprovements[i].id).setScale(.75).setAlpha(alpha)
-      this.previewBox.add(test);
+      var test = this.add.image(125 + i * 160, 1400, 'improvements', tileImprovements[i].id).setScale(.75).setAlpha(alpha)
+
       var nameLabel = this.add.bitmapText(210 + i * 160, test.y - 95, 'topaz', improvementInfo[tileImprovements[i].id].name, 30).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-      this.previewBox.add(nameLabel);
+      var info = this.add.bitmapText(210 + i * 160, test.y + 95, 'topaz', infoText, 30).setOrigin(.5).setTint(0xAF5E49).setAlpha(1)
 
     }
   }
   makeInfo(id) {
+
+    var ppt = getBaseProduction(this.select.owner, this.select.city)
+    if (improvementInfo[id].cost > theGame.countries[this.select.owner].cities[this.select.city].production) {
+      var turns = Math.ceil((improvementInfo[id].cost - theGame.countries[this.select.owner].cities[this.select.city].production) / ppt)
+    } else {
+      var turns = 1
+    }
+
     var text = ''
     text += improvementInfo[id].description + '\n'
-    text += 'COST: Gold: ' + improvementInfo[id].costGold + ', Production: ' + improvementInfo[id].costProduction + '\n'
-
-    text += 'Build Time: ' + improvementInfo[id].days + ', Maintenance: ' + improvementInfo[id].maintenance + '\n'
-    text += 'Bonus: '
-    if (improvementInfo[id].foodBonus > 0) {
-      text += '+' + improvementInfo[id].foodBonus + ' Food '
-    }
-    if (improvementInfo[id].productionBonus > 0) {
-      text += '+' + improvementInfo[id].productionBonus + ' Production '
-    }
-    if (improvementInfo[id].tradeBonus > 0) {
-      text += '+' + improvementInfo[id].tradeBonus + ' Trade '
-    }
-    if (improvementInfo[id].strengthBonus > 0) {
-      text += '+' + improvementInfo[id].strengthBonus + ' Strength '
-    }
-    if (improvementInfo[id].cultureBonus > 0) {
-      text += '+' + improvementInfo[id].cultureBonus + ' Culture '
-    }
+    text += 'COST: ' + improvementInfo[id].cost + '(' + turns + ' turns)\n'
+    text += 'Upkeep: ' + improvementInfo[id].maintenance + '\n'
+    text += '+' + improvementInfo[id].culture + ' Culture '
 
     return text
   }
 
-  showPreview() {
-    var tween = this.tweens.add({
-      targets: this.previewBox,
-      duration: 500,
-      x: 0,
-      ease: 'bounce'
-    })
-  }
-  makeResourceInfo(rec) {
-    var str = ''
-    str += 'Oil: ' + rec.Oil + ', '
-    str += 'Coal: ' + rec.Coal + ', '
-    str += 'Gold: ' + rec.Gold + ',\n'
-    str += 'Wood: ' + rec.Wood + ', '
-    str += 'Stone: ' + rec.Stone + ', '
-    str += 'Iron: ' + rec.Iron
-    return str
-  }
+
+
   objToString(obj) {
     let str = '';
     var count = 1

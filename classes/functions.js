@@ -19,6 +19,7 @@ function getBaseFood(owner, city) {
 
     food += theGame.tileData[tile.y][tile.x].values.Food
     food += getTileImprovemntFood(tile)
+    food += getTileBonusFood(tile)
   }
   return food
 }
@@ -37,7 +38,23 @@ function getTileImprovemntFood(tile) {
     return bonusFood
   }
 
+
+
+
 }
+function getTileBonusFood(tile) {
+  let bonusFood = 0
+  if (theGame.tileData[tile.y][tile.x].values.Resource == -1) {
+    return bonusFood
+  } else {
+    bonusFood = resources[theGame.tileData[tile.y][tile.x].values.Resource].bonus.f
+
+    return bonusFood
+  }
+}
+
+
+
 
 function getBaseProduction(owner, city) {
   var production = 0
@@ -46,6 +63,7 @@ function getBaseProduction(owner, city) {
     const tile = theGame.countries[owner].cities[city].tiles[i];
     production += theGame.tileData[tile.y][tile.x].values.Production
     production += getTileImprovemntProduction(tile)
+    production += getTileBonusProduction(tile)
 
   }
   return production
@@ -66,17 +84,42 @@ function getTileImprovemntProduction(tile) {
   }
 
 }
+
+
+function getTileBonusProduction(tile) {
+  let bonusProd = 0
+  if (theGame.tileData[tile.y][tile.x].values.Resource == -1) {
+    return bonusProd
+  } else {
+    bonusProd = resources[theGame.tileData[tile.y][tile.x].values.Resource].bonus.p
+
+    return bonusProd
+  }
+}
+
+
+
 function getBaseTrade(owner, city) {
   var trade = 0
   for (let i = 0; i < theGame.countries[owner].cities[city].tiles.length; i++) {
     //{x: 4, y: 3}
     const tile = theGame.countries[owner].cities[city].tiles[i];
     trade += theGame.tileData[tile.y][tile.x].values.Trade
+    trade += getTileBonusTrade(tile)
 
   }
   return trade
 }
+function getTileBonusTrade(tile) {
+  let bonusTrade = 0
+  if (theGame.tileData[tile.y][tile.x].values.Resource == -1) {
+    return bonusTrade
+  } else {
+    bonusTrade = resources[theGame.tileData[tile.y][tile.x].values.Resource].bonus.t
 
+    return bonusTrade
+  }
+}
 function getRandomCityTile(owner, city) {
   return theGame.countries[owner].cities[city].tiles[2]
 }
@@ -248,7 +291,7 @@ function placeResources() {
   }
 }
  /*
- theGame.tileData[tileXY.y][tileXY.x].terrain.index
+theGame.tileData[tileXY.y][tileXY.x].terrain.index
 0 deep water
 1 shallow water
 2 sand

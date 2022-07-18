@@ -25,7 +25,7 @@ class playGame extends Phaser.Scene {
 
 
 
-
+    this.messages = []
     //create new game
     if (gameLoad == 'new') {
       theGame = new GAME(gameWidth, gameHeight, gamePlayers, gameSeed, playerCiv)
@@ -87,7 +87,12 @@ class playGame extends Phaser.Scene {
         // y = index / width;
         // x = index % width;
         theGame.tileData[tileXY.y][tileXY.x] = new Tiles(this.map.mapArray[tileXY.y][tileXY.x], id, onwer, onwer, this.map.mapArray[tileXY.y][tileXY.x].biome)
-
+        if (theGame.tileData[tileXY.y][tileXY.x].values.Resource > -1) {
+          // console.log(resources[theGame.tileData[tileXY.y][tileXY.x].values.Resource].name)
+          var obj1 = this.add.image(0, 0, 'resources', theGame.tileData[tileXY.y][tileXY.x].values.Resource).setOrigin(.5, .75).setDepth(0).setAlpha(.9)
+          board.addChess(obj1, tileXY.x, tileXY.y, RESOURCE, true)
+        }
+        /*   */
         var obj1 = this.add.image(0, 0, 'fog').setOrigin(.5, .75).setDepth(10).setAlpha(.9)
         board.addChess(obj1, tileXY.x, tileXY.y, 10, true);
       } else {
@@ -98,11 +103,15 @@ class playGame extends Phaser.Scene {
         // obj.chessType = 'terrain'
         if (theGame.tileData[tileXY.y][tileXY.x].cityCenter) {
           var obj = this.add.image(0, 0, 'cities', 0).setOrigin(.5, .75)
-          gameBoard.addChess(obj, tileXY.x, tileXY.y, 0, true);
+          gameBoard.addChess(obj, tileXY.x, tileXY.y, CITY, true);
+        }
+        if (theGame.tileData[tileXY.y][tileXY.x].values.Resource > -1) {
+          var obj = this.add.image(0, 0, 'resources', theGame.tileData[tileXY.y][tileXY.x].values.Resource).setOrigin(.5, .75)
+          gameBoard.addChess(obj, tileXY.x, tileXY.y, RESOURCE, true);
         }
         if (theGame.tileData[tileXY.y][tileXY.x].improvements.length > 0) {
           var obj = this.add.image(0, 0, 'tile_improvements', theGame.tileData[tileXY.y][tileXY.x].improvements[0]).setOrigin(.5, .75)
-          gameBoard.addChess(obj, tileXY.x, tileXY.y, 1, true);
+          gameBoard.addChess(obj, tileXY.x, tileXY.y, IMPROVEMENT, true);
         }
         if (theGame.tileData[tileXY.y][tileXY.x].hasFog) {
           var obj1 = this.add.image(0, 0, 'fog').setOrigin(.5, .75).setDepth(10).setAlpha(.9)
@@ -126,7 +135,7 @@ class playGame extends Phaser.Scene {
         gameBoard.removeChess(chess, null, null, null, true)
         theGame.tileData[startingPoints[0].y][startingPoints[0].x].hasFog = false
         var obj = this.add.image(0, 0, 'cities', 0).setOrigin(.5, .75)
-        gameBoard.addChess(obj, startingPoints[i].x, startingPoints[i].y, 0, true);
+        gameBoard.addChess(obj, startingPoints[i].x, startingPoints[i].y, CITY, true);
         theGame.countries.push(new Country(startingPoints[i], colorArray[i], i, playerCiv))
         theGame.countries[i].cities.push(new City(startingPoints[i], colorArray[i], i, 0, playerCiv))
         theGame.tileData[startingPoints[i].y][startingPoints[i].x].owner = i
@@ -170,7 +179,7 @@ class playGame extends Phaser.Scene {
     this.drawBorders()
 
     this.UI = this.scene.get('UI');
-
+    this.Messages = this.scene.get('showMessages');
 
 
     //set up inputs
@@ -403,7 +412,7 @@ class playGame extends Phaser.Scene {
     gameBoard.moveChess(unitChess, tileXY.x, tileXY.y, z, true);
     //remove fog
     if (theGame.tileData[tileXY.y][tileXY.x].hasFog) {
-      if (unitChess.unitType == 1) {
+      if (unitChess.unitType == 1 || unitChess.unitType == 3) {
         var chess = gameBoard.tileXYZToChess(tileXY.x, tileXY.y, 10);
         gameBoard.removeChess(chess, null, null, null, true)
         theGame.tileData[tileXY.y][tileXY.x].hasFog = false
@@ -469,7 +478,7 @@ class playGame extends Phaser.Scene {
   }
   addCity(tile, ID) {
     var obj = this.add.image(0, 0, 'cities', 0).setOrigin(.5, .75)
-    gameBoard.addChess(obj, tile.x, tile.y, 0, true);
+    gameBoard.addChess(obj, tile.x, tile.y, CITY, true);
     theGame.tileData[tile.y][tile.x].owner = theGame.currentPlayer
     theGame.tileData[tile.y][tile.x].city = ID
     theGame.tileData[tile.y][tile.x].cityCenter = true
@@ -535,7 +544,7 @@ class playGame extends Phaser.Scene {
     obj.owner = unit.owner
     obj.city = unit.city
     var chess = gameBoard.tileXYToChessArray(unit.currentLocation.x, unit.currentLocation.y)
-    var z = 3 + theGame.tileData[unit.currentLocation.y][unit.currentLocation.x].units.length
+    var z = UNIT + theGame.tileData[unit.currentLocation.y][unit.currentLocation.x].units.length
     gameBoard.addChess(obj, unit.currentLocation.x, unit.currentLocation.y, z, true);
   }
   endPlayerTurn() {
@@ -544,13 +553,14 @@ class playGame extends Phaser.Scene {
   endRound() {
     console.log('end round')
     //Check for improvements that are ready to build--right now just for player, todo: for computer players as well
-    this.doBuild(0)
+
     //  this.doBuildUnit(0)
     //in ////////
     //get terrain stat + improvement  bonus
     for (let c = 0; c < theGame.countries.length; c++) {
       const country = theGame.countries[c];
       for (let i = 0; i < theGame.countries[c].cities.length; i++) {
+        this.doBuild(i)
         this.doBuildUnit(i)
         const city = country.cities[i];
         var newFood = getBaseFood(c, i)
@@ -619,6 +629,10 @@ class playGame extends Phaser.Scene {
               var obj = this.add.image(0, 0, 'tile_improvements', 0).setOrigin(.5, .75)
               gameBoard.addChess(obj, unit.currentLocation.x, unit.currentLocation.y, 2, true);
               theGame.tileData[unit.currentLocation.y][unit.currentLocation.x].improvements.push(0)
+
+              var buildMessage = theGame.countries[unit.owner].cities[unit.city].name + ' built FARM'
+              this.Messages.newMessage(buildMessage)
+
               if (theGame.tileData[unit.currentLocation.y][unit.currentLocation.x].owner == -1) {
 
                 addTile(unit.currentLocation.x, unit.currentLocation.y, unit.owner, unit.city)
@@ -628,6 +642,8 @@ class playGame extends Phaser.Scene {
               var obj = this.add.image(0, 0, 'tile_improvements', 1).setOrigin(.5, .75)
               gameBoard.addChess(obj, unit.currentLocation.x, unit.currentLocation.y, 2, true);
               theGame.tileData[unit.currentLocation.y][unit.currentLocation.x].improvements.push(1)
+              var buildMessage = theGame.countries[unit.owner].cities[unit.city].name + ' built MINE'
+              this.Messages.newMessage(buildMessage)
               if (theGame.tileData[unit.currentLocation.y][unit.currentLocation.x].owner == -1) {
                 addTile(unit.currentLocation.x, unit.currentLocation.y, unit.owner, unit.city)
               }
@@ -636,7 +652,14 @@ class playGame extends Phaser.Scene {
             this.drawBorders()
           }
           if (unit.isMoving) {
-            var destination = unit.path.shift()
+            console.log('movement' + unitInfo[unit.id].m)
+            if (unitInfo[unit.id].m > 1 && unit.path.length >= unitInfo[unit.id].m) {
+              var temp = unit.path.splice(0, unitInfo[unit.id].m)
+              var destination = temp[1]
+            } else {
+              var destination = unit.path.shift()
+            }
+
             this.moveToTile(unit, destination)
             console.log(unit.path.length)
             if (unit.path.length == 0) {
@@ -662,6 +685,10 @@ class playGame extends Phaser.Scene {
       if (country.currentResearch != null) {
         if (country.scienceBox >= techTree[country.currentResearch].baseCost) {
           country.techs.push(country.currentResearch)
+
+          var buildMessage = civs[country.civ].name + ' discovered ' + techTree[country.currentResearch].name
+          this.Messages.newMessage(buildMessage)
+
           country.scienceBox -= techTree[country.currentResearch].baseCost
           country.currentResearch = null
         }
@@ -748,17 +775,15 @@ class playGame extends Phaser.Scene {
     }
   }
   //myArray.filter(x => x.id === '45');
-  addImprovement(owner, city, tile, type, complete) {
-    tileData[tile.y][tile.x].improvements.push(type)
-    var tileid = tile.x + 20 * tile.y;
-    var imp = { tileID: tileid, id: type, tile: tile, turnAdded: theGame.day, complete: complete }
+  addImprovement(owner, city, type, complete) {
+    console.log(`own ${owner},city ${city},type ${type}, complte ${complete}`)
+    var imp = { id: type, turnAdded: theGame.day, complete: complete }
     theGame.countries[owner].cities[city].improvements.push(imp)
     //cost
 
-    theGame.countries[owner].cities[city].trade -= improvementInfo[type].costGold
-    theGame.countries[owner].cities[city].production -= improvementInfo[type].costProduction
+
     this.UI.setStatusLabels(this.selectedTile)
-    //console.log(theGame.countries)
+    console.log(theGame.countries[owner].cities[city].improvements)
   }
 
   readyUnit(id, index, city) {
@@ -771,12 +796,15 @@ class playGame extends Phaser.Scene {
         //var imp = { tileID: tileid, id: type, tile: tile, turnAdded: this.day, complete: complete }
         const improvement = theGame.countries[owner].cities[c].improvements[i];
         if (!improvement.complete) {
-          if (theGame.day - improvement.turnAdded == improvementInfo[improvement.id].days) {
+          if (theGame.countries[owner].cities[c].production >= improvementInfo[improvement.id].cost) {
+            theGame.countries[owner].cities[c].production -= improvementInfo[improvement.id].cost
             improvement.complete = true
+            var buildMessage = theGame.countries[owner].cities[c].name + ' built ' + improvementInfo[improvement.id].name
+            this.Messages.newMessage(buildMessage)
             // maintenance
-            theGame.countries[owner].cities[i].maintenance += improvementInfo[improvement.id].maintenance
-
-            console.log(improvementInfo[improvement.id].name + ' built' + improvementInfo[improvement.id].foodBonus)
+            theGame.countries[owner].cities[c].maintenance += improvementInfo[improvement.id].maintenance
+            theGame.countries[owner].cities[c].currentImprovementProduction = null
+            console.log(improvementInfo[improvement.id].name + ' built')
           }
         }
 
@@ -796,6 +824,8 @@ class playGame extends Phaser.Scene {
         if (theGame.countries[owner].cities[unit.city].production >= unitInfo[unit.id].costProduction) {
           unit.complete = true
           console.log(unitInfo[unit.id].name + ' built')
+          var buildMessage = theGame.countries[owner].cities[unit.city].name + ' built ' + unitInfo[unit.id].name
+          this.Messages.newMessage(buildMessage)
           theGame.countries[owner].cities[unit.city].currentUnitProduction = null
           theGame.countries[owner].cities[unit.city].production -= unitInfo[unit.id].costProduction
           var tile = getRandomCityTile(unit.owner, unit.city)
@@ -808,26 +838,7 @@ class playGame extends Phaser.Scene {
     }
 
   }
-  doBuildUnitOLD(owner) {
-    for (let c = 0; c < theGame.countries[owner].cities.length; c++) {
-      for (let i = 0; i < theGame.countries[owner].cities[c].units.length; i++) {
-        const unit = theGame.countries[owner].cities[c].units[i];
-        if (!unit.complete) {
 
-          if (theGame.countries[owner].cities[c].production >= unitInfo[unit.id].costProduction) {
-            unit.complete = true
-            console.log(unitInfo[unit.id].name + ' built')
-            theGame.countries[owner].cities[c].production -= unitInfo[unit.id].costProduction
-            var tile = theGame.countries[owner].cities[c].getRandomCityTile()
-            unit.currentLocation = tile
-
-            theGame.tileData[tile.y][tile.x].units.push(unit)
-            this.placeUnit(tile, unit.id, unit.index, unit.owner, unit.city)
-          }
-        }
-      }
-    }
-  }
   makeCoo(row, col) {
     return { x: col, y: row }
   }

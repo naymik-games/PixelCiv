@@ -43,7 +43,7 @@ class cityView extends Phaser.Scene {
     var tempFoodLabel = 'FPT  Citizen Need   Storage  Needed'
     var foodLabel = this.add.bitmapText(175, 300, 'topaz', tempFoodLabel, 40).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
     var foodText = this.add.bitmapText(175, 400, 'topaz', tempFoodText, 50).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
-    var foodText = this.add.bitmapText(575, 400, 'topaz', foodNet, 50).setOrigin(.5, .5).setTint(0xAF5E49).setAlpha(1);
+    var foodText = this.add.bitmapText(575, 400, 'topaz', foodNet, 45).setOrigin(.5, .5).setTint(0xAF5E49).setAlpha(1);
 
 
     var productionIcon = this.add.image(75, 750, 'icons', 5).setScale(1).setAlpha(1);

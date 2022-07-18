@@ -3,11 +3,11 @@ class City {
     this.countryID = cId
     this.name = civs[civ].cityNames[id]
     this.cityCenter = capital
-    this.trade = 10
+    this.trade = 0
     this.production = 0
-    this.culture = 10
-    this.strength = 10
-    this.food = 10
+    this.culture = 5
+    this.strength = 0
+    this.food = 0
     this.foodStorage = 30
     this.color = color
     this.id = id
@@ -18,6 +18,7 @@ class City {
     this.population = 1
     this.size = 1
     this.currentUnitProduction = null
+    this.currentImprovementProduction = null
   }
 
 

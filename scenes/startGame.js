@@ -49,6 +49,7 @@ class startGame extends Phaser.Scene {
     playerCiv = 3
     this.scene.start('playGame');
     this.scene.launch('UI');
+    this.scene.launch('showMessages');
   }
   newMedium() {
     gameLoad = 'new'
@@ -59,6 +60,7 @@ class startGame extends Phaser.Scene {
     playerCiv = 0
     this.scene.start('playGame');
     this.scene.launch('UI');
+    this.scene.launch('showMessages');
   }
   newLarge() {
     gameLoad = 'new'
@@ -69,10 +71,12 @@ class startGame extends Phaser.Scene {
     playerCiv = 0
     this.scene.start('playGame');
     this.scene.launch('UI');
+    this.scene.launch('showMessages');
   }
   loadSaved() {
     gameLoad = 'load'
     this.scene.start('playGame');
     this.scene.launch('UI');
+    this.scene.launch('showMessages');
   }
 }

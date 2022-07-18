@@ -66,7 +66,7 @@ class buildUnit extends Phaser.Scene {
     this.input.setDraggable(this.scrollingMap);
     this.itemGroup = this.add.group(0, 0)
     this.isBeingDragged = false;
-    for (let i = 0; i < improvementInfo.length; i++) {
+    for (let i = 0; i < unitInfo.length; i++) {
       var test = this.add.image(450 + i * 160, 300, 'units', i).setScale(3)
       test.id = i
       this.menuContainer.add(test)
