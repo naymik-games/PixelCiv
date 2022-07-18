@@ -17,8 +17,15 @@ class UI extends Phaser.Scene {
     this.subHeader.displayWidth = game.config.width;
     this.subHeader.displayHeight = 100;
 
-    this.currentPlayerText = this.add.bitmapText(10, 50, 'topaz', civs[playerCiv].name, 55).setOrigin(0, .5).setTint(0xe1c59e).setAlpha(1).setInteractive();
+    this.currentPlayerText = this.add.bitmapText(10, 50, 'topaz', '', 55).setOrigin(0, .5).setTint(0xe1c59e).setAlpha(1).setInteractive();
     // this.currentPlayerText = this.add.bitmapText(10, 50, 'topaz', civNames[0], 55).setOrigin(0, .5).setTint(0xe1c59e).setAlpha(1).setInteractive();
+
+    this.scienceView = this.add.image(450, 50, 'icons', 17).setInteractive().setAlpha(1)
+    this.scienceView.on('pointerdown', function () {
+      this.scene.pause('playGame');
+      this.scene.pause();
+      this.scene.launch('scienceView');
+    }, this)
     this.cityView = this.add.image(550, 50, 'icons', 16).setInteractive().setAlpha(1)
     this.cityView.on('pointerdown', function () {
       this.scene.pause('playGame');
@@ -79,8 +86,8 @@ class UI extends Phaser.Scene {
     this.cityContainer.add(this.productionLabel)
     this.goldLabel = this.add.bitmapText(650, 225, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
     this.cityContainer.add(this.goldLabel)
-    this.happinessLabel = this.add.bitmapText(750, 225, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
-    this.cityContainer.add(this.happinessLabel)
+    this.tradeLabel = this.add.bitmapText(750, 225, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
+    this.cityContainer.add(this.tradeLabel)
     this.strengthLabel = this.add.bitmapText(850, 225, 'topaz', '-', 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
     this.cityContainer.add(this.strengthLabel)
 
@@ -169,6 +176,7 @@ class UI extends Phaser.Scene {
   }
   setStatusLabels(selected, type) {
     //console.log(selected)
+    this.currentPlayerText.setText(civs[theGame.playerCiv].name)
     if (selected != null) {
       if (type == 'city') {
         var owner = theGame.tileData[selected.y][selected.x].owner
@@ -176,7 +184,7 @@ class UI extends Phaser.Scene {
         this.cityLabel.setText(theGame.countries[owner].cities[city].name)
         this.productionLabel.setText(theGame.countries[owner].cities[city].production)
         this.goldLabel.setText(theGame.countries[owner].cities[city].trade)
-        this.happinessLabel.setText(theGame.countries[owner].cities[city].happiness)
+        this.tradeLabel.setText(theGame.countries[owner].cities[city].trade)
         this.strengthLabel.setText(theGame.countries[owner].cities[city].strength)
         this.foodLabel.setText(theGame.countries[owner].cities[city].food)
         this.popLabel.setText(theGame.countries[owner].cities[city].population)
@@ -186,7 +194,7 @@ class UI extends Phaser.Scene {
         this.cityLabel.setText(civNames[owner])
         this.productionLabel.setText(theGame.countries[owner].production)
         this.goldLabel.setText(theGame.countries[owner].trade)
-        this.happinessLabel.setText(theGame.countries[owner].happiness)
+        this.tradeLabel.setText(theGame.countries[owner].trade)
         this.strengthLabel.setText(theGame.countries[owner].strength)
         this.foodLabel.setText(theGame.countries[owner].food)
         this.popLabel.setText(theGame.countries[owner].population)
@@ -196,7 +204,7 @@ class UI extends Phaser.Scene {
       this.cityLabel.setText('')
       this.productionLabel.setText('-')
       this.goldLabel.setText('-')
-      this.happinessLabel.setText('-')
+      this.tradeLabel.setText('-')
       this.strengthLabel.setText('-')
       this.foodLabel.setText('-')
       this.popLabel.setText('-')

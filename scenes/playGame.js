@@ -558,21 +558,32 @@ class playGame extends Phaser.Scene {
         var newTrade = getBaseTrade(c, i)
         //add to country's running total
         //console.log(newFood)
+        //food newFood - citizen food = city.food(storage)
+        newFood -= city.population * 2
         city.food += newFood
+
         city.production += newProduction
+
         city.trade += newTrade
         //out -- resource use
         //2 units of food per citizen
-        var foodOut = city.population * 2
-        city.food -= foodOut
+
+
         //maint
-        var minuGold = 0
+        var minusGold = 0
         //every tile cost gold to maintain
         // minuGold += theGame.countries[0].tiles.length * 1
         //plus improvment maintenance
-        minuGold += city.maintenance
-        city.trade -= minuGold
-        if (city.food - foodOut > city.foodStorage * city.size) {
+        minusGold += city.maintenance
+        newTrade -= minusGold
+        city.trade += newTrade
+
+
+
+
+
+
+        if (city.food > city.foodStorage * city.size) {
           city.population++
           country.population += city.population
           city.food -= city.foodStorage * city.size
@@ -582,10 +593,22 @@ class playGame extends Phaser.Scene {
 
         }
         //update civ stats
-        country.food += city.food
+        country.food += newFood
 
-        country.production += city.production
-        country.trade += city.trade
+        country.production += newProduction
+        country.trade += newTrade
+
+        /*        this.treasuryPercent = 20
+               this.sciencePercent = 40
+               this.entertainmentPercent = 40
+               this.treasuryBox = 0
+               this.scienceBox = 0
+               this.entertainmentBox = 0 */
+
+
+
+
+
         //check units
         for (let u = 0; u < country.units.length; u++) {
           const unit = country.units[u];
@@ -621,14 +644,30 @@ class playGame extends Phaser.Scene {
               unit.isMoving = false
 
             }
+
             //console.log(destination)
 
           }
 
         }
       }
-      // console.log(theGame.countries[0].cities[0].tiles)
+      //country stuff
+      var treasBudget = Math.ceil(country.trade * (country.tresuryPercent / 100))
+      country.treasuryBox += treasBudget
+      var sciBudget = Math.ceil(country.trade * (country.sciencePercent / 100))
+      country.scienceBox = sciBudget
+      var entBudget = Math.ceil(country.trade * (country.entertainmentPercent / 100))
+      country.entertainmentBox = entBudget
+      //check tech research
+      if (country.currentResearch != null) {
+        if (country.scienceBox >= techTree[country.currentResearch].baseCost) {
+          country.techs.push(country.currentResearch)
+          country.scienceBox -= techTree[country.currentResearch].baseCost
+          country.currentResearch = null
+        }
 
+
+      }
     }
 
 

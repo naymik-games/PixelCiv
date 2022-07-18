@@ -3,9 +3,16 @@ class Country {
     this.capital = capital
     this.trade = 10
     this.production = 0
-    this.happiness = 10
+    this.culture = 10
     this.strength = 10
     this.food = 10
+    this.treasuryPercent = 20
+    this.sciencePercent = 40
+    this.entertainmentPercent = 40
+    this.treasuryBox = 0
+    this.scienceBox = 0
+    this.entertainmentBox = 0
+    this.currentResearch = null
     this.techAge = 0
     this.civ = civ
     this.color = color

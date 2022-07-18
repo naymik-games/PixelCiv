@@ -6,7 +6,7 @@ let techTree =
       id: 0,
       era: 0,
       description: 'sldfj',
-      prequisite: null,
+      prequisite: [],
       baseCost: 10,
       allowsImprovement: ['Granary'],
       allowsUnit: []
@@ -18,7 +18,7 @@ let techTree =
       id: 1,
       era: 0,
       description: 'sldfj',
-      prequisite: null,
+      prequisite: [],
       baseCost: 10,
       allowsImprovement: [],
       allowsUnit: []
@@ -30,7 +30,7 @@ let techTree =
       id: 2,
       era: 0,
       description: 'sldfj',
-      prequisite: null,
+      prequisite: [],
       baseCost: 10,
       allowsImprovement: [],
       allowsUnit: ['Archer']
@@ -54,7 +54,7 @@ let techTree =
       id: 4,
       era: 0,
       description: 'sldfj',
-      prequisite: null,
+      prequisite: [],
       baseCost: 10,
       allowsUnit: ['Spearman'],
       allowsImprovement: []
@@ -66,7 +66,7 @@ let techTree =
       id: 5,
       era: 0,
       description: 'sldfj',
-      prequisite: null,
+      prequisite: [],
       baseCost: 10,
       allowsUnit: [],
       allowsImprovement: ['City Walls', 'Palace']
@@ -78,7 +78,7 @@ let techTree =
       id: 6,
       era: 0,
       description: 'sldfj',
-      prequisite: null,
+      prequisite: [],
       baseCost: 10,
       allowsImprovement: ['Temple'],
       allowsUnit: []

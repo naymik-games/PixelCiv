@@ -13,7 +13,7 @@ let civNames = ['ROME', 'AMERICA', 'RUSSIA', 'FRANCE', 'CHINA', 'ENGLAND', 'EGYP
 let cityNames = [['ONE r', 'TWO r', 'THREE r', 'FOUR r', 'FIVE r', 'SIX r'], ['ONE a', 'TWO a', 'THREE a', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'], ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX']]
 let ageNames = ['Ancient', 'Medival', 'Industrial', 'Electric', 'Modern', 'Future']
 let improvementNames = ['FARM', 'LUMBER MILL', 'QUARY', 'ARCHERY', 'BLACK SMITH', 'FORT', 'MINE', 'TEMPLE', 'GRANARY', 'PALACE', 'AQUADUCT', 'COLUSEUM']
-let improvementInfo = [
+let improvementInfo2 = [
   { name: 'FARM', description: 'Increase food production', foodBonus: 1, productionBonus: 0, tradeBonus: 0, strengthBonus: 0, cultureBonus: 0, costProduction: 10, costGold: 5, days: 3, maintenance: 1 },
   { name: 'LUMBER MILL', description: 'Improve industry', foodBonus: 0, productionBonus: 2, tradeBonus: 0, strengthBonus: 0, cultureBonus: 0, costProduction: 10, costGold: 5, days: 3, maintenance: 1 },
   { name: 'QUARY', description: 'Increase industry', foodBonus: 0, productionBonus: 1, tradeBonus: 0, strengthBonus: 0, cultureBonus: 0, costProduction: 10, costGold: 5, days: 3, maintenance: 1 },

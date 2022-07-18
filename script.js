@@ -14,7 +14,7 @@ window.onload = function () {
     },
 
 
-    scene: [preloadGame, startGame, playGame, UI, build, buildUnit, unitUI, countryView, cityView]
+    scene: [preloadGame, startGame, playGame, UI, build, buildUnit, unitUI, countryView, cityView, scienceView]
   };
 
 

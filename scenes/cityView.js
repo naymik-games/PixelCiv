@@ -31,22 +31,29 @@ class cityView extends Phaser.Scene {
     var popIcon = this.add.image(75, 200, 'icons', 10).setScale(1).setAlpha(1);
     var popLabel = this.add.bitmapText(175, 200, 'topaz', this.city.population, 50).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
 
-
+    var foodBoxIcon = this.add.image(575, 400, 'icons', 11).setScale(1).setAlpha(1);
     var foodProduction = getBaseFood(theGame.currentPlayer, this.select.city)
     var foodOut = this.city.population * 2
     var food = this.city.food
+    var netFoodPerTurn = foodProduction - foodOut
     // var foodNet = (foodProduction + foodStorage) - foodOut
-    var foodNet = (food + foodProduction) - foodOut
-    var tempFoodText = food + ' + ' + foodProduction + ' - ' + foodOut + ' = ' + foodNet + ' / ' + this.city.foodStorage
+    var foodNet = (food + netFoodPerTurn)
+    var tempFoodText = foodProduction + ' - ' + foodOut
     var foodIcon = this.add.image(75, 400, 'icons', 9).setScale(1).setAlpha(1);
-    var tempFoodLabel = 'FS   FP   FO   FN   FS'
+    var tempFoodLabel = 'FPT  Citizen Need   Storage  Needed'
     var foodLabel = this.add.bitmapText(175, 300, 'topaz', tempFoodLabel, 40).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
     var foodText = this.add.bitmapText(175, 400, 'topaz', tempFoodText, 50).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+    var foodText = this.add.bitmapText(575, 400, 'topaz', foodNet, 50).setOrigin(.5, .5).setTint(0xAF5E49).setAlpha(1);
 
 
-    var productionIcon = this.add.image(75, 550, 'icons', 5).setScale(1).setAlpha(1);
+    var productionIcon = this.add.image(75, 750, 'icons', 5).setScale(1).setAlpha(1);
     var hammerProduction = getBaseProduction(theGame.currentPlayer, this.select.city)
-    var hptLabel = this.add.bitmapText(175, 550, 'topaz', hammerProduction + ' / ' + this.city.production, 40).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+    var hptLabel = this.add.bitmapText(175, 750, 'topaz', hammerProduction + ' / ' + this.city.production, 40).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+
+    var tradeIcon = this.add.image(75, 900, 'icons', 6).setScale(1).setAlpha(1);
+    var tradeProduction = getBaseTrade(theGame.currentPlayer, this.select.city)
+    var tradeLabel = this.add.bitmapText(175, 900, 'topaz', tradeProduction + ' / ' + this.city.trade, 40).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+
   }
   cancel() {
 
