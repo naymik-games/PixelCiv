@@ -24,7 +24,7 @@ class playGame extends Phaser.Scene {
   create() {
 
 
-
+    this.nationStarted = false
     this.messages = []
     //create new game
     if (gameLoad == 'new') {
@@ -131,18 +131,36 @@ class playGame extends Phaser.Scene {
       var startingPoints = this.getStartLcation(theGame.players)
       for (let i = 0; i < startingPoints.length; i++) {
         //var worldXY = gameBoard.tileXYToWorldXY(startingPoints[i].x, startingPoints[i].y)
-        var chess = gameBoard.tileXYZToChess(startingPoints[0].x, startingPoints[0].y, 10);
-        gameBoard.removeChess(chess, null, null, null, true)
-        theGame.tileData[startingPoints[0].y][startingPoints[0].x].hasFog = false
-        var obj = this.add.image(0, 0, 'cities', 0).setOrigin(.5, .75)
-        gameBoard.addChess(obj, startingPoints[i].x, startingPoints[i].y, CITY, true);
-        theGame.countries.push(new Country(startingPoints[i], colorArray[i], i, playerCiv))
-        theGame.countries[i].cities.push(new City(startingPoints[i], colorArray[i], i, 0, playerCiv))
-        theGame.tileData[startingPoints[i].y][startingPoints[i].x].owner = i
+
+        removeFog(startingPoints[0])
+        //  var obj = this.add.image(0, 0, 'cities', 0).setOrigin(.5, .75)
+        // gameBoard.addChess(obj, startingPoints[i].x, startingPoints[i].y, CITY, true);
+        //theGame.countries.push(new Country(startingPoints[i], colorArray[i], i, playerCiv))
+        // theGame.countries[i].cities.push(new City(startingPoints[i], colorArray[i], i, 0, playerCiv))
+
+        theGame.countries.push(new Country(null, colorArray[i], i, playerCiv))
+        // theGame.countries[i].cities.push(new City(null, colorArray[i], i, 0, playerCiv))
+        //theGame.tileData[startingPoints[i].y][startingPoints[i].x].owner = i
+        var uni = new Unit(1, startingPoints[i], theGame.day, true, false, theGame.countries[i].units.length, i, 0)
+        theGame.countries[i].units.push(uni)
+        theGame.countries[i].units[0].currentLocation = startingPoints[i]
+        theGame.tileData[startingPoints[i].y][startingPoints[i].x].units.push(theGame.countries[i].units[0].index)
+        this.placeUnit(theGame.countries[i].units[0])
+
+        //constructor(type, tile, turnAdded, complete, placed, index, owner, city)
+        var uni = new Unit(0, startingPoints[i], theGame.day, true, false, theGame.countries[i].units.length, i, 0)
+        theGame.countries[i].units.push(uni)
+        theGame.countries[i].units[1].currentLocation = startingPoints[i]
+        theGame.tileData[startingPoints[i].y][startingPoints[i].x].units.push(theGame.countries[i].units[1].index)
+        this.placeUnit(theGame.countries[i].units[1])
+
+
+        this.removeFogLayerTwo(startingPoints[i])
+        this.zoomToStart(startingPoints[i])
       }
       // console.log(theGame.countries)
       //initial border expansion
-      this.expandCountries()
+      // this.expandCountries()
 
     } else {
       //theGame.countries = gameData.countries
@@ -367,7 +385,8 @@ class playGame extends Phaser.Scene {
 
 
     //zoom to player
-    this.zoomTo(0)
+    //this.zoomTo(0)
+
     //this.zoomToCity()
     //update UI
     //this.UI.setStatusLabels(this.selectedTile)
@@ -413,21 +432,20 @@ class playGame extends Phaser.Scene {
     //remove fog
     if (theGame.tileData[tileXY.y][tileXY.x].hasFog) {
       if (unitChess.unitType == 1 || unitChess.unitType == 3) {
-        var chess = gameBoard.tileXYZToChess(tileXY.x, tileXY.y, 10);
-        gameBoard.removeChess(chess, null, null, null, true)
-        theGame.tileData[tileXY.y][tileXY.x].hasFog = false
+        removeFog(tileXY)
         var neighborTileXY = gameBoard.getNeighborTileXY(tileXY, [0, 1, 2, 3, 4, 5, 6, 7]);
         console.log(neighborTileXY)
-        for (let i = 0; i < neighborTileXY.length; i++) {
+        this.removeFogLayerTwo(tileXY)
+        /* for (let i = 0; i < neighborTileXY.length; i++) {
           const element = neighborTileXY[i];
-          var chess = gameBoard.tileXYZToChess(element.x, element.y, 10);
-          gameBoard.removeChess(chess, null, null, null, true)
-          theGame.tileData[element.y][element.x].hasFog = false
-        }
+          removeFog(element)
+        } */
       } else {
-        var chess = gameBoard.tileXYZToChess(tileXY.x, tileXY.y, 10);
+        /* var chess = gameBoard.tileXYZToChess(tileXY.x, tileXY.y, 10);
         gameBoard.removeChess(chess, null, null, null, true)
-        theGame.tileData[tileXY.y][tileXY.x].hasFog = false
+        theGame.tileData[tileXY.y][tileXY.x].hasFog = false */
+        removeFog(tileXY)
+        this.removeFogLayer(tileXY)
       }
 
     }
@@ -483,6 +501,10 @@ class playGame extends Phaser.Scene {
     theGame.tileData[tile.y][tile.x].city = ID
     theGame.tileData[tile.y][tile.x].cityCenter = true
     this.expandCity(theGame.currentPlayer, ID)
+    this.Messages.newMessage(theGame.countries[this.currentPlayer].cities[ID].name + ' founded!')
+    if (!this.nationStarted) {
+      this.nationStarted = true
+    }
     //console.log(theGame.countries[0].cities[0])
     // console.log(theGame.countries[0].cities[1])
     this.drawBorder(0)
@@ -554,6 +576,31 @@ class playGame extends Phaser.Scene {
     console.log('end round')
     //Check for improvements that are ready to build--right now just for player, todo: for computer players as well
 
+    if (!this.nationStarted) {
+      for (let i = 0; i < theGame.countries[0].units.length; i++) {
+        const unit = theGame.countries[0].units[i];
+        if (unit.isMoving) {
+          console.log('movement' + unitInfo[unit.id].m)
+          if (unitInfo[unit.id].m > 1 && unit.path.length >= unitInfo[unit.id].m) {
+            var temp = unit.path.splice(0, unitInfo[unit.id].m)
+            var destination = temp[1]
+          } else {
+            var destination = unit.path.shift()
+          }
+
+          this.moveToTile(unit, destination)
+          console.log(unit.path.length)
+          if (unit.path.length == 0) {
+            unit.path = null
+            unit.isMoving = false
+
+          }
+
+        }
+      }
+
+      return
+    }
     //  this.doBuildUnit(0)
     //in ////////
     //get terrain stat + improvement  bonus
@@ -596,9 +643,11 @@ class playGame extends Phaser.Scene {
         if (city.food > city.foodStorage * city.size) {
           city.population++
           country.population += city.population
+          this.Messages.newMessage('New citizen added to ' + city.name)
           city.food -= city.foodStorage * city.size
           if (city.population % 6 == 0) {
             city.size++
+            this.Messages.newMessage(city.name + ' increased size')
           }
 
         }
@@ -668,8 +717,6 @@ class playGame extends Phaser.Scene {
 
             }
 
-            //console.log(destination)
-
           }
 
         }
@@ -700,11 +747,16 @@ class playGame extends Phaser.Scene {
 
     // this.expandBorder(0)
     this.saveGame()
-    this.UI.setStatusLabels(null)
-    this.UI.updatePop(null)
+    // this.UI.setStatusLabels(null)
+    //  this.UI.updatePop(null)
   }
   zoomTo(owner) {
     var worldXY = gameBoard.tileXYToWorldXY(theGame.countries[owner].capital.x, theGame.countries[owner].capital.y)
+    this.cameras.main.pan(worldXY.x, worldXY.y, 2000, 'Power2');
+    this.cameras.main.zoomTo(3, 4000);
+  }
+  zoomToStart(start) {
+    var worldXY = gameBoard.tileXYToWorldXY(start.x, start.y)
     this.cameras.main.pan(worldXY.x, worldXY.y, 2000, 'Power2');
     this.cameras.main.zoomTo(3, 4000);
   }
@@ -768,6 +820,8 @@ class playGame extends Phaser.Scene {
         theGame.tileData[out[i].y][out[i].x].owner = theGame.countries[owner].id
         theGame.tileData[out[i].y][out[i].x].city = city
         theGame.countries[owner].cities[city].tiles.push(out[i])
+        removeFog(out[i])
+        this.removeFogLayer(out[i])
       }
 
 
@@ -782,7 +836,7 @@ class playGame extends Phaser.Scene {
     //cost
 
 
-    this.UI.setStatusLabels(this.selectedTile)
+    //this.UI.setStatusLabels(this.selectedTile)
     console.log(theGame.countries[owner].cities[city].improvements)
   }
 
@@ -842,6 +896,24 @@ class playGame extends Phaser.Scene {
   makeCoo(row, col) {
     return { x: col, y: row }
   }
+  removeFogLayerTwo(center) {
+    var out = gameBoard.getNeighborTileXY(center, null);
+    for (let i = 0; i < out.length; i++) {
+      const element = out[i];
+      removeFog(element)
+      this.removeFogLayer(element)
+    }
+  }
+  removeFogLayer(center) {
+    var out = gameBoard.getNeighborTileXY(center, null);
+    for (let i = 0; i < out.length; i++) {
+      const element = out[i];
+      removeFog(element)
+
+    }
+    // var out = board.getNeighborTileXY(srcTileXY, null, out);
+
+  }
   expandBorder(player) {
     var hArray = theGame.countries[player].tiles;
     var newTiles = [];
@@ -865,21 +937,7 @@ class playGame extends Phaser.Scene {
 
     this.drawBorder(player)
   }
-  drawBordersTest() {
-    for (var c = 0; c < theGame.countries.length; c++) {
-      this.drawBorderTest(c)
-    }
-  }
-  drawBorderTest(owner) {
-    this.graphicsC0.lineStyle(6, colorArray[owner], .8)
-    var cArray = theGame.countries[owner].tiles;
-    for (var c = 1; c < cArray.length; c++) {
-      var points = gameBoard.getGridPoints(cArray[c].x, cArray[c].y)
-      this.graphicsC0.strokePoints(points, true);
-    }
-    // var points = gameBoard.getGridPoints(theGame.countries[owner].capital.x, theGame.countries[owner].capital.y)
-    // this.graphicsC0.strokePoints(points, true);
-  }
+
   highlightTile(tile) {
     this.highlight.clear()
     var points = gameBoard.getGridPoints(tile.x, tile.y)

@@ -54,7 +54,7 @@ class UI extends Phaser.Scene {
             this.Main.endRound()
           }
           this.Main.endPlayerTurn() */
-      this.currentPlayerText.setText(civs[theGame.currentPlayer].name)
+      this.currentPlayerText.setText(civs[theGame.countries[theGame.currentPlayer].civ].name)
     }, this)
 
 
@@ -176,7 +176,7 @@ class UI extends Phaser.Scene {
   }
   setStatusLabels(selected, type) {
     //console.log(selected)
-    this.currentPlayerText.setText(civs[theGame.playerCiv].name)
+    //this.currentPlayerText.setText(civs[theGame.playerCiv].name)
     if (selected != null) {
       if (type == 'city') {
         var owner = theGame.tileData[selected.y][selected.x].owner
@@ -188,16 +188,6 @@ class UI extends Phaser.Scene {
         this.strengthLabel.setText(theGame.countries[owner].cities[city].strength)
         this.foodLabel.setText(theGame.countries[owner].cities[city].food)
         this.popLabel.setText(theGame.countries[owner].cities[city].population)
-      } else {
-        var owner = theGame.tileData[selected.y][selected.x].owner
-        var city = theGame.tileData[selected.y][selected.x].city
-        this.cityLabel.setText(civNames[owner])
-        this.productionLabel.setText(theGame.countries[owner].production)
-        this.goldLabel.setText(theGame.countries[owner].trade)
-        this.tradeLabel.setText(theGame.countries[owner].trade)
-        this.strengthLabel.setText(theGame.countries[owner].strength)
-        this.foodLabel.setText(theGame.countries[owner].food)
-        this.popLabel.setText(theGame.countries[owner].population)
       }
 
     } else {

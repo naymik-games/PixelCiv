@@ -199,10 +199,15 @@ function setUnitCurrentLocationByIndex(owner, unitIndex, tileXY) {
 function settleNewCity(owner, tile, unit, chess, cityID) {
   console.log('settle' + tile.x)
   theGame.countries[owner].cities.push(new City(tile, theGame.countries[owner].color, theGame.countries[owner].id, cityID, theGame.countries[owner].civ))
-  console.log(this.cities)
+  console.log(theGame.countries[owner].cities)
   // chess.setAlpha(0)
 }
-
+function settleFirstCity(owner, tile, unit, chess, cityID) {
+  console.log('settle' + tile.x)
+  theGame.countries[owner].cities.push(new City(tile, theGame.countries[owner].color, theGame.countries[owner].id, cityID, theGame.countries[owner].civ))
+  console.log(theGame.countries[owner].cities)
+  // chess.setAlpha(0)
+}
 
 
 
@@ -222,6 +227,14 @@ function addTile(x, y, owner, city) {
   theGame.tileData[y][x].owner = owner
   theGame.tileData[y][x].city = city
   theGame.countries[owner].cities[city].tiles.push({ x: x, y: y })
+}
+
+
+
+function removeFog(tile) {
+  var chess = gameBoard.tileXYZToChess(tile.x, tile.y, 10);
+  gameBoard.removeChess(chess, null, null, null, true)
+  theGame.tileData[tile.y][tile.x].hasFog = false
 }
 
 

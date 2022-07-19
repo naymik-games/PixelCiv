@@ -3,6 +3,7 @@ class showMessages extends Phaser.Scene {
     super("showMessages");
   }
   preload() {
+    this.load.plugin('rexlifetimeplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexlifetimeplugin.min.js', true);
 
 
 
@@ -15,9 +16,9 @@ class showMessages extends Phaser.Scene {
   create() {
     this.messagesContaier = this.add.container()
     this.count = 0
-    this.newMessage('hello world')
-    this.newMessage('Really, I said hello')
-    this.newMessage('nevermind')
+    //this.newMessage('hello world')
+    // this.newMessage('Really, I said hello')
+    // this.newMessage('nevermind')
     /* this.testMessage = this.add.image(0, 100, 'blank').setOrigin(0).setTint(0x000000).setAlpha(.7);
     this.testMessage.displayWidth = game.config.width;
     this.testMessage.displayHeight = 75
@@ -50,7 +51,7 @@ class showMessages extends Phaser.Scene {
     // var removedEl = this.messages.splice(message.id, 1);
     // console.log(removedEl)
     child.destroy()
-    console.log(this.messagesContaier)
+    // console.log(this.messagesContaier)
     var num = this.messagesContaier.count()
     var tempCount = 0
     this.messagesContaier.iterate(function (child) {
