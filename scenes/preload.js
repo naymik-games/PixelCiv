@@ -132,6 +132,11 @@ class preloadGame extends Phaser.Scene {
       spacing: 1,
       margin: 1
     });
+    this.load.spritesheet("citizens", "assets/sprites/citizens.png", {
+      frameWidth: 58,
+      frameHeight: 58
+
+    });
     this.load.image('blank', 'assets/sprites/blank.png');
     this.load.image('tile', 'assets/sprites/tile.png');
     this.load.image("transp", "assets/sprites/transp.png");

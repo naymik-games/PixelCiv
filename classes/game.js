@@ -5,6 +5,7 @@ class GAME {
     this.gameSeed = seed
     this.players = players
     this.playerCiv = player
+    this.unitIndex = 0
     this.day = 1
     this.age = 0
     this.countries = []

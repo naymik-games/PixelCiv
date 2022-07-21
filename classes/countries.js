@@ -1,11 +1,12 @@
 class Country {
   constructor(capital, color, id, civ) {
     this.capital = capital
-    this.trade = 10
+    this.government = 1
+    this.trade = 0
     this.production = 0
-    this.culture = 10
-    this.strength = 10
-    this.food = 10
+    this.culture = 0
+    this.strength = 0
+    this.food = 0
     this.treasuryPercent = 20
     this.sciencePercent = 40
     this.entertainmentPercent = 40

@@ -14,7 +14,9 @@ window.onload = function () {
     },
 
 
-    scene: [preloadGame, startGame, playGame, UI, showMessages, build, buildUnit, unitUI, countryView, cityView, scienceView]
+    scene: [preloadGame, startGame, playGame, UI, showMessages, build, buildUnit, unitUI, countryView, cityView, scienceView, worldView],
+    //pixelArt: true,
+    // roundPixels: true
   };
 
 

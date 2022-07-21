@@ -149,10 +149,12 @@ class buildUnit extends Phaser.Scene {
     this.menuContainer.setAlpha(0)
 
 
-
-    var uni = new Unit(this.buildButton.type, this.Main.selectedTile, theGame.day, false, false, theGame.countries[this.select.owner].units.length, this.select.owner, this.select.city)
+    theGame.unitIndex++
+    var uni = new Unit(this.buildButton.type, this.Main.selectedTile, theGame.day, false, false, theGame.unitIndex, this.select.owner, this.select.city)
 
     theGame.countries[this.select.owner].units.push(uni)
+    console.log('index' + uni.index)
+    console.log('id' + uni.id)
     theGame.countries[this.select.owner].cities[this.select.city].currentUnitProduction = { id: this.buildButton.type }
     //theGame.countries[this.select.owner].cities[this.select.city].food -= unitInfo[this.buildButton.type].costFood
     //theGame.countries[this.select.owner].cities[this.select.city].production -= unitInfo[this.buildButton.type].costProduction

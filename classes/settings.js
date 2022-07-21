@@ -1,14 +1,8 @@
 const Random = Phaser.Math.Between;
-const COLOR_PRIMARY = 0x03a9f4;
-const COLOR_LIGHT = 0x67daff;
-const COLOR_DARK = 0x007ac1;
-const FARM = 0
-const MINE = 1
-const GOTO = 2
-const DISBAND = 3
-const SETTLE = 4
-const FORTIFY = 5
-const SCOUT = 6
+const COLOR_MAIN_ORANGE = 0xAF5E49;
+const COLOR_MAIN_TAN = 0xe1c59e;
+const COLOR_DARK = 0xe1c59e;
+
 //TILE z
 const RESOURCE = 1
 const CITY = 2
@@ -19,12 +13,7 @@ const UNIT = 5
 let civIndex = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 let ageNames = ['Ancient', 'Medival', 'Industrial', 'Electric', 'Modern', 'Future']
 
-let unitInfo = [
-  { name: 'WORKER', description: 'Prepare tiles adjacent to the city for improvement', costProduction: 10, days: 5, workTime: 4, actions: [FARM, MINE, GOTO, FORTIFY], a: 0, d: 0, m: 1 },
-  { name: 'SETTLER', description: 'Settles a new City', costProduction: 30, days: 10, actions: [GOTO, SETTLE], a: 0, d: 0, m: 1 },
-  { name: 'WARRIOR', description: 'Basic defense and attack', costProduction: 10, days: 5, actions: [GOTO, FORTIFY], a: 1, d: 1, m: 1 },
-  { name: 'SCOUT', description: 'Explore the map', costProduction: 10, days: 5, actions: [GOTO, FORTIFY, SCOUT], a: 0, d: 0, m: 2 }
-]
+
 let techAges = ['Ancient', 'Middle Ages', 'Industrial', 'Modern']
 var colorArray = [0x2e86c1, 0xc0392b, 0x7d3c98, 0x229954, 0xf1c40f,
   0xdc7633, 0x7f8c8d, 0x2c3e50, 0xecf0f1, 0xB34D4D,

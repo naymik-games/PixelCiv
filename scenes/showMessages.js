@@ -25,6 +25,8 @@ class showMessages extends Phaser.Scene {
     this.infoText = this.add.bitmapText(15, this.testMessage.y + 30, 'topaz', 'status message', 40).setOrigin(0, .5).setTint(0xcbf7ff).setAlpha(1); */
 
     // + this.messagesContaier.count() * 75
+    var clearText = this.add.bitmapText(885, 300, 'topaz', 'CLEAR', 40).setOrigin(1, .5).setTint(0xcbf7ff).setAlpha(1).setInteractive();
+    clearText.on('pointerdown', this.clearAll, this)
   }
   newMessage(text) {
     var messageContainer = this.add.container()
@@ -40,7 +42,7 @@ class showMessages extends Phaser.Scene {
     infoText.on('pointerup', this.removeMessage.bind(this, infoText));
     messageContainer.add(infoText)
     // this.messages.push(messageContainer)
-    messageContainer.y = 100 + this.messagesContaier.count() * 75
+    messageContainer.y = 300 + this.messagesContaier.count() * 75
     this.messagesContaier.add(messageContainer)
     this.count++
   }
@@ -55,8 +57,11 @@ class showMessages extends Phaser.Scene {
     var num = this.messagesContaier.count()
     var tempCount = 0
     this.messagesContaier.iterate(function (child) {
-      child.y = 100 + tempCount * 75
+      child.y = 300 + tempCount * 75
       tempCount++
     });
+  }
+  clearAll() {
+    this.messagesContaier.removeAll(true);
   }
 }

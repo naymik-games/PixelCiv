@@ -14,6 +14,7 @@ class Unit {
     this.performingAction = false
     this.currentAction = null
     this.isMoving = false
+    this.isAutoWork = false
     this.path = null
     this.dayPlaced = null
     this.tile = null

@@ -9,6 +9,7 @@ class Tiles {
     this.cityCenter = false
     //id of countyr
     this.owner = owner
+    this.cultureOwner = owner
     //id of city
     this.city = ownerCity
     this.image = null
@@ -16,6 +17,8 @@ class Tiles {
     this.terrain = index
     this.improvements = []
     this.units = []
+    this.isWorked = false
+    this.citizen = null
     this.hasFog = true
     this.values = this.makeValues(index.index)
     this.resource = null

@@ -28,7 +28,7 @@ class countryView extends Phaser.Scene {
     //var titleText = this.add.bitmapText(450, 375, 'topaz', civNames[theGame.playerCiv], 80).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
     this.statusIcons = this.add.image(900, 100, 'status').setOrigin(1, 0)
 
-    this.cityLabel = this.add.bitmapText(25, 150, 'topaz', 'sdfgfd ', 50).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
+    this.govLabel = this.add.bitmapText(25, 150, 'topaz', governments[theGame.countries[theGame.currentPlayer].government].name, 45).setOrigin(0, .5).setTint(0xAF5E49).setAlpha(1);
 
     this.popLabel = this.add.bitmapText(350, 225, 'topaz', theGame.countries[theGame.currentPlayer].population, 45).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
 

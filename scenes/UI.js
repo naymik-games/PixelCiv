@@ -12,14 +12,19 @@ class UI extends Phaser.Scene {
   create() {
     this.Main = this.scene.get('playGame');
 
-
+    this.citizensVisible = false
     this.subHeader = this.add.image(game.config.width / 2, 0, 'blank').setOrigin(.5, 0).setTint(0xAF5E49).setAlpha(1);
     this.subHeader.displayWidth = game.config.width;
     this.subHeader.displayHeight = 100;
 
     this.currentPlayerText = this.add.bitmapText(10, 50, 'topaz', '', 55).setOrigin(0, .5).setTint(0xe1c59e).setAlpha(1).setInteractive();
     // this.currentPlayerText = this.add.bitmapText(10, 50, 'topaz', civNames[0], 55).setOrigin(0, .5).setTint(0xe1c59e).setAlpha(1).setInteractive();
-
+    this.worldView = this.add.image(350, 50, 'icons', 22).setInteractive().setAlpha(1)
+    this.worldView.on('pointerdown', function () {
+      this.scene.pause('playGame');
+      this.scene.pause();
+      this.scene.launch('worldView');
+    }, this)
     this.scienceView = this.add.image(450, 50, 'icons', 17).setInteractive().setAlpha(1)
     this.scienceView.on('pointerdown', function () {
       this.scene.pause('playGame');
@@ -96,7 +101,7 @@ class UI extends Phaser.Scene {
 
     this.infoText = this.add.bitmapText(15, game.config.height - 50, 'topaz', 'status', 40).setOrigin(0, .5).setTint(0xcbf7ff).setAlpha(1);
 
-    this.tempText = this.add.bitmapText(15, game.config.height - 250, 'topaz', 'temp', 50).setOrigin(0, .5).setTint(0xcbf7ff).setAlpha(1);
+    this.tempText = this.add.bitmapText(15, game.config.height - 450, 'topaz', 'temp', 50).setOrigin(0, .5).setTint(0xcbf7ff).setAlpha(1);
 
 
     var toggle = 0
@@ -115,10 +120,14 @@ class UI extends Phaser.Scene {
         gameBoard.setInteractive(true)
       }
     }, this)
+
+
+
     this.cityButton = this.add.image(75, 1490, 'icons', 15).setInteractive().setAlpha(0)
     this.cityButton.on('pointerdown', function () {
       if (this.Main.currentPlayer > 0) { return }
       if (this.Main.selectedTile == null) { return }
+      this.infoText.setText('View city details')
       this.scene.pause('playGame');
       this.scene.pause();
       this.scene.launch('cityView');
@@ -127,6 +136,7 @@ class UI extends Phaser.Scene {
     this.build.on('pointerdown', function () {
       if (this.Main.currentPlayer > 0) { return }
       if (this.Main.selectedTile == null) { return }
+      this.infoText.setText('Add city improvement')
       this.scene.pause('playGame');
       this.scene.pause();
       this.scene.launch('build');
@@ -135,10 +145,30 @@ class UI extends Phaser.Scene {
     this.buildUnit.on('pointerdown', function () {
       if (this.Main.currentPlayer > 0) { return }
       if (this.Main.selectedTile == null) { return }
+      this.infoText.setText('Add city unit')
       this.scene.pause('playGame');
       this.scene.pause();
       this.scene.launch('buildUnit');
     }, this)
+    this.citizenButton = this.add.image(375, 1490, 'icons', 23).setInteractive().setAlpha(0)
+    this.citizenButton.on('pointerdown', function () {
+      if (this.Main.currentPlayer > 0) { return }
+      if (this.Main.selectedTile == null) { return }
+      //this.scene.pause('playGame'); 
+      //this.scene.pause();
+      //this.scene.launch('buildUnit');
+      if (this.citizensVisible) {
+        this.Main.hideCitizens()
+        this.citizensVisible = false
+        this.infoText.setText('')
+      } else {
+        this.Main.showCitizens()
+        this.citizensVisible = true
+        this.infoText.setText('Select citizen and then new tile')
+      }
+
+    }, this)
+
     this.Main.events.on('info', function (data) {
       this.infoText.setText(data)
     }, this);
@@ -154,6 +184,18 @@ class UI extends Phaser.Scene {
       this.cityContainer.setAlpha(1)
     } else {
       this.cityContainer.setAlpha(0)
+    }
+  }
+  makeCitizenLayer() {
+    this.citizenContainer = this.add.container()
+    var owner = theGame.tileData[this.Main.selectedTile.y][this.Main.selectedTile.x].owner
+    var city = theGame.tileData[this.Main.selectedTile.y][this.Main.selectedTile.x].city
+    for (let i = 0; i < theGame.countries[owner].cities[city].citizens.length; i++) {
+      const citizen = theGame.countries[owner].cities[city].citizens[i];
+      var worldXY = gameBoard.tileXYToWorldXY(citizen.tile.x, citizen.tile.y)
+      console.log(citizen.tile)
+      var citizenIcon = this.add.image(worldXY.x, worldXY.y, 'citizens', citizen.state).setScale(1).setAlpha(1).setDepth(7);
+      gameBoard.addChess(citizenIcon, citizen.tile.x, citizen.tile.y, 9, true);
     }
   }
   updatePop(selected, type) {
@@ -182,6 +224,7 @@ class UI extends Phaser.Scene {
         var owner = theGame.tileData[selected.y][selected.x].owner
         var city = theGame.tileData[selected.y][selected.x].city
         this.cityLabel.setText(theGame.countries[owner].cities[city].name)
+        this.sizeText.setText(theGame.countries[owner].cities[city].size)
         this.productionLabel.setText(theGame.countries[owner].cities[city].production)
         this.goldLabel.setText(theGame.countries[owner].cities[city].trade)
         this.tradeLabel.setText(theGame.countries[owner].cities[city].trade)

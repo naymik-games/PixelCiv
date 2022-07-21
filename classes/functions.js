@@ -16,10 +16,12 @@ function getBaseFood(owner, city) {
   for (let i = 0; i < theGame.countries[owner].cities[city].tiles.length; i++) {
     //{x: 4, y: 3}
     const tile = theGame.countries[owner].cities[city].tiles[i];
+    if (theGame.tileData[tile.y][tile.x].isWorked) {
+      food += theGame.tileData[tile.y][tile.x].values.Food
+      food += getTileImprovemntFood(tile)
+      food += getTileBonusFood(tile)
+    }
 
-    food += theGame.tileData[tile.y][tile.x].values.Food
-    food += getTileImprovemntFood(tile)
-    food += getTileBonusFood(tile)
   }
   return food
 }
@@ -61,10 +63,11 @@ function getBaseProduction(owner, city) {
   for (let i = 0; i < theGame.countries[owner].cities[city].tiles.length; i++) {
     //{x: 4, y: 3}
     const tile = theGame.countries[owner].cities[city].tiles[i];
-    production += theGame.tileData[tile.y][tile.x].values.Production
-    production += getTileImprovemntProduction(tile)
-    production += getTileBonusProduction(tile)
-
+    if (theGame.tileData[tile.y][tile.x].isWorked) {
+      production += theGame.tileData[tile.y][tile.x].values.Production
+      production += getTileImprovemntProduction(tile)
+      production += getTileBonusProduction(tile)
+    }
   }
   return production
 }
@@ -102,11 +105,12 @@ function getTileBonusProduction(tile) {
 function getBaseTrade(owner, city) {
   var trade = 0
   for (let i = 0; i < theGame.countries[owner].cities[city].tiles.length; i++) {
-    //{x: 4, y: 3}
     const tile = theGame.countries[owner].cities[city].tiles[i];
-    trade += theGame.tileData[tile.y][tile.x].values.Trade
-    trade += getTileBonusTrade(tile)
-
+    if (theGame.tileData[tile.y][tile.x].isWorked) {
+      const tile = theGame.countries[owner].cities[city].tiles[i];
+      trade += theGame.tileData[tile.y][tile.x].values.Trade
+      trade += getTileBonusTrade(tile)
+    }
   }
   return trade
 }
@@ -173,6 +177,7 @@ function getUnitsDetailsOnTile(tileXY) {
 
 function getUnitsOnTile(tileXY) {
   var chess = gameBoard.tileXYToChessArray(tileXY.x, tileXY.y)
+
   var results = []
   for (let i = 0; i < chess.length; i++) {
     const thing = chess[i];
@@ -186,10 +191,16 @@ function getUnitsOnTile(tileXY) {
 function getUnitByIndex(owner, index) {
   //myArray.filter(x => x.id === '45');
   let impr = theGame.countries[owner].units.filter(x => x.index === index);
+  console.log('filterd index:')
+  console.log(impr[0])
   return impr[0]
+
 }
 
-
+function getCitizenByID(city, index) {
+  let impr = theGame.countries[0].cities[city].citizens.filter(x => x.index === index);
+  return impr[0]
+}
 
 function setUnitCurrentLocationByIndex(owner, unitIndex, tileXY) {
   var unit = this.getUnitByIndex(owner, unitIndex)
@@ -198,15 +209,31 @@ function setUnitCurrentLocationByIndex(owner, unitIndex, tileXY) {
 
 function settleNewCity(owner, tile, unit, chess, cityID) {
   console.log('settle' + tile.x)
-  theGame.countries[owner].cities.push(new City(tile, theGame.countries[owner].color, theGame.countries[owner].id, cityID, theGame.countries[owner].civ))
+  var tempTile = { x: tile.x, y: tile.y }
+  theGame.countries[owner].cities.push(new City(tempTile, theGame.countries[owner].color, theGame.countries[owner].id, cityID, theGame.countries[owner].civ))
   console.log(theGame.countries[owner].cities)
   // chess.setAlpha(0)
 }
-function settleFirstCity(owner, tile, unit, chess, cityID) {
-  console.log('settle' + tile.x)
-  theGame.countries[owner].cities.push(new City(tile, theGame.countries[owner].color, theGame.countries[owner].id, cityID, theGame.countries[owner].civ))
-  console.log(theGame.countries[owner].cities)
-  // chess.setAlpha(0)
+
+function getUnworkedTile(c, i) {
+  for (let j = 1; j < theGame.countries[c].cities[i].tiles.length; j++) {
+    const tile = theGame.countries[c].cities[i].tiles[j];
+    if (!theGame.tileData[tile.y][tile.x].isWorked) {
+      return tile
+    }
+  }
+}
+
+function setCulture(owner, city, center, radius) {
+  var out = gameBoard.filledRingToTileXYArray(center, radius, true)
+  theGame.countries[owner].cities[city].tilesCulture = out
+  console.log(out)
+  for (let i = 0; i < out.length; i++) {
+    const element = out[i];
+
+    theGame.tileData[element.y][element.x].cultureOwner = owner
+
+  }
 }
 
 
@@ -237,7 +264,148 @@ function removeFog(tile) {
   theGame.tileData[tile.y][tile.x].hasFog = false
 }
 
+function getTileRing(center, radius) {
+  let tiles = [];
+  var top = Math.ceil(center.y - radius),
+    bottom = Math.ceil(center.y + radius);
 
+  for (var y = top; y <= bottom; y++) {
+    var dy = y - center.y;
+    var dx = Math.sqrt(radius * radius - dy * dy);
+    var left = Math.ceil(center.x - dx),
+      right = Math.floor(center.x + dx);
+    for (var x = left; x <= right; x++) {
+      tiles.push({ x: x, y: y })
+    }
+  }
+  console.log(tiles)
+  return tiles
+}
+function getTileRingOutline(center, radius) {
+
+  let tiles = [];
+
+  /* for (let r = 0; r <= Math.floor(radius * Math.sqrt(0.5)); r++) {
+    let d = Math.floor(Math.sqrt(radius * radius - r * r));
+    tiles.push(
+      { x: center.x - d, y: center.y + r },
+      { x: center.x + d, y: center.y + r },
+      { x: center.x - d, y: center.y - r },
+      { x: center.x + d, y: center.y - r },
+      { x: center.x + r, y: center.y - d },
+      { x: center.x + r, y: center.y + d },
+      { x: center.x - r, y: center.y - d },
+      { x: center.x - r, y: center.y + d }
+    );
+
+    ar isTileInBoard = board.contains(tileX, tileY);
+  } */
+
+  console.log(radius)
+  for (let r = 0; r <= Math.floor(radius * Math.sqrt(0.5)); r++) {
+    let d = Math.floor(Math.sqrt(radius * radius - r * r));
+
+    if (gameBoard.contains(center.x - d, center.y + r)) {
+      tiles.push({ x: center.x - d, y: center.y + r })
+    }
+    if (gameBoard.contains(center.x + d, center.y + r)) {
+      tiles.push({ x: center.x + d, y: center.y + r })
+    }
+    if (gameBoard.contains(center.x - d, center.y - r)) {
+      tiles.push({ x: center.x - d, y: center.y - r })
+    }
+    if (gameBoard.contains(center.x + d, center.y - r)) {
+      tiles.push({ x: center.x + d, y: center.y - r })
+    }
+    if (gameBoard.contains(center.x + r, center.y - d)) {
+      tiles.push({ x: center.x + r, y: center.y - d })
+    }
+    if (gameBoard.contains(center.x + r, center.y + d)) {
+      tiles.push({ x: center.x + r, y: center.y + d })
+    }
+    if (gameBoard.contains(center.x - r, center.y - d)) {
+      tiles.push({ x: center.x - r, y: center.y - d })
+    }
+    if (gameBoard.contains(center.x - r, center.y + d)) {
+      tiles.push({ x: center.x - r, y: center.y + d })
+    }
+    /*  tiles.push(
+       { x: center.x - d, y: center.y + r },
+       { x: center.x + d, y: center.y + r },
+       { x: center.x - d, y: center.y - r },
+       { x: center.x + d, y: center.y - r },
+       { x: center.x + r, y: center.y - d },
+       { x: center.x + r, y: center.y + d },
+       { x: center.x - r, y: center.y - d },
+       { x: center.x - r, y: center.y + d }
+     ); */
+  }
+
+
+  console.log(tiles)
+
+  return tiles
+
+  var results = []
+
+  results.push({ x: center.x - radius, y: center.y - radius })
+  results.push({ x: center.x - radius, y: center.y })
+  results.push({ x: center.x - radius, y: center.y + radius })
+  results.push({ x: center.x, y: center.y - radius })
+  results.push({ x: center.x, y: center.y + radius })
+  results.push({ x: center.x + radius, y: center.y - radius })
+  results.push({ x: center.x + radius, y: center.y })
+  results.push({ x: center.x + radius, y: center.y + radius })
+  return results
+}
+
+
+/* int top    = ceil(center.y - radius),
+    bottom = floor(center.y + radius);
+
+for (int y = top; y <= bottom; y++) {
+    int dy = y - center.y,
+        dx = int(floor(sqrt(radius*radius - dy*dy)));
+    int left  = center.x - dx;
+        right = center.x + dx;
+    // draw tile (left, y)
+    // draw tile (right, y)
+}
+
+for (int r = 0; r <= floor(radius * sqrt(0.5)); r++) {
+  int d = int(floor(sqrt(radius*radius - r*r)));
+  // draw tile (center.x - d, center.y + r)
+  // draw tile (center.x + d, center.y + r)
+  // draw tile (center.x - d, center.y - r)
+  // draw tile (center.x + d, center.y - r)
+  // draw tile (center.x + r, center.y - d)
+  // draw tile (center.x + r, center.y + d)
+  // draw tile (center.x - r, center.y - d)
+  // draw tile (center.x - r, center.y + d)
+}
+
+outline() {
+  const {center, radius} = this;
+  let tiles = [];
+  
+  for (let r = 0; r <= Math.floor(this.radius * Math.sqrt(0.5)); r++) {
+      let d = Math.floor(Math.sqrt(radius*radius - r*r));
+      tiles.push(
+          {x: center.x - d, y: center.y + r},
+          {x: center.x + d, y: center.y + r},
+          {x: center.x - d, y: center.y - r},
+          {x: center.x + d, y: center.y - r},
+          {x: center.x + r, y: center.y - d},
+          {x: center.x + r, y: center.y + d},
+          {x: center.x - r, y: center.y - d},
+          {x: center.x - r, y: center.y + d}
+      );
+  }
+  return tiles;
+}, */
+/* x-1, y-1	x, y-1	x+1, y-1
+x-1,y	    x, y	  x+1, y
+x-1,y+1	  x, y+1	x+1,y+1 */
 
 /****************************************************************************
  ...
