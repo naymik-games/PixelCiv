@@ -3,37 +3,43 @@ let abilities = [
     name: 'Militaristic',
     freeTech: 2,
     effect1: 'reduced military improvement costs',
-    effect2: 'battlefied promotions'
+    effect2: 'battlefied promotions',
+    workReduction: 0
   },
   {
     name: 'Commercial',
     freeTech: 1,
     effect1: 'extra commerce city center',
-    effect2: 'lower corruption'
+    effect2: 'lower corruption',
+    workReduction: 0
   },
   {
     name: 'Expansionist',
     freeTech: 0,
     effect1: 'scout',
-    effect2: 'better huts'
+    effect2: 'better huts',
+    workReduction: 0
   },
   {
     name: 'Scientific',
     freeTech: 4,
     effect1: 'free tech each era',
-    effect2: 'reduced science improvement'
+    effect2: 'reduced science improvement',
+    workReduction: 0
   },
   {
     name: 'Religious',
     freeTech: 6,
     effect1: 'reduced religious improvement',
-    effect2: 'no anarchy'
+    effect2: 'no anarchy',
+    workReduction: 0
   },
   {
     name: 'Industrious',
     freeTech: 5,
     effect1: 'faster work',
-    effect2: 'extrea production city center'
+    effect2: 'extrea production city center',
+    workReduction: 1
   }
 
 ]
@@ -441,6 +447,7 @@ let civs = [
   }
 ]
 //corruption 5 catastrophic, 4 rampant, 3 problematic, 2 nuisance, 1 communial, 0 minimal
+let workModifier = [1.5, 1, 1, 1, .5, 1, 1, .75]
 let governments = [
   {
     id: 0,
@@ -451,7 +458,7 @@ let governments = [
     warWeariness: 0,
     draftRate: 0,
     policeLimit: 0,
-    unitSupport: { town: 0, city: 0, metro: 0 },
+    unitSupport: [0, 0, 0, 0],
     special: 'no production/no research. no maintenance'
   },
   {
@@ -463,7 +470,7 @@ let governments = [
     warWeariness: 0,
     draftRate: 2,
     policeLimit: 2,
-    unitSupport: { town: 4, city: 4, metro: 4 },
+    unitSupport: [0, 4, 4, 4],//n/a, town 1, city, 2, metro 3
     special: 'Any square which produces more than 2 food, commerce, or shields produces 1 less.'
   },
   {
@@ -475,7 +482,7 @@ let governments = [
     warWeariness: 1,
     draftRate: 2,
     policeLimit: 3,
-    unitSupport: { town: 5, city: 2, metro: 1 },
+    unitSupport: [0, 5, 2, 1],
     special: 'Units over the cap cost 3 gpt'
   },
   {
@@ -487,7 +494,7 @@ let governments = [
     warWeariness: 0,
     draftRate: 2,
     policeLimit: 3,
-    unitSupport: { town: 2, city: 4, metro: 8 },
+    unitSupport: [0, 2, 4, 8],
     special: 'Units over the cap cost 3 gpt'
   },
   {
@@ -499,7 +506,7 @@ let governments = [
     warWeariness: 0,
     draftRate: 2,
     policeLimit: 4,
-    unitSupport: { town: 4, city: 7, metro: 10 },
+    unitSupport: [0, 4, 7, 10],
     special: 'Pop declines when you change over. (1 in a Town, 2 in a City and 3 in a Metro), culture limited'
   },
   {
@@ -511,7 +518,7 @@ let governments = [
     warWeariness: 0,
     draftRate: 2,
     policeLimit: 4,
-    unitSupport: { town: 6, city: 6, metro: 6 },
+    unitSupport: [0, 6, 6, 6],
     special: 'Pop declines when you change over. (1 in a Town, 2 in a City and 3 in a Metro), culture limited'
   },
   {
@@ -523,7 +530,7 @@ let governments = [
     warWeariness: 1,
     draftRate: 1,
     policeLimit: 0,
-    unitSupport: { town: 1, city: 3, metro: 4 },
+    unitSupport: [0, 1, 3, 4],
     special: ' Military over the cap cost 2 gpt. Adds 1 commerce to any tile already producing at least 1'
   },
   {
@@ -535,7 +542,7 @@ let governments = [
     warWeariness: 2,
     draftRate: 1,
     policeLimit: 0,
-    unitSupport: { town: 0, city: 0, metro: 0 },
+    unitSupport: [0, 0, 0, 0],
     special: 'Adds 1 commerce to any tile already producing at least 1'
   }
 ]

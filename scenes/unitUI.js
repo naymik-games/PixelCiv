@@ -19,7 +19,7 @@ class unitUI extends Phaser.Scene {
     this.onUnit = 0
     this.unitTotal = this.units.length
     this.Main = this.scene.get('playGame');
-    this.subHeader = this.add.image(game.config.width / 2, 1240, 'blank').setOrigin(.5, 0).setTint(0x000000).setAlpha(.7);
+    this.subHeader = this.add.image(game.config.width / 2, 1340, 'blank').setOrigin(.5, 0).setTint(0x000000).setAlpha(.7);
     this.subHeader.displayWidth = game.config.width;
     this.subHeader.displayHeight = 100;
     this.unitDetails = this.add.bitmapText(450, 1390, 'topaz', '', 50).setOrigin(.5).setTint(0xAF5E49).setAlpha(1);
@@ -64,7 +64,7 @@ class unitUI extends Phaser.Scene {
       const element = this.chess[i];
       if (element.index == unit.index) {
         //element.setAlpha(1)
-        console.log(this.units[num])
+        // console.log(this.units[num])
         this.Main.selectedUnitChess = element
         this.Main.selectedUnit = unit.index
 
@@ -122,7 +122,7 @@ class unitUI extends Phaser.Scene {
       var newID = theGame.countries[action.unit.owner].cities.length
       settleNewCity(action.unit.owner, this.tile, this.Main.selectedUnit, this.Main.selectedUnitChess, newID)
       this.Main.removeUnitChess(this.Main.selectedUnitChess)
-      this.Main.addCity(this.tile, newID)
+      this.Main.addCity(action.unit.owner, this.tile, newID)
       this.scene.stop();
     } else if (action.action == 5) {
       //fortify
@@ -146,6 +146,6 @@ class unitUI extends Phaser.Scene {
       //this.Main.setUpAutoPath(this.tile)
       this.scene.stop();
     }
-    console.log(this.unit)
+    //console.log(this.unit)
   }
 }

@@ -52,9 +52,11 @@ class build extends Phaser.Scene {
       this.input.setDraggable(this.scrollingMap);
       this.itemGroup = this.add.group(0, 0)
       this.isBeingDragged = false;
-      for (let i = 0; i < improvementInfo.length; i++) {
-        var test = this.add.image(450 + i * 160, 300, 'improvements', i).setScale(.75)
-        test.id = i
+      var availableImprovements = getAvailableImprovements(this.select.owner, this.select.city)
+      for (let i = 0; i < availableImprovements.length; i++) {
+        const improvement = availableImprovements[i]
+        var test = this.add.image(450 + i * 160, 300, 'improvements', improvement.id).setScale(.75)
+        test.id = improvement.id
         console.log(improvementInfo[test.id].name)
         this.menuContainer.add(test);
         this.itemGroup.add(test)
@@ -148,8 +150,8 @@ class build extends Phaser.Scene {
 
 
     this.message.setText('Building ' + improvementInfo[this.buildButton.type].name + ' in ' + infoText)
-    theGame.countries[this.select.owner].cities[this.select.city].currentImprovementProduction = this.buildButton.type
-    this.Main.addImprovement(this.select.owner, this.select.city, this.buildButton.type, false)
+    addImprovement(this.select.owner, this.select.city, this.buildButton.type, false)
+
     this.showCurrentImprovements(0, this.select.city)
     //console.log(this.Main.countries[0].cities[this.select.city].improvements.length)
   }

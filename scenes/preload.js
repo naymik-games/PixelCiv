@@ -108,7 +108,7 @@ class preloadGame extends Phaser.Scene {
       frameWidth: 100,
       frameHeight: 100
     });
-    this.load.spritesheet("units", "assets/sprites/units.png", {
+    this.load.spritesheet("units_", "assets/sprites/units.png", {
       frameWidth: 50,
       frameHeight: 50
     });
@@ -129,14 +129,16 @@ class preloadGame extends Phaser.Scene {
     this.load.spritesheet("resources", "assets/sprites/resources.png", {
       frameWidth: 100,
       frameHeight: 100,
-      spacing: 1,
-      margin: 1
+
     });
     this.load.spritesheet("citizens", "assets/sprites/citizens.png", {
       frameWidth: 58,
       frameHeight: 58
 
     });
+
+    this.load.atlas('units', 'assets/sprites/texture.png', 'assets/sprites/texture.json');
+
     this.load.image('blank', 'assets/sprites/blank.png');
     this.load.image('tile', 'assets/sprites/tile.png');
     this.load.image("transp", "assets/sprites/transp.png");

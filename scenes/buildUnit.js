@@ -66,9 +66,11 @@ class buildUnit extends Phaser.Scene {
     this.input.setDraggable(this.scrollingMap);
     this.itemGroup = this.add.group(0, 0)
     this.isBeingDragged = false;
-    for (let i = 0; i < unitInfo.length; i++) {
-      var test = this.add.image(450 + i * 160, 300, 'units', i).setScale(3)
-      test.id = i
+    var availableUnits = getAvailableUnits(this.select.owner, this.select.city)
+    console.log(availableUnits)
+    for (let i = 0; i < availableUnits.length; i++) {
+      var test = this.add.image(450 + i * 160, 300, 'units', unitInfo[availableUnits[i].id].key).setScale(.75)
+      test.id = availableUnits[i].id
       this.menuContainer.add(test)
       this.itemGroup.add(test)
 
@@ -149,8 +151,8 @@ class buildUnit extends Phaser.Scene {
     this.menuContainer.setAlpha(0)
 
 
-    theGame.unitIndex++
-    var uni = new Unit(this.buildButton.type, this.Main.selectedTile, theGame.day, false, false, theGame.unitIndex, this.select.owner, this.select.city)
+    //theGame.countries[this.select.owner].unitIndex++
+    var uni = new Unit(this.buildButton.type, this.Main.selectedTile, theGame.day, false, false, this.select.owner, this.select.city)
 
     theGame.countries[this.select.owner].units.push(uni)
     console.log('index' + uni.index)
@@ -187,7 +189,7 @@ class buildUnit extends Phaser.Scene {
     for (let i = 0; i < impr.length; i++) {
       if (impr[i].complete) {
 
-        var unit = this.add.image(210 + i * 160, 1125, 'units', impr[i].id).setScale(2.5).setAlpha(1).setInteractive()
+        var unit = this.add.image(210 + i * 160, 1125, 'units', unitInfo[impr[i].id].key).setScale(.75).setAlpha(1).setInteractive()
         unit.id = impr[i].id
         unit.index = impr[i].index
         unit.city = city

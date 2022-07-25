@@ -1,15 +1,6 @@
-function getUnitsByCity(owner, city) {
-  var results = []
-
-  for (let i = 0; i < theGame.countries[owner].units.length; i++) {
-    const element = theGame.countries[owner].units[i];
-    if (element['city'] == city) {
-      results.push(element)
-    }
-
-  }
-  return results
-}
+/////////////////////////////////////////////////
+//PRODUCTION FUCTIONS
+//////////////////////////////////////////////////
 
 function getBaseFood(owner, city) {
   var food = 0
@@ -124,6 +115,20 @@ function getTileBonusTrade(tile) {
     return bonusTrade
   }
 }
+
+
+/////////////////////////////////////////////////
+//CITY TILES
+//////////////////////////////////////////////////
+
+function isTileImproved(tile) {
+  if (theGame.tileData[tile.y][tile.x].improvements.length > 0) {
+    return true
+  } else {
+    return false
+  }
+}
+
 function getRandomCityTile(owner, city) {
   return theGame.countries[owner].cities[city].tiles[2]
 }
@@ -138,131 +143,28 @@ function getCityTiles(owner, city) {
   return tiles
 }
 
-function checkWork(unit) {
-  console.log('checking')
-  if (unit.currentAction == 0 || unit.currentAction == 1) {
-    if (theGame.day - unit.dayPlaced == unitInfo[unit.id].workTime) {
-      console.log('land ready')
-      if (unit.currentAction == 0) {
-        unit.currentAction = null
-        unit.performingAction = false
-        return 'farm'
-      } else if (unit.currentAction == 1) {
-        unit.currentAction = null
-        unit.performingAction = false
-        return 'mine'
-      }
-
-
-
-      // console.log(data[this.tile.y][this.tile.x])
-      ////data[this.tile.y][this.tile.x].owner = country
-      //data[this.tile.y][this.tile.x].city = city
-      //theCity.tiles.push(this.tile)
-    }
-  }
-  return null
-}
-
-function getUnitsDetailsOnTile(tileXY) {
-  var chess = gameBoard.tileXYToChessArray(tileXY.x, tileXY.y)
-  var results = []
-  for (let i = 0; i < chess.length; i++) {
-    const thing = chess[i];
-    if (thing.chessType == 'unit')
-      results.push({ unitIndex: thing.index, owner: thing.owner, city: thing.city })
-  }
-  return results
-}
-
-function getUnitsOnTile(tileXY) {
-  var chess = gameBoard.tileXYToChessArray(tileXY.x, tileXY.y)
-
-  var results = []
-  for (let i = 0; i < chess.length; i++) {
-    const thing = chess[i];
-    if (thing.chessType == 'unit')
-      results.push(getUnitByIndex(thing.owner, thing.index))
-  }
-  return results
-}
-
-
-function getUnitByIndex(owner, index) {
-  //myArray.filter(x => x.id === '45');
-  let impr = theGame.countries[owner].units.filter(x => x.index === index);
-  console.log('filterd index:')
-  console.log(impr[0])
-  return impr[0]
-
-}
-
-function getCitizenByID(city, index) {
-  let impr = theGame.countries[0].cities[city].citizens.filter(x => x.index === index);
-  return impr[0]
-}
-
-function setUnitCurrentLocationByIndex(owner, unitIndex, tileXY) {
-  var unit = this.getUnitByIndex(owner, unitIndex)
-  unit.currentLocation = tileXY
-}
-
-function settleNewCity(owner, tile, unit, chess, cityID) {
-  console.log('settle' + tile.x)
-  var tempTile = { x: tile.x, y: tile.y }
-  theGame.countries[owner].cities.push(new City(tempTile, theGame.countries[owner].color, theGame.countries[owner].id, cityID, theGame.countries[owner].civ))
-  console.log(theGame.countries[owner].cities)
-  // chess.setAlpha(0)
-}
-
-function getUnworkedTile(c, i) {
-  for (let j = 1; j < theGame.countries[c].cities[i].tiles.length; j++) {
-    const tile = theGame.countries[c].cities[i].tiles[j];
-    if (!theGame.tileData[tile.y][tile.x].isWorked) {
-      return tile
-    }
-  }
-}
-
-function setCulture(owner, city, center, radius) {
-  var out = gameBoard.filledRingToTileXYArray(center, radius, true)
-  theGame.countries[owner].cities[city].tilesCulture = out
-  console.log(out)
-  for (let i = 0; i < out.length; i++) {
-    const element = out[i];
-
-    theGame.tileData[element.y][element.x].cultureOwner = owner
-
-  }
-}
-
-
-
-function getChessForUnitIndexAtTile(index, tile) {
-  var chess = gameBoard.tileXYToChessArray(tile.x, tile.y)
-  for (let i = 0; i < chess.length; i++) {
-    const element = chess[i];
-    if (element.index == index) {
-      return element
-    }
-  }
-}
-
-
-
 function addTile(x, y, owner, city) {
   theGame.tileData[y][x].owner = owner
   theGame.tileData[y][x].city = city
   theGame.countries[owner].cities[city].tiles.push({ x: x, y: y })
 }
 
-
+function getFirstTileNoImprovement(owner, city) {
+  for (let i = 1; i < theGame.countries[owner].cities[city].tiles.length; i++) {
+    const element = theGame.countries[owner].cities[city].tiles[i];
+    if (theGame.tileData[element.y][element.x].improvements.length == 0) {
+      return element
+    }
+  }
+}
 
 function removeFog(tile) {
   var chess = gameBoard.tileXYZToChess(tile.x, tile.y, 10);
   gameBoard.removeChess(chess, null, null, null, true)
   theGame.tileData[tile.y][tile.x].hasFog = false
 }
+
+
 
 function getTileRing(center, radius) {
   let tiles = [];
@@ -278,7 +180,7 @@ function getTileRing(center, radius) {
       tiles.push({ x: x, y: y })
     }
   }
-  console.log(tiles)
+  //console.log(tiles)
   return tiles
 }
 function getTileRingOutline(center, radius) {
@@ -360,52 +262,238 @@ function getTileRingOutline(center, radius) {
 }
 
 
-/* int top    = ceil(center.y - radius),
-    bottom = floor(center.y + radius);
+/////////////////////////////////////////////////
+//UNIT FUNCTIONS
+//////////////////////////////////////////////////
+function checkWork(unit, gov, wR) {
+  // console.log('checking')
+  if (unit.currentAction == 0 || unit.currentAction == 1) {
+    var workTime = (unitInfo[unit.id].workTime * workModifier[gov]) - wR
+    if (theGame.day - unit.dayPlaced == workTime) {
+      console.log('land ready')
+      if (unit.currentAction == 0) {
+        unit.currentAction = null
+        unit.performingAction = false
+        return 'farm'
+      } else if (unit.currentAction == 1) {
+        unit.currentAction = null
+        unit.performingAction = false
+        return 'mine'
+      }
 
-for (int y = top; y <= bottom; y++) {
-    int dy = y - center.y,
-        dx = int(floor(sqrt(radius*radius - dy*dy)));
-    int left  = center.x - dx;
-        right = center.x + dx;
-    // draw tile (left, y)
-    // draw tile (right, y)
-}
-
-for (int r = 0; r <= floor(radius * sqrt(0.5)); r++) {
-  int d = int(floor(sqrt(radius*radius - r*r)));
-  // draw tile (center.x - d, center.y + r)
-  // draw tile (center.x + d, center.y + r)
-  // draw tile (center.x - d, center.y - r)
-  // draw tile (center.x + d, center.y - r)
-  // draw tile (center.x + r, center.y - d)
-  // draw tile (center.x + r, center.y + d)
-  // draw tile (center.x - r, center.y - d)
-  // draw tile (center.x - r, center.y + d)
-}
-
-outline() {
-  const {center, radius} = this;
-  let tiles = [];
-  
-  for (let r = 0; r <= Math.floor(this.radius * Math.sqrt(0.5)); r++) {
-      let d = Math.floor(Math.sqrt(radius*radius - r*r));
-      tiles.push(
-          {x: center.x - d, y: center.y + r},
-          {x: center.x + d, y: center.y + r},
-          {x: center.x - d, y: center.y - r},
-          {x: center.x + d, y: center.y - r},
-          {x: center.x + r, y: center.y - d},
-          {x: center.x + r, y: center.y + d},
-          {x: center.x - r, y: center.y - d},
-          {x: center.x - r, y: center.y + d}
-      );
+    }
   }
-  return tiles;
-}, */
-/* x-1, y-1	x, y-1	x+1, y-1
-x-1,y	    x, y	  x+1, y
-x-1,y+1	  x, y+1	x+1,y+1 */
+  return null
+}
+function getUnitsByCity(owner, city) {
+  var results = []
+
+  for (let i = 0; i < theGame.countries[owner].units.length; i++) {
+    const element = theGame.countries[owner].units[i];
+    if (element['city'] == city) {
+      results.push(element)
+    }
+
+  }
+  return results
+}
+function getUnitsDetailsOnTile(tileXY) {
+  var chess = gameBoard.tileXYToChessArray(tileXY.x, tileXY.y)
+  var results = []
+  for (let i = 0; i < chess.length; i++) {
+    const thing = chess[i];
+    if (thing.chessType == 'unit')
+      results.push({ unitIndex: thing.index, owner: thing.owner, city: thing.city })
+  }
+  return results
+}
+
+function getUnitsOnTile(tileXY) {
+  var chess = gameBoard.tileXYToChessArray(tileXY.x, tileXY.y)
+
+  var results = []
+  for (let i = 0; i < chess.length; i++) {
+    const thing = chess[i];
+    if (thing.chessType == 'unit')
+      results.push(getUnitByIndex(thing.owner, thing.index))
+  }
+  return results
+}
+
+
+function getUnitByIndex(owner, index) {
+  //myArray.filter(x => x.id === '45');
+  let impr = theGame.countries[owner].units.filter(x => x.index === index);
+  //console.log('filterd index:')
+  //console.log(impr[0])
+  return impr[0]
+
+}
+
+
+
+function setUnitCurrentLocationByIndex(owner, unitIndex, tileXY) {
+  var unit = this.getUnitByIndex(owner, unitIndex)
+  unit.currentLocation = tileXY
+}
+
+
+
+function getUnworkedTile(c, i) {
+  for (let j = 1; j < theGame.countries[c].cities[i].tiles.length; j++) {
+    const tile = theGame.countries[c].cities[i].tiles[j];
+    if (!theGame.tileData[tile.y][tile.x].isWorked) {
+      return tile
+    }
+  }
+}
+
+
+
+function getChessForUnitIndexAtTile(index, tile) {
+  var chess = gameBoard.tileXYToChessArray(tile.x, tile.y)
+  for (let i = 0; i < chess.length; i++) {
+    const element = chess[i];
+    if (element.index == index) {
+      return element
+    }
+  }
+}
+
+/////////////////////////////////////////////////
+//CITY FUNCTIONS
+//////////////////////////////////////////////////
+
+function settleNewCity(owner, tile, unit, chess, cityID) {
+  console.log('settle' + tile.x)
+  var tempTile = { x: tile.x, y: tile.y }
+  theGame.countries[owner].cities.push(new City(tempTile, theGame.countries[owner].color, theGame.countries[owner].id, cityID, theGame.countries[owner].civ))
+  console.log(theGame.countries[owner].cities)
+  // chess.setAlpha(0)
+}
+
+
+
+function setCulture(owner, city, center, radius) {
+  var out = gameBoard.filledRingToTileXYArray(center, radius, true)
+  theGame.countries[owner].cities[city].tilesCulture = out
+  console.log(out)
+  for (let i = 0; i < out.length; i++) {
+    const element = out[i];
+
+    theGame.tileData[element.y][element.x].cultureOwner = owner
+
+  }
+}
+
+function getUnitCountCity(c, i) {
+  var count = 0
+  for (let j = 0; j < theGame.countries[c].units.length; j++) {
+    const unit = theGame.countries[c].units[j];
+    if (unit.city == i) {
+      count++
+    }
+  }
+  return count
+}
+function getUnitSupportCost(owner, city) {
+  var unitCount = getUnitCountCity(owner, city)
+  var support = governments[theGame.countries[owner].government].unitSupport[theGame.countries[owner].cities[city].size]
+
+  var unitCosts = 0
+  if (unitCount > support) {
+    unitCosts = unitCount - support
+  }
+  return unitCosts
+}
+
+/////////////////////////////////////////////////
+//CITIZEN FUNCTIONS
+//////////////////////////////////////////////////
+function getCitizenByID(city, index) {
+  let impr = theGame.countries[0].cities[city].citizens.filter(x => x.index === index);
+  return impr[0]
+}
+function isCitizenAtTile(tile) {
+  if (theGame.tileData[tile.y][tile.x].citizen != null) {
+    return true
+  } else {
+    return false
+  }
+}
+function getFirstTileWithCitizenNoImprovement(owner, city) {
+  for (let i = 0; i < theGame.countries[owner].cities[city].tiles.length; i++) {
+    const element = theGame.countries[owner].cities[city].tiles[i];
+    if (theGame.tileData[element.y][element.x].citizen != null && theGame.tileData[element.y][element.x].improvements.length == 0) {
+      return element
+    }
+  }
+}
+
+/////////////////////////////////////////////////
+//COUNTRY FUNCTIONS
+//////////////////////////////////////////////////
+function getCurrentImprovementIDs(owner, city) {
+  var improvementIDs = []
+  if (theGame.countries[owner].cities[city].improvements.length > 0) {
+    for (let i = 0; i < theGame.countries[owner].cities[city].improvements.length; i++) {
+      const element = theGame.countries[owner].cities[city].improvements[i];
+      improvementIDs.push(element.id)
+    }
+  }
+  return improvementIDs
+}
+function getAvailableImprovements(owner, city) {
+  let availableImprovements = []
+  let currentImprovements = getCurrentImprovementIDs(owner, city)
+  // console.log(currentImprovements)
+  improvementInfo.forEach(impr => {
+    // console.log(tech)
+    // if (tech.prequisite.length > 0) {
+    //NEED TO ADD CHECK OF EXISTING IMPROVEMENTS
+
+    if (theGame.countries[owner].techs.indexOf(impr.requires) > -1 && currentImprovements.indexOf(impr.id) < 0) {
+      //console.log(impr.name)
+      availableImprovements.push(impr)
+    }
+
+
+    // }
+  });
+
+  return availableImprovements
+
+}
+function addImprovement(owner, city, id, complete) {
+  theGame.countries[owner].cities[city].currentImprovementProduction = id
+  //this.Main.addImprovement(this.select.owner, this.select.city, this.buildButton.type, false)
+  var imp = { id: id, turnAdded: theGame.day, complete: complete }
+  theGame.countries[owner].cities[city].improvements.push(imp)
+}
+
+
+function getAvailableUnits(owner, city) {
+  let availableUnits = []
+
+  // console.log(currentImprovements)
+  unitInfo.forEach(uni => {
+    // console.log(tech)
+    // if (tech.prequisite.length > 0) {
+    //NEED TO ADD CHECK OF EXISTING IMPROVEMENTS
+
+    if (theGame.countries[owner].techs.indexOf(uni.requires) > -1 || uni.requires == -1) {
+      //console.log(impr.name)
+      availableUnits.push(uni)
+    }
+
+
+    // }
+  });
+
+  return availableUnits
+
+}
+
 
 /****************************************************************************
  ...
@@ -442,31 +530,20 @@ function shuffleArray(array) {
   return array;
 }
 function placeResources() {
+  console.log(resourcePicker.length)
   for (let i = 0; i < resourcePicker.length; i++) {
     var done = false
     var rec = resourcePicker.pop()
     while (!done) {
-      var x = Phaser.Math.Between(2, theGame.width - 2)
-      var y = Phaser.Math.Between(2, theGame.height - 2)
-      if (rec == 2) {
-        if (theGame.tileData[y][x].terrain.index == 1 && theGame.tileData[y][x].resource == null) {
-          done = true
-          theGame.tileData[y][x].resource = rec
-
-        }
-      } else if (rec == 13) {
-        if (theGame.tileData[y][x].terrain.index == 7 && theGame.tileData[y][x].terrain.index == 8 && theGame.tileData[y][x].resource == null) {
-          done = true
-          theGame.tileData[y][x].resource = rec
-
-        }
-      } else {
-        if (theGame.tileData[y][x].terrain.index != 1 && theGame.tileData[y][x].terrain.index != 0 && theGame.tileData[y][x].resource == null) {
-          done = true
-          theGame.tileData[y][x].resource = rec
-
-        }
+      var tileXY = gameBoard.getRandomEmptyTileXY(RESOURCE);
+      var x = tileXY.x
+      var y = tileXY.y
+      if (theGame.tileData[y][x].values.Resource == -1) {
+        done = true
+        theGame.tileData[y][x].values.Resource = rec
+        console.log('resource placed')
       }
+
 
     }
   }
@@ -485,4 +562,27 @@ theGame.tileData[tileXY.y][tileXY.x].terrain.index
 9 snow 
 farmBonusTerrain = [0,0,0,1,0,1,1,0,0,0]
 mineBonusTerrain = [0,0,0,1,0,1,1,2,2,1]
+
+
+
+
+if (rec == 2) {
+  if (theGame.tileData[y][x].terrain.index == 1 && theGame.tileData[y][x].values.Resource == -1) {
+    done = true
+    theGame.tileData[y][x].values.Resource = rec
+    console.log('resource placed')
+  }
+} else if (rec == 13) {
+  if (theGame.tileData[y][x].terrain.index == 7 && theGame.tileData[y][x].terrain.index == 8 && theGame.tileData[y][x].resource == -1) {
+    done = true
+    theGame.tileData[y][x].values.Resource = rec
+    console.log('resource placed')
+  }
+} else {
+  if (theGame.tileData[y][x].terrain.index != 1 && theGame.tileData[y][x].terrain.index != 0 && theGame.tileData[y][x].resource == -1) {
+    done = true
+    theGame.tileData[y][x].values.Resource = rec
+    console.log('resource placed')
+  }
+}
 */

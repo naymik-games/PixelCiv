@@ -99,3 +99,52 @@ let improvementInfo = [
     description: '50% increase to tax revenue, increased effect of luxery resources'
   }
 ]
+
+
+let greatWonders = [
+  {
+    id: 0,
+    name: 'Great Wall',
+    cost: 200,
+    culture: 2,
+    requires: 11,//construction
+    expires: 0, //metallurgy need id
+    benefit: 'Doubles effects of city walls'
+  },
+  {
+    id: 1,
+    name: 'SETI Program',
+    cost: 1000,
+    culture: 3,
+    requires: 0,//computers need it
+    expires: 0, //metallurgy need id
+    benefit: 'Doubles science output of city'
+  },
+  {
+    id: 2,
+    name: 'Lighthouse',
+    cost: 400,
+    culture: 2,
+    requires: 16,//map making
+    expires: 0, //magnetism need id
+    benefit: '+1 ship movement. Galleys can travel safely at sea'
+  },
+  {
+    id: 3,
+    name: 'Colossus',
+    cost: 200,
+    culture: 3,
+    requires: 4,//bronze working
+    expires: 0, //flight need id
+    benefit: '+1 commerce in any square already producing commerce in that city'
+  },
+  {
+    id: 4,
+    name: 'Great Library',
+    cost: 400,
+    culture: 6,
+    requires: 20,//Monarchy
+    expires: 0, //education need id
+    benefit: 'Civilization receives any civilization advance already discovered by 2 other known civs for free.'
+  }
+]

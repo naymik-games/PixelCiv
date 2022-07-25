@@ -11,8 +11,43 @@ class startGame extends Phaser.Scene {
       //url: 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js',
       sceneKey: 'rexUI'
     });
+    //  this.load.plugin('rexgashaponplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexgashaponplugin.min.js', true);
   }
   create() {
+    /*  var gashapon = this.plugins.get('rexgashaponplugin').add({
+       mode: 'shuffle',  // 0|'shuffle'|1|'random
+       items: {  // name:count
+         0: 3,
+         1: 1,
+         2: 2,
+         3: 3,
+         4: 3,
+         5: 6,
+         6: 2,
+         7: 2,
+         8: 4,
+         9: 3,
+         10: 3,
+         11: 3,
+         12: 3,
+         13: 3,
+         14: 3,
+         15: 3,
+         16: 3,
+         17: 3,
+         18: 3,
+         19: 3,
+         20: 3,
+         21: 3,
+       },
+       reload: true,     // true|false
+       rnd: undefined,
+     });
+ 
+     var item = gashapon.next();
+     console.log(item)
+ 
+  */
 
     gameData = JSON.parse(localStorage.getItem('PCSave'));
     if (gameData === null || gameData.length <= 0) {

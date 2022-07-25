@@ -1,11 +1,12 @@
 class Unit {
-  constructor(type, tile, turnAdded, complete, placed, index, owner, city) {
+  constructor(type, tile, turnAdded, complete, placed, owner, city) {
+    theGame.countries[owner].unitIndex++
     this.id = type
     this.owner = owner
     this.city = city
     this.day = 1
     this.age = 0
-    this.index = index
+    this.index = theGame.countries[owner].unitIndex
     this.tile = tile
     this.turnAdded = turnAdded
     this.complete = complete

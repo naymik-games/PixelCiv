@@ -20,7 +20,9 @@ class Country {
     this.id = id
     this.cities = []
     this.units = []
+    this.unitIndex = 0
     this.population = 1
+    this.workReduction = this.getWorkReduction()
 
     this.techs = this.setStartingTech()
   }
@@ -36,7 +38,17 @@ class Country {
 
     return tempTech
   }
+  getWorkReduction() {
+    var wR = 0
 
+    for (let i = 0; i < civs[this.civ].abilities.length; i++) {
+      const element = civs[this.civ].abilities[i];
+      wR += abilities[element].workReduction
+
+    }
+
+    return wR
+  }
 
 
 

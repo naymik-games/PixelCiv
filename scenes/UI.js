@@ -59,7 +59,7 @@ class UI extends Phaser.Scene {
             this.Main.endRound()
           }
           this.Main.endPlayerTurn() */
-      this.currentPlayerText.setText(civs[theGame.countries[theGame.currentPlayer].civ].name)
+      // this.currentPlayerText.setText(civs[theGame.countries[theGame.currentPlayer].civ].name)
     }, this)
 
 

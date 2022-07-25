@@ -5,10 +5,12 @@ class City {
     this.cityCenter = capital
     this.trade = 0
     this.production = 0
-    this.culture = 5
+    this.culture = 0
+    this.culturePT = 0
     this.strength = 0
     this.food = 0 //temp set back to zero
     this.foodStorage = 30
+    this.entertainment = 0
     this.color = color
     this.id = id
     this.tiles = [capital]
