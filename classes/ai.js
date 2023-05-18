@@ -82,7 +82,7 @@ function buildImprovementAI(scene, owner) {
   var amount = options.length * 2
   while (done == 0 && amount > 0) {
     var opt = options[Phaser.Math.Between(0, options.length - 1)]
-    if (checkCost(opt.index) && checkRequirements(item.menuItem) && checkRestrictions(item.menuItem)) {
+    if (checkCost(opt.index) && checkRequirements(opt.index) && checkRestrictions(opt.index)) {
       console.log('AI can build ' + opt.name)
       scene.selectedTile = tile
       scene.selectedAction = opt.index

@@ -47,6 +47,19 @@ let gameDataDefault = {
 
 
 
+/* 
+COURTHOUSE
+GREENHOUSE
+WORKSHOP
+LIGHTHOUSE
+WELL
+AQUADUCT
+
+CATHEDRAL
+THEATER
+MONUMENT
+GRAINERY
+BARRACKS */
 
 
 let menus = {
@@ -68,6 +81,14 @@ let menus = {
     {
       name: 'LUMBER MILL',
       index: 'LUMBERMILL'
+    },
+    {
+      name: 'GRAINERY',
+      index: 'GRAINERY'
+    },
+    {
+      name: 'BARRACKS',
+      index: 'BARRACKS'
     },
     {
       name: 'TOWER',
@@ -102,8 +123,37 @@ let menus = {
   ],
   sand: [
     {
-      name: 'MINE',
-      index: 'MINE'
+      name: 'HOUSE',
+      index: 'HOUSE'
+    },
+    {
+      name: 'FARM',
+      index: 'FARM'
+    },
+    {
+      name: 'LUMBER MILL',
+      index: 'LUMBERMILL'
+    },
+    {
+      name: 'GRAINERY',
+      index: 'GRAINERY'
+    },
+    {
+      name: 'BARRACKS',
+      index: 'BARRACKS'
+    },
+    {
+      name: 'TOWER',
+      index: 'TOWER'
+    },
+    {
+      name: 'AQUADUCT',
+      index: 'AQUADUCT',
+
+    },
+    {
+      name: 'MARKET',
+      index: 'MARKET'
     }
   ],
   fruittree: [
@@ -169,6 +219,12 @@ let menus = {
     {
       name: 'CLEAR',
       index: 'CLEAR'
+    }
+  ],
+  mine: [
+    {
+      name: 'WORKSHOP',
+      index: 'WORKSHOP'
     }
   ],
   lumbermill: [

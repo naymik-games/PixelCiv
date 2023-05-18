@@ -163,3 +163,17 @@ let improvementStaticData = {
   88: { name: 'TOWER', type: 'tower' },
 
 }
+
+
+/* COURTHOUSE
+GREENHOUSE
+WORKSHOP
+LIGHTHOUSE
+WELL
+AQUADUCT
+
+CATHEDRAL
+THEATER
+MONUMENT
+GRAINERY
+BARRACKS */

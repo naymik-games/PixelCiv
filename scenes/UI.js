@@ -332,7 +332,7 @@ class UI extends Phaser.Scene {
     } else {
       console.log('AI Player')
       this.header.setTint(0x000000)
-      this.resourceContainer.setAlpha(0)
+      this.resourceContainer.setAlpha(1)
       //AI do chop and pick first check every turn
       for (var i = 0; i < 2; i++) {
         chopAI(this.Main, gameData.currentPlayer, FOREST)
