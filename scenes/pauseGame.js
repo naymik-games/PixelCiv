@@ -22,27 +22,46 @@ class pauseGame extends Phaser.Scene {
       this.scene.resume('playGame')
       this.scene.resume('UI')
     }, this)
-    console.log(playerArray[gameData.currentPlayer].resources[0])
-    console.log(ownerTileCount(gameData.currentPlayer))
-    console.log(countImprovements(gameData.currentPlayer))
-    var sizeIndex = playerArray[gameData.currentPlayer].resources[0] * ownerTileCount(gameData.currentPlayer) * countImprovements(gameData.currentPlayer)
+    // console.log(playerArray[gameData.currentPlayer].resources[0])
+    // console.log(ownerTileCount(gameData.currentPlayer))
+    //console.log(countImprovements(gameData.currentPlayer))
+    // var sizeIndex = playerArray[gameData.currentPlayer].resources[0] * ownerTileCount(gameData.currentPlayer)// * countImprovements(gameData.currentPlayer)
+    //var sizeIndex = ownerTileCount(gameData.currentPlayer)// * countImprovements(gameData.currentPlayer)
+    var sizeIndex = ownerTileCount(gameData.currentPlayer) * countImprovements(gameData.currentPlayer)
+    let idealSize = Math.floor((gameOptions.rows * gameOptions.columns) / gameOptions.numberOfPlayers)
+    let maxSizeIndex = idealSize * (idealSize * .75)
+    console.log('size index ' + sizeIndex)
+    console.log('max size index ' + maxSizeIndex)
+    console.log(Math.round((sizeIndex / maxSizeIndex) * 100))
+    // 0 pop 1 food 2 lumber 3 ore 4 stone 5 gold
+    var score = 0
+    //The amount of Gold Gold in a player's treasury
+    score += playerArray[gameData.currentPlayer].resources[5]
+    //The amount of resources a player possesses
+    var resource = playerArray[gameData.currentPlayer].resources[1] + playerArray[gameData.currentPlayer].resources[2] + playerArray[gameData.currentPlayer].resources[3] + playerArray[gameData.currentPlayer].resources[4]
+    score += resource
+    // the number of luxeries luxuries = [0, 0, 0, 0, 0, 0, 0, 0]
+    var luxeries = playerArray[gameData.currentPlayer].luxuries[0] + playerArray[gameData.currentPlayer].luxuries[1] + playerArray[gameData.currentPlayer].luxuries[2] + playerArray[gameData.currentPlayer].luxuries[3] + playerArray[gameData.currentPlayer].luxuries[4] + playerArray[gameData.currentPlayer].luxuries[5] + playerArray[gameData.currentPlayer].luxuries[6] + playerArray[gameData.currentPlayer].luxuries[7]
+    score += luxeries
+    // The number of tiles within your borders
+    score += ownerTileCount(gameData.currentPlayer)
+    //  The number of cities in your empire
+    //  The number of people in your empire
+    score += playerArray[gameData.currentPlayer].resources[0]
+    //  The number of Social Policies you have adopted
+    //  The number of technologies you possess
+    score += playerArray[gameData.currentPlayer].techs.length
+    // the number of improvements
+    score += countImprovements(gameData.currentPlayer)
+    //  The number of "Future Techs" you possess (as Future Tech is a repeatable technology)
+    // The number of wonders you have constructed (contributes the most points towards victory)
 
-    /*    
-    SCORE
-    The amount of Gold Gold in a player's treasury
-        The amount of resources a player possesses
-        The number of tiles within your borders
-        The number of cities in your empire
-        The number of people in your empire
-        The number of Social Policies you have adopted
-        The number of technologies you possess
-        The number of "Future Techs" you possess (as Future Tech is a repeatable technology)
-        The number of wonders you have constructed (contributes the most points towards victory) */
 
 
 
+    this.indexText = this.add.text(50, 325, 'SIZE INDEX: ' + sizeIndex, { fontFamily: 'KenneyMiniSquare', fontSize: '60px', color: '#fafafa', align: 'left' }).setOrigin(0)//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
+    this.scoreText = this.add.text(50, 275, 'SCORE: ' + score, { fontFamily: 'KenneyMiniSquare', fontSize: '60px', color: '#fafafa', align: 'left' }).setOrigin(0)//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
 
-    this.indexText = this.add.text(50, 275, 'SIZE INDEX: ' + sizeIndex, { fontFamily: 'KenneyMiniSquare', fontSize: '60px', color: '#fafafa', align: 'left' }).setOrigin(0)//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
     var resourceMap = [8, 9, 10, 11, 12, 13, 14, 15]
     for (let i = 0; i < 8; i++) {
       var lux = this.add.image(75 + i * 75, 500, 'resource_icons', resourceMap[i]).setScale(4).setOrigin(.5).setInteractive()

@@ -5,6 +5,8 @@ class Ground {
     this.improved = false
     this.explored = false
     this.border = false
+    this.revealed = false
+    this.owner = null
 
   }
 }

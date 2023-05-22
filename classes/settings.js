@@ -30,6 +30,7 @@ let improvementLayerData = []
 let unitLayerImage = []
 let unitLayerData = []
 let borderArray = []
+let fogArray = []
 
 let neighbor4Coords = [[0, 1], [0, -1], [-1, 0], [1, 0]]
 let neighbor8Coords = [[0, 1], [0, -1], [-1, 0], [1, 0], [-1, -1], [-1, 1], [1, 1], [1, -1]]
@@ -48,18 +49,16 @@ let gameDataDefault = {
 
 
 /* 
-COURTHOUSE
-GREENHOUSE
-WORKSHOP
+
 LIGHTHOUSE
 WELL
-AQUADUCT
-
+COURTHOUSE
 CATHEDRAL
 THEATER
 MONUMENT
 GRAINERY
-BARRACKS */
+BARRACKS 
+*/
 
 
 let menus = {
@@ -67,6 +66,10 @@ let menus = {
     {
       name: 'EXPLORE',
       index: 'EXPLORE'
+    },
+    {
+      name: 'EXPLORE AREA',
+      index: 'EXPLOREMANY'
     }
   ],
   grass: [
@@ -102,7 +105,29 @@ let menus = {
     {
       name: 'MARKET',
       index: 'MARKET'
+    },
+    {
+      name: 'WELL',
+      index: 'WELL'
+    },
+    {
+      name: 'COURTHOUSE',
+      index: 'COURTHOUSE'
+    },
+    {
+      name: 'CATHEDRAL',
+      index: 'CATHEDRAL'
+    },
+    {
+      name: 'THEATER',
+      index: 'THEATER'
+    },
+    {
+      name: 'MONUMENT',
+      index: 'MONUMENT'
     }
+
+
   ],
   tree: [
     {
@@ -219,6 +244,10 @@ let menus = {
     {
       name: 'CLEAR',
       index: 'CLEAR'
+    },
+    {
+      name: 'GREENHOUSE',
+      index: 'GREENHOUSE'
     }
   ],
   mine: [
@@ -275,6 +304,12 @@ let menus = {
     {
       name: 'UPGRADE',
       index: 'UPGRADECAMP'
+    }
+  ],
+  fort: [
+    {
+      name: 'UPGRADE',
+      index: 'UPGRADEFORT'
     }
   ],
   tower: [

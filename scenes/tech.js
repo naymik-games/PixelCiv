@@ -188,3 +188,101 @@ class Tech {
   }
 }
 
+
+
+
+/*
+
+List of Technologies (82 techs total):
+Ancient Times (21)
+Bronze Workings-
+Masonry-
+Alphabet-
+Pottery-
+The Wheel-
+Warrior Code
+Ceremonial Burial-
+Iron Working-
+Mathematics-
+Writing-
+Mysticism-
+Philosophy-
+Code of Laws-
+Literature (new)
+Map Making-
+Horseback Riding-
+Polytheism
+Construction-
+Currency-
+The Republic-
+Monarchy-
+
+Renaissance (22)
+Monotheism
+Feudalism
+Engineering
+Theology
+Chivalry
+Invention
+Printing Press (new)
+Education (new)
+Music Theory (new)
+Gunpowder
+Banking
+Astronomy
+Chemistry
+Democracy
+Economics
+Navigation
+Physics
+Metallurgy
+Free Artistry (new)
+Theory of Gravity
+Magnetism
+Military Tradition (new)
+
+Industrial (22):
+Nationalism (new)
+Steam Power
+Medicine
+Industrialization
+Electricity
+Sanitation
+Communism
+Espionage
+The Corporation
+Scientific Method (new)
+Refining
+Steel
+Atomic Theory
+Combustion
+Replaceable Parts (new)
+Flight
+Amphibious warfare
+Mass production
+Electronics
+Advanced flight
+Motorized Transport (new)
+Radio
+
+Modern (17):
+Recycling
+Rocketry
+Fission
+Computers
+Ecology (new)
+Space Flight
+Nuclear Power
+Miniaturization
+Synthetic Fibers (new)
+The Laser
+Genetics
+Superconductor
+Satellites (new)
+Stealth
+Smart Weapons (new)
+Robotics
+Integrated Defense (new)
+Ancient Times (21) +Renaissance (22)+Industrial (22)+Modern (17) = 82 techs
+*/
+

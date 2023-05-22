@@ -209,8 +209,8 @@ class UI extends Phaser.Scene {
     }, this);
     ////////////////////////////////////////////
     /////////////////////////////////////////////
-    this.Main.events.on('updateGround', function (tile) {
-      this.updateGroundPanel(tile)
+    this.Main.events.on('updateGround', function (tile, connected) {
+      this.updateGroundPanel(tile, connected)
 
     }, this);
     ////////////////////////////////////////////
@@ -264,22 +264,7 @@ class UI extends Phaser.Scene {
     ////////////////////////////////////////////
     /////////////////////////////////////////////
     this.Main.events.on('updateGroundUnknown', function (owner) {
-      if (owner) {
-        this.ownerIcon.setFrame(playerArray[gameData.currentPlayer].id)
-        // this.ownerText.setText('??????')
-        this.terrainText.setText('UNEXPLORED')
-        this.selectedTerrain.setFrame(11)
-        /* this.selectedTerrain.on('pointerdown', function () {
-          if (this.menu1) {
-            this.menu1.destroy()
-          }
-          this.displayMenu(groundStaticData[11].type)
-        }, this) */
-      } else {
-        this.ownerIcon.setFrame(4)
-        this.terrainText.setText('UNEXPLORED')
-        this.selectedTerrain.setFrame(11)
-      }
+
 
 
 
@@ -359,7 +344,20 @@ class UI extends Phaser.Scene {
 
       border(gameData.currentPlayer)
     }
-
+    ////////////////
+    // MOVE UNITS
+    ////////////////
+    for (let i = 0; i < gameOptions.rows; i++) {
+      for (let j = 0; j < gameOptions.columns; j++) {
+        if (unitLayerData[i][j] != null) {
+          if (unitLayerData[i][j].owner == gameData.currentPlayer && unitLayerData[i][j].path.length > 0) {
+            console.log(unitLayerData[i][j].path)
+            this.Main.moveUnit(unitLayerData[i][j], { row: i, column: j })
+          }
+        }
+      }
+    }
+    ////////////////
     this.turnText.setText(gameData.day)
     this.Main.doBonus(gameData.currentPlayer)
     populationCalc()
@@ -369,33 +367,31 @@ class UI extends Phaser.Scene {
     stoneCalc()
     goldCalc()
     var researchDone = checkResearch()
-    if (researchDone) {
-      playerArray[gameData.currentPlayer].techs.push(playerArray[gameData.currentPlayer].currentTech.techIndex)
-      playerArray[gameData.currentPlayer].currentTech = null
-    } else {
-      if (playerArray[gameData.currentPlayer].currentTech != null) {
+    if (playerArray[gameData.currentPlayer].currentTech != null) {
+      if (researchDone) {
+        console.log('done researching ' + tech[playerArray[gameData.currentPlayer].currentTech.techIndex].name)
+        playerArray[gameData.currentPlayer].techs.push(playerArray[gameData.currentPlayer].currentTech.techIndex)
+        playerArray[gameData.currentPlayer].currentTech = null
+        this.researchText.setText('?')
+        this.researchIndicator.setFrame(1)
+      } else {
         playerArray[gameData.currentPlayer].currentTech.pointsProgress += playerArray[gameData.currentPlayer].resources[0]
         this.researchText.setText(techDaysTillComplete())
         this.researchIndicator.setFrame(tech[playerArray[gameData.currentPlayer].currentTech.techIndex].iconIndex)
-
-
-      } else {
-        if (gameData.currentPlayer != 0) {
-          if (playerArray[gameData.currentPlayer].currentTech == null) {
-            console.log(playerArray[gameData.currentPlayer].techs)
-            var numTechs = playerArray[gameData.currentPlayer].techs.length
-            console.log(numTechs)
-            console.log(techAIorder[numTechs])
-            playerArray[gameData.currentPlayer].currentTech = new Tech(techAIorder[numTechs], gameData.day, false)
-          }
+      }
+    } else {
+      this.researchText.setText('?')
+      this.researchIndicator.setFrame(1)
+      if (gameData.currentPlayer != 0) {
+        if (playerArray[gameData.currentPlayer].currentTech == null) {
+          // console.log(playerArray[gameData.currentPlayer].techs)
+          var numTechs = playerArray[gameData.currentPlayer].techs.length
+          // console.log(numTechs)
+          // console.log(techAIorder[numTechs])
+          playerArray[gameData.currentPlayer].currentTech = new Tech(techAIorder[numTechs], gameData.day, false)
         }
-
-        this.researchText.setText('?')
-        this.researchIndicator.setFrame(1)
       }
     }
-
-
 
 
 
@@ -590,10 +586,13 @@ class UI extends Phaser.Scene {
       if (this.menu1) {
         this.menu1.destroy()
       }
-      if (tile.explored) {
+      if (tile.revealed) {
         this.displayMenu(groundStaticData[tile.frame].type)
       } else {
-        this.displayMenu(groundStaticData[11].type)
+        if (isConnected(this.Main.selectedTile.row, this.Main.selectedTile.column)) {
+          this.displayMenu(groundStaticData[11].type)
+        }
+
       }
 
     }, this)
@@ -604,11 +603,47 @@ class UI extends Phaser.Scene {
     // this.terrainDetailsContainer.add(this.buildHelpIcon)
     //this.terrainStars = this.add.image(game.config.width - 137.5, game.config.height - 75, 'stars', 0).setScale(5)
   }
-  updateGroundPanel(tile) {
-    this.ownerIcon.setFrame(playerArray[tile.owner].id)
+  updateGroundPanel(tile, connected) {
+    console.log(tile)
+    if (tile.revealed) {
+      this.terrainText.setText(groundStaticData[tile.frame].name)
+      this.selectedTerrain.setFrame(tile.frame)
+      if (tile.owner != null) {
+        this.ownerIcon.setFrame(playerArray[tile.owner].id)
+      } else {
+        this.ownerIcon.setFrame(4)
+      }
+
+    } else {
+      this.terrainText.setText('UNKNOWN')
+      this.selectedTerrain.setFrame(11)
+      this.ownerIcon.setFrame(4)
+      this.terrainText.setText('???')
+    }
+
+    /*  if (owner) {
+       this.ownerIcon.setFrame(playerArray[gameData.currentPlayer].id)
+       // this.ownerText.setText('??????')
+       this.terrainText.setText('UNEXPLORED')
+       this.selectedTerrain.setFrame(11)
+  
+     } else {
+       this.ownerIcon.setFrame(4)
+       this.terrainText.setText('UNEXPLORED')
+       this.selectedTerrain.setFrame(11)
+     }
+  */
+
+
+
+
+
+
+
+    //this.ownerIcon.setFrame(playerArray[tile.owner].id)
     // this.ownerText.setText(playerArray[tile.owner].name)
-    this.terrainText.setText(groundStaticData[tile.frame].name)
-    this.selectedTerrain.setFrame(tile.frame)
+    //this.terrainText.setText(groundStaticData[tile.frame].name)
+    //this.selectedTerrain.setFrame(tile.frame)
     /* this.selectedTerrain.on('pointerdown', function () {
       if (this.menu1) {
         this.menu1.destroy()
@@ -629,6 +664,10 @@ class UI extends Phaser.Scene {
     this.moveUnitIcon = this.add.image(900 - 298, game.config.height - 365, 'unit_icons', 1).setInteractive()
     this.attackUnitIcon = this.add.image(900 - 218, game.config.height - 365, 'unit_icons', 2)
     this.removeUnitIcon = this.add.image(900 - 137, game.config.height - 365, 'unit_icons', 3).setInteractive()
+    this.fortifyUnitIcon = this.add.image(900 - 52, game.config.height - 365, 'unit_icons', 7).setInteractive()
+
+    this.unitHelpIcon = this.add.image(900 - 52, game.config.height - 286, 'unit_icons', 4).setInteractive().setAlpha(1).setOrigin(.5)
+
 
     this.hpBarBack = this.add.image(190, game.config.height - 370, 'blank').setOrigin(0, .5).setTint(0x000000)
     this.hpBarBack.displayWidth = 260
@@ -645,6 +684,8 @@ class UI extends Phaser.Scene {
     this.unitDetailsContainer.add(this.moveUnitIcon)
     this.unitDetailsContainer.add(this.attackUnitIcon)
     this.unitDetailsContainer.add(this.removeUnitIcon)
+    this.unitDetailsContainer.add(this.unitHelpIcon)
+    this.unitDetailsContainer.add(this.fortifyUnitIcon)
     this.unitDetailsContainer.add(this.hpBarBack)
 
 
@@ -658,8 +699,7 @@ class UI extends Phaser.Scene {
     this.selectedUnit.displayHeight = 155;
     this.unitDetailsContainer.add(this.selectedUnit)
 
-    this.unitHelpIcon = this.add.image(900 - 52, game.config.height - 365, 'unit_icons', 4).setInteractive().setAlpha(1).setOrigin(.5)
-    this.unitDetailsContainer.add(this.unitHelpIcon)
+
     this.unitHelpIcon.on('pointerdown', function () {
 
     }, this)
@@ -675,6 +715,7 @@ class UI extends Phaser.Scene {
     this.unitDetailsContainer.setAlpha(1)
     console.log(tile.owner)
     console.log(unitTypes[tile.id].frames[tile.owner])
+    console.log(tile.tookAction)
     this.unitText.setText(unitTypes[tile.id].name)
     //this.unitOwnerText.setText(playerArray[tile.owner].name)
     //  this.improvementText.setText(unitStaticData[tile.id].name)

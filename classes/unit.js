@@ -6,13 +6,15 @@ class Unit {
     this.complete = complete;
     this.turnAdded = added
     this.hp = 100
+    this.path = []
+    this.tookAction = null
   }
 }
 
 
 
 let unitTypes = {
-  SPEARMAN: { name: 'SPEARMAN', index: 'spearman', frames: [0, 20, 40, 60], canUpgrade: true, upgradeAction: 'SPEARMANPLUS', movement: 5 },
+  SPEARMAN: { name: 'SPEARMAN', index: 'spearman', frames: [0, 20, 40, 60], canUpgrade: true, upgradeAction: 'SPEARMANPLUS', movement: 2, menu: ['upgrade', 'move,', 'fortify', 'attack', 'remove'] },
   SWORDSMAN: { name: 'SWORDSMAN', index: 'swordsman', frames: [1, 21, 41, 61], canUpgrade: true, upgradeAction: 'SWORDSMANPLUS', movement: 6 },
   ARCHER: { name: 'ARCHER', index: 'archer', frames: [2, 22, 42, 62], canUpgrade: true, upgradeAction: 'ARCHERPLUS', movement: 3 },
   KNIGHT: { name: 'KNIGHT', index: 'knight', frames: [3, 23, 43, 63], canUpgrade: true, upgradeAction: 'KNIGHTPLUS', movement: 10 },

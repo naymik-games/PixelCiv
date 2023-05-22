@@ -111,8 +111,8 @@ function getUnimprovedTiles(owner) {
   var temp = []
   for (let i = 0; i < gameOptions.rows; i++) {
     for (let j = 0; j < gameOptions.columns; j++) {
-      if (improvementLayerData[i][j] == null) {
-        if (groundLayerData[i][j].owner == owner) {
+      if (improvementLayerData[i][j] == null && groundLayerData[i][j].revealed) {
+        if (groundLayerData[i][j].owner == owner || isConnectedOwner(i, j)) {
           temp.push({ row: i, column: j })
         }
       }

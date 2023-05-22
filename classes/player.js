@@ -27,9 +27,10 @@ class Player {
     this.luxuries = [0, 0, 0, 0, 0, 0, 0, 0]//HORSES,GAME, SILVER, COPPER, GRAPES, WOOL, SPICES, FLAX
     this.resources = startResource//[75, 250, 0, 0, 0, 0]//startingValues[gameOptions.difficulty] // [33, 122, 72, 55, 231, 888]  [250, 250, 250, 250, 250, 250] [75, 250, 0, 0, 0, 0]
     this.metrics = [0, 0, 0, 0, 0]//strength, defense, culture, science, happiness
-    this.level
+    this.level = 1
     this.currentTech = null
     this.techs = []
+    this.era = 'ANCIENT'
   }
 }
 

@@ -40,6 +40,13 @@ const PASTURE = 66
 const HOUSE = 67
 const BIGHOUSE = 68
 const SANDQUARRY = 69
+const BARRACKS = 73
+const GRAINERY = 74
+const THEATER = 75
+const MONUMENT = 76
+const CATHEDRAL = 77
+const COURTHOUSE = 78
+const WELL = 79
 const FISHING = 80
 const LIGHTHOUSE = 81
 const WHEAT = 82
@@ -69,6 +76,7 @@ class Improvement {
 //restrictions: nearwater; requires: ; tech: 
 let actionData = {
   EXPLORE: { cost: [-1, -5, 0, 0, 0, 0], gain: [0, 0, 0, 0, 0, 0], restriction: null, requires: null },
+  EXPLOREMANY: { cost: [-50, -100, 0, 0, 0, 0], gain: [0, 0, 0, 0, 0, 0], restriction: null, requires: null },
   CLEAR: { cost: [-1, -5, 0, 0, 0, 0], gain: [0, 0, 0, 0, 0, 0], restriction: null, requires: null },
   CHOP: { cost: [-1, -5, 0, 0, 0, 0], gain: [0, 0, 25, 0, 0, 0], restriction: null, requires: null },
   DRAIN: { cost: [-1, -50, 0, 0, 0, 0], gain: [0, 0, 0, 0, 0, 0], restriction: null, requires: null },
@@ -101,9 +109,11 @@ let actionData = {
   MONUMENT: { cost: [-25, -100, -25, -75, -0, -10], gain: [0, 0, 25, 0, 0, 0], restriction: null, requires: null },
   GRAINERY: { cost: [-25, -100, -25, -75, -0, -10], gain: [0, 0, 25, 0, 0, 0], restriction: null, requires: null },
   BARRACKS: { cost: [-25, -100, -25, -75, -0, -10], gain: [0, 0, 25, 0, 0, 0], restriction: null, requires: null },
+  MONUMENT: { cost: [-25, -100, -25, -75, -0, -10], gain: [0, 0, 25, 0, 0, 0], restriction: null, requires: ['CONSTRUCTION'] },
 
   UPGRADEHOUSE: { cost: [-10, -100, -75, 0, -25, 0], gain: [0, 0, 0, 0, 0, 0], restriction: null, requires: null },
   UPGRADECAMP: { cost: [-10, -150, -75, -25, -25, -25], gain: [0, 0, 0, 0, 0, 0], restriction: null, requires: null },
+  UPGRADEFORT: { cost: [-10, -150, -75, -25, -25, -25], gain: [0, 0, 0, 0, 0, 0], restriction: null, requires: null },
 
   COLLECTHORSES: { cost: [-10, -150, -25, 0, 0, 0], gain: [0, 0, 0, 0, 0, 5], restriction: null, requires: null },
   COLLECTGAME: { cost: [-10, -150, -25, 0, 0, 0], gain: [0, 25, 0, 0, 0, 0], restriction: null, requires: null },
@@ -139,6 +149,7 @@ let bonusIndexes = [FOREST, ORCHARD, HILL, LAKE, SWAMP, PALMTREE, MUSHROOM]
 let bonusTilesWeight = [10, 9, 8, 7, 4, 5, 8]
 
 let improvementStaticData = {
+  50: { name: 'FISHING HUT', type: 'fishinghut' },
   61: { name: 'FARM', type: 'farm' },
   62: { name: 'LUMBER MILL', type: 'lumbermill' },
   63: { name: 'MINE', type: 'mine' },
@@ -149,10 +160,15 @@ let improvementStaticData = {
   68: { name: 'BIG HOUSE', type: 'bighouse' },
   69: { name: 'QUARRY', type: 'sandquarry' },
   70: { name: 'CAMP', type: 'camp' },
-  71: { name: 'FORT', type: 'fire' },
-  72: { name: 'CASTLE', type: 'fire' },
-  //73: { name: 'BONFIRE', type: 'fire' },
-  50: { name: 'FISHING HUT', type: 'fishinghut' },
+  71: { name: 'FORT', type: 'fort' },
+  72: { name: 'CASTLE', type: 'castle' },
+  73: { name: 'BARRACKS', type: 'barracks' },
+  74: { name: 'GRAINERY', type: 'grainery' },
+  75: { name: 'THEATER', type: 'theater' },
+  76: { name: 'MONUMENT', type: 'monument' },
+  77: { name: 'CATHEDRAL', type: 'cathedral' },
+  78: { name: 'COURTHOUSE', type: 'courthouse' },
+  79: { name: 'WELL', type: 'well' },
   81: { name: 'LIGHTHOUSE', type: 'lighthouse' },
   82: { name: 'WHEAT FIELD', type: 'wheatfield' },
   83: { name: 'WORKSHOP', type: 'workshop' },
@@ -161,6 +177,7 @@ let improvementStaticData = {
   86: { name: 'GREENHOUSE', type: 'greenhouse' },
   87: { name: 'AQUADUCT', type: 'aquaduct' },
   88: { name: 'TOWER', type: 'tower' },
+
 
 }
 

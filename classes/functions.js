@@ -10,7 +10,7 @@ function isConnectedOwner(row, column) {
   for (let i = 0; i < neighbors.length; i++) {
     const neighbor = neighbors[i];
     /*  console.log(this.groundLayerData[neighbor.row][neighbor.column]) */
-    if (groundLayerData[neighbor.row][neighbor.column].explored && groundLayerData[neighbor.row][neighbor.column].owner == gameData.currentPlayer) {
+    if (groundLayerData[neighbor.row][neighbor.column].revealed && groundLayerData[neighbor.row][neighbor.column].owner == gameData.currentPlayer) {
       return true
     }
   }
@@ -26,6 +26,7 @@ function isConnected(row, column) {
   }
   return false
 }
+
 function getRandomUnexploredNeighbors(row, column) {
   var tiles = getUnexploredNeighbors(row, column)
   if (tiles) {
@@ -37,6 +38,16 @@ function getUnexploredNeighbors(row, column) {
   for (let i = 0; i < neighbor8Coords.length; i++) {
     const nTile = neighbor8Coords[i];
     if (validPick(row + nTile[0], column + nTile[1]) && !groundLayerData[row + nTile[0]][column + nTile[1]].explored) {
+      temp.push({ row: row + nTile[0], column: column + nTile[1] })
+    }
+  }
+  return temp
+}
+function getUnrevealedNeighbors(row, column) {
+  var temp = []
+  for (let i = 0; i < neighbor8Coords.length; i++) {
+    const nTile = neighbor8Coords[i];
+    if (validPick(row + nTile[0], column + nTile[1]) && !groundLayerData[row + nTile[0]][column + nTile[1]].revealed) {
       temp.push({ row: row + nTile[0], column: column + nTile[1] })
     }
   }
@@ -109,6 +120,18 @@ function checkRequirements(index) {
 
 
 }
+function canShowUnitMenu(unit) {
+
+  console.log(unit.path)
+  console.log(unit.tookAction)
+  if (unit.tookAction == gameData.day) {
+    return false
+  } else {
+
+    return true
+  }
+
+}
 function checkCost(index) {
   if (index == 'BUILD') {
     return true
@@ -171,16 +194,21 @@ function checkResearch() {
   //console.log(playerArray[gameData.currentPlayer].currentTech)
   if (playerArray[gameData.currentPlayer].currentTech != null) {
     // console.log('date added' + playerArray[gameData.currentPlayer].currentTech.dayAdded + ' time required' + tech[playerArray[gameData.currentPlayer].currentTech.techIndex].days)
-
-    if (playerArray[gameData.currentPlayer].currentTech.pointsProgress >= tech[playerArray[gameData.currentPlayer].currentTech.techIndex].points) {
-      console.log('Done researching')
-      // playerArray[gameData.currentPlayer].techs.push(playerArray[gameData.currentPlayer].currentTech.techIndex)
-      // playerArray[gameData.currentPlayer].currentTech = null
-      return true
-      //
-    } else {
+    if (techDaysTillComplete() > 0) {
       return false
+
+    } else {
+      return true
     }
+    /*  if (playerArray[gameData.currentPlayer].currentTech.pointsProgress >= tech[playerArray[gameData.currentPlayer].currentTech.techIndex].points) {
+       console.log('Done researching')
+       // playerArray[gameData.currentPlayer].techs.push(playerArray[gameData.currentPlayer].currentTech.techIndex)
+       // playerArray[gameData.currentPlayer].currentTech = null
+       return true
+       //
+     } else {
+       return false
+     } */
   } else {
     return false
   }
