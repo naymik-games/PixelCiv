@@ -155,6 +155,10 @@ class UI extends Phaser.Scene {
     this.attackUnitIcon.on('pointerdown', function () {
       console.log('attack!')
     }, this)
+    this.settleUnitIcon.on('pointerdown', function () {
+      console.log('settle!')
+      this.Main.addCity()
+    }, this)
     this.removeUnitIcon.on('pointerdown', function () {
       console.log('remove unit')
       this.Main.removeUnit(this.Main.selectedTile.row, this.Main.selectedTile.column, gameData.currentPlayer)
@@ -655,18 +659,24 @@ class UI extends Phaser.Scene {
   }
   createUnitPanel() {
 
-
-
+    var x1 = 900 - 375
+    var x2 = 900 - 298
+    var x3 = 900 - 218
+    var x4 = 900 - 137
+    var x5 = 900 - 52
+    var y1 = game.config.height - 365
+    var y2 = game.config.height - 286
 
     this.unitBack = this.add.image(0, game.config.height - 230, 'unit_panel').setOrigin(0, 1).setAlpha(1);
 
-    this.upgradeUnitIcon = this.add.image(900 - 375, game.config.height - 365, 'unit_icons', 0)
-    this.moveUnitIcon = this.add.image(900 - 298, game.config.height - 365, 'unit_icons', 1).setInteractive()
-    this.attackUnitIcon = this.add.image(900 - 218, game.config.height - 365, 'unit_icons', 2)
-    this.removeUnitIcon = this.add.image(900 - 137, game.config.height - 365, 'unit_icons', 3).setInteractive()
-    this.fortifyUnitIcon = this.add.image(900 - 52, game.config.height - 365, 'unit_icons', 7).setInteractive()
+    this.upgradeUnitIcon = this.add.image(x1, y1, 'unit_icons', 0)
+    this.moveUnitIcon = this.add.image(x2, y1, 'unit_icons', 1).setInteractive()
+    this.attackUnitIcon = this.add.image(x3, y1, 'unit_icons', 2)
+    this.fortifyUnitIcon = this.add.image(x4, y1, 'unit_icons', 7).setInteractive()
+    this.settleUnitIcon = this.add.image(x5, y1, 'unit_icons', 6).setInteractive()
 
-    this.unitHelpIcon = this.add.image(900 - 52, game.config.height - 286, 'unit_icons', 4).setInteractive().setAlpha(1).setOrigin(.5)
+    this.removeUnitIcon = this.add.image(x4, y2, 'unit_icons', 3).setInteractive()
+    this.unitHelpIcon = this.add.image(x5, y2, 'unit_icons', 4).setInteractive().setAlpha(1).setOrigin(.5)
 
 
     this.hpBarBack = this.add.image(190, game.config.height - 370, 'blank').setOrigin(0, .5).setTint(0x000000)
@@ -686,6 +696,7 @@ class UI extends Phaser.Scene {
     this.unitDetailsContainer.add(this.removeUnitIcon)
     this.unitDetailsContainer.add(this.unitHelpIcon)
     this.unitDetailsContainer.add(this.fortifyUnitIcon)
+    this.unitDetailsContainer.add(this.settleUnitIcon)
     this.unitDetailsContainer.add(this.hpBarBack)
 
 
@@ -722,7 +733,9 @@ class UI extends Phaser.Scene {
     var frame = playerArray[tile.owner].id
     this.selectedUnit.setFrame(unitTypes[tile.id].frames[frame])
     this.hpBar.displayWidth = 260 * (tile.hp / 100)
-    console.log(checkCost(unitTypes[tile.id].upgradeAction))
+    //console.log(checkCost(unitTypes[tile.id].upgradeAction))
+
+    //check upgrade icon
     if (unitTypes[tile.id].canUpgrade && (checkCost(unitTypes[tile.id].upgradeAction) || godMode == 1)) {
 
       this.upgradeUnitIcon.setAlpha(1)
@@ -731,7 +744,30 @@ class UI extends Phaser.Scene {
       this.upgradeUnitIcon.setAlpha(.3)
       this.upgradeUnitIcon.disableInteractive()
     }
-
+    //check attack icon
+    if (unitTypes[tile.id].menu.indexOf('attack') > -1) {
+      this.attackUnitIcon.setAlpha(1)
+      this.attackUnitIcon.setInteractive()
+    } else {
+      this.attackUnitIcon.setAlpha(.3)
+      this.attackUnitIcon.disableInteractive()
+    }
+    //check settle icon
+    if (unitTypes[tile.id].menu.indexOf('settle') > -1) {
+      this.settleUnitIcon.setAlpha(1)
+      this.settleUnitIcon.setInteractive()
+    } else {
+      this.settleUnitIcon.setAlpha(.3)
+      this.settleUnitIcon.disableInteractive()
+    }
+    //check fortify icon
+    if (unitTypes[tile.id].menu.indexOf('fortify') > -1) {
+      this.fortifyUnitIcon.setAlpha(1)
+      this.fortifyUnitIcon.setInteractive()
+    } else {
+      this.fortifyUnitIcon.setAlpha(.3)
+      this.fortifyUnitIcon.disableInteractive()
+    }
   }
 
 

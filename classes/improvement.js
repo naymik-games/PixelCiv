@@ -15,47 +15,49 @@ const FISH = 46
 const CATTLE = 47
 const MUSHROOM = 48
 const FISHINGHUT = 50
-const CAMP = 70
-const FORT = 71
-const CASTLE = 72
+
+const CAMP = 150
+const FORT = 160
+const CASTLE = 170
 
 //luxery resources
-const HORSES = 100//happiness + 5
-const GAME = 101 //happiness + 5
-const SILVER = 102//happiness + 5
-const COPPER = 103//happiness + 5
-const GRAPES = 104//happiness + 5
-const WOOL = 105//happiness + 5
-const SPICES = 106//happiness + 5
-const FLAX = 107//happiness + 5
-
+const HORSES = 170//happiness + 5
+const GAME = 171 //happiness + 5
+const SILVER = 172//happiness + 5
+const COPPER = 173//happiness + 5
+const GRAPES = 174//happiness + 5
+const WOOL = 175//happiness + 5
+const SPICES = 176//happiness + 5
+const GEMS = 177//happiness + 5
+const OIL = 178//happiness + 5
+const COAL = 179//happiness + 5
 
 //improvements
-const FARM = 61
-const LUMBER = 62
-const MINE = 63
-const QUARRY = 64
-const GOLDMINE = 65
-const PASTURE = 66
-const HOUSE = 67
-const BIGHOUSE = 68
+const FARM = 90
+const LUMBER = 91
+const MINE = 92
+const QUARRY = 93
+const GOLDMINE = 94
+const PASTURE = 95
+const HOUSE = 96
+const BIGHOUSE = 97
 const SANDQUARRY = 69
-const BARRACKS = 73
-const GRAINERY = 74
-const THEATER = 75
-const MONUMENT = 76
-const CATHEDRAL = 77
-const COURTHOUSE = 78
+const BARRACKS = 72
+const GRAINERY = 77
+const THEATER = 99
+const MONUMENT = 98
+const CATHEDRAL = 73
+const COURTHOUSE = 75
 const WELL = 79
-const FISHING = 80
-const LIGHTHOUSE = 81
+const FISHING = 119
+const LIGHTHOUSE = 99
 const WHEAT = 82
-const WORKSHOP = 83
-const MARKET = 84
-const LUMBERCAMP = 85
+const WORKSHOP = 98
+const MARKET = 117
+const LUMBERCAMP = 130
 const GREENHOUSE = 86
-const AQUADUCT = 87
-const TOWER = 88
+const AQUADUCT = 70
+const TOWER = 131
 
 
 
@@ -122,10 +124,12 @@ let actionData = {
   COLLECTGRAPES: { cost: [-10, -150, -25, 0, 0, 0], gain: [0, 25, 0, 0, 0, 5], restriction: null, requires: null },
   COLLECTWOOL: { cost: [-10, -150, -25, 0, 0, 0], gain: [0, 25, 0, 0, 0, 5], restriction: null, requires: null },
   COLLECTSPICES: { cost: [-10, -150, -25, 0, 0, 0], gain: [0, 0, 0, 0, 0, 10], restriction: null, requires: null },
-  COLLECTFLAX: { cost: [-10, -150, -25, 0, 0, 0], gain: [0, 0, 0, 0, 0, 25], restriction: null, requires: null },
+  COLLECTGEMS: { cost: [-10, -150, -25, 0, 0, 0], gain: [0, 0, 0, 0, 0, 25], restriction: null, requires: null },
 
+  SETTLER: { cost: [-10, -150, -75, -25, -25, -25], gain: [0, 0, 0, 0, 0, 0], restriction: null, requires: null },
+  WARRIOR: { cost: [-10, -150, -75, -25, -25, -25], gain: [0, 0, 0, 0, 0, 0], restriction: null, requires: null },
   SPEARMAN: { cost: [-10, -150, -75, -25, -25, -25], gain: [0, 0, 0, 0, 0, 0], restriction: null, requires: null },
-  SWORDSMAN: { cost: [-10, -150, -75, -25, -25, -25], gain: [0, 0, 0, 0, 0, 0], restriction: null, requires: null },
+  LEGION: { cost: [-10, -150, -75, -25, -25, -25], gain: [0, 0, 0, 0, 0, 0], restriction: null, requires: null },
   ARCHER: { cost: [-10, -150, -75, -25, -25, -25], gain: [0, 0, 0, 0, 0, 0], restriction: null, requires: null },
   KNIGHT: { cost: [-10, -150, -75, -25, -25, -25], gain: [0, 0, 0, 0, 0, 0], restriction: null, requires: null },
   LEADER: { cost: [-10, -150, -75, -25, -25, -25], gain: [0, 0, 0, 0, 0, 0], restriction: null, requires: null },
@@ -142,41 +146,41 @@ let actionData = {
 let startIndexes = [GRASS, FOREST, ORCHARD, HILL, LAKE, DUNE, MOUNTAIN, GOLD, SWAMP, PALMTREE]
 let startTilesWeight = [13, 10, 9, 8, 7, 3, 8, 7, 6, 3, 8, 8, 6]
 //WHEN EPLORING
-let resourceIndexes = [GRASS, FOREST, ORCHARD, HILL, LAKE, DUNE, MOUNTAIN, GOLD, SWAMP, PALMTREE, CATTLE, MUSHROOM, HORSES, GAME, SILVER, COPPER, GRAPES, WOOL, SPICES, FLAX]
+let resourceIndexes = [GRASS, FOREST, ORCHARD, HILL, LAKE, DUNE, MOUNTAIN, GOLD, SWAMP, PALMTREE, CATTLE, MUSHROOM, HORSES, GAME, SILVER, COPPER, GRAPES, WOOL, SPICES, GEMS]
 let newTilesWeight = [14, 10, 9, 8, 7, 3, 8, 7, 6, 3, 8, 6, 5, 5, 5, 5, 5, 5]
 //BONUS
 let bonusIndexes = [FOREST, ORCHARD, HILL, LAKE, SWAMP, PALMTREE, MUSHROOM]
 let bonusTilesWeight = [10, 9, 8, 7, 4, 5, 8]
 
 let improvementStaticData = {
-  50: { name: 'FISHING HUT', type: 'fishinghut' },
-  61: { name: 'FARM', type: 'farm' },
-  62: { name: 'LUMBER MILL', type: 'lumbermill' },
-  63: { name: 'MINE', type: 'mine' },
-  64: { name: 'QUARRY', type: 'quarry' },
-  65: { name: 'GOLD MINE', type: 'goldmine' },
-  66: { name: 'PASTURE', type: 'pasture' },
-  67: { name: 'HOUSE', type: 'house' },
-  68: { name: 'BIG HOUSE', type: 'bighouse' },
-  69: { name: 'QUARRY', type: 'sandquarry' },
-  70: { name: 'CAMP', type: 'camp' },
-  71: { name: 'FORT', type: 'fort' },
-  72: { name: 'CASTLE', type: 'castle' },
-  73: { name: 'BARRACKS', type: 'barracks' },
-  74: { name: 'GRAINERY', type: 'grainery' },
-  75: { name: 'THEATER', type: 'theater' },
-  76: { name: 'MONUMENT', type: 'monument' },
-  77: { name: 'CATHEDRAL', type: 'cathedral' },
-  78: { name: 'COURTHOUSE', type: 'courthouse' },
-  79: { name: 'WELL', type: 'well' },
-  81: { name: 'LIGHTHOUSE', type: 'lighthouse' },
-  82: { name: 'WHEAT FIELD', type: 'wheatfield' },
+  119: { name: 'FISHING HUT', type: 'fishinghut' },
+  90: { name: 'FARM', type: 'farm' },
+  91: { name: 'LUMBER MILL', type: 'lumbermill' },
+  92: { name: 'MINE', type: 'mine' },
+  93: { name: 'QUARRY', type: 'quarry' },
+  94: { name: 'GOLD MINE', type: 'goldmine' },
+  95: { name: 'PASTURE', type: 'pasture' },
+  96: { name: 'HOUSE', type: 'house' },
+  97: { name: 'BIG HOUSE', type: 'bighouse' },
+  93: { name: 'QUARRY', type: 'sandquarry' },
+  150: { name: 'CAMP', type: 'camp' },
+  151: { name: 'FORT', type: 'fort' },
+  160: { name: 'CASTLE', type: 'castle' },
+  72: { name: 'BARRACKS', type: 'barracks' },
+  77: { name: 'GRAINERY', type: 'grainery' },
+  74: { name: 'THEATER', type: 'theater' },
+  74: { name: 'MONUMENT', type: 'monument' },
+  73: { name: 'CATHEDRAL', type: 'cathedral' },
+  75: { name: 'COURTHOUSE', type: 'courthouse' },
+  75: { name: 'WELL', type: 'well' },
+  89: { name: 'LIGHTHOUSE', type: 'lighthouse' },
+  88: { name: 'WHEAT FIELD', type: 'wheatfield' },
   83: { name: 'WORKSHOP', type: 'workshop' },
-  84: { name: 'MARKET', type: 'market' },
-  85: { name: 'LUMBER CAMP', type: 'lumbercamp' },
-  86: { name: 'GREENHOUSE', type: 'greenhouse' },
-  87: { name: 'AQUADUCT', type: 'aquaduct' },
-  88: { name: 'TOWER', type: 'tower' },
+  117: { name: 'MARKET', type: 'market' },
+  130: { name: 'LUMBER CAMP', type: 'lumbercamp' },
+  130: { name: 'GREENHOUSE', type: 'greenhouse' },
+  70: { name: 'AQUADUCT', type: 'aquaduct' },
+  131: { name: 'TOWER', type: 'tower' },
 
 
 }

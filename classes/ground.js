@@ -67,14 +67,16 @@ let groundStaticData = {
   48: { name: 'MUSHROOM', type: 'mushroom', cost: 2 },
   //49
 
-  100: { name: 'HORSES', type: 'horses', cost: null },
-  101: { name: 'GAME', type: 'game', cost: null },
-  102: { name: 'SILVER', type: 'silver', cost: null },
-  103: { name: 'COPPER', type: 'copper', cost: null },
-  104: { name: 'GRAPES', type: 'grapes', cost: null },
-  105: { name: 'WOOL', type: 'wool', cost: null },
-  106: { name: 'SPICES', type: 'spices', cost: null },
-  107: { name: 'FLAX', type: 'flax', cost: null },
+  170: { name: 'HORSES', type: 'horses', cost: null },
+  171: { name: 'GAME', type: 'game', cost: null },
+  172: { name: 'SILVER', type: 'silver', cost: null },
+  173: { name: 'COPPER', type: 'copper', cost: null },
+  174: { name: 'GRAPES', type: 'grapes', cost: null },
+  175: { name: 'WOOL', type: 'wool', cost: null },
+  176: { name: 'SPICES', type: 'spices', cost: null },
+  177: { name: 'GEMS', type: 'gems', cost: null },
+  178: { name: 'OIL', type: 'oil', cost: null },
+  179: { name: 'COAL', type: 'coal', cost: null },
 
 }
 

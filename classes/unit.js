@@ -14,9 +14,11 @@ class Unit {
 
 
 let unitTypes = {
-  SPEARMAN: { name: 'SPEARMAN', index: 'spearman', frames: [0, 20, 40, 60], canUpgrade: true, upgradeAction: 'SPEARMANPLUS', movement: 2, menu: ['upgrade', 'move,', 'fortify', 'attack', 'remove'] },
-  SWORDSMAN: { name: 'SWORDSMAN', index: 'swordsman', frames: [1, 21, 41, 61], canUpgrade: true, upgradeAction: 'SWORDSMANPLUS', movement: 6 },
-  ARCHER: { name: 'ARCHER', index: 'archer', frames: [2, 22, 42, 62], canUpgrade: true, upgradeAction: 'ARCHERPLUS', movement: 3 },
+  SETTLER: { name: 'SETTLER', index: 'settler', frames: [0, 0, 0, 0], canUpgrade: false, upgradeAction: null, movement: 3, menu: ['move,', 'fortify', 'remove', 'settle'] },
+  WARRIOR: { name: 'WARRIOR', index: 'warrior', frames: [1, 1, 1, 1], canUpgrade: true, upgradeAction: 'SWORDSMANPLUS', movement: 4 },
+  SPEARMAN: { name: 'SPEARMAN', index: 'spearman', frames: [2, 2, 2, 2], canUpgrade: true, upgradeAction: 'ARCHERPLUS', movement: 3 },
+  LEGION: { name: 'LEGION', index: 'legion', frames: [3, 3, 3, 3], canUpgrade: true, upgradeAction: 'ARCHERPLUS', movement: 3 },
+  ARCHER: { name: 'ARCHER', index: 'archer', frames: [4, 4, 4, 4], canUpgrade: true, upgradeAction: 'ARCHERPLUS', movement: 3 },
   KNIGHT: { name: 'KNIGHT', index: 'knight', frames: [3, 23, 43, 63], canUpgrade: true, upgradeAction: 'KNIGHTPLUS', movement: 10 },
   LEADER: { name: 'LEADER', index: 'leader', frames: [4, 24, 44, 64], canUpgrade: true, upgradeAction: 'LEADERPLUS', movement: 8 },
   SPEARMANPLUS: { name: 'SPEARMAN +', index: 'spearmanplus', frames: [5, 25, 45, 65], canUpgrade: false, upgradeAction: 'NO', movement: 7 },
@@ -25,3 +27,24 @@ let unitTypes = {
   KNIGHTPLUS: { name: 'KNIGHT +', index: 'knightplus', frames: [8, 28, 48, 68], canUpgrade: false, upgradeAction: 'NO', movement: 12 },
   LEADERPLUS: { name: 'LEADER +', index: 'leaderplus', frames: [9, 29, 49, 69], canUpgrade: false, upgradeAction: 'NO', movement: 10 },
 }
+
+/* 
+Legion
+Phalanx
+Armor (Tank)
+Artillery
+Cannon
+Caravan
+Catapult
+Cavalry
+Chariot
+Diplomat
+Knight
+
+Mech
+Militia
+Musketeer
+
+Riflemen
+Settlers 
+*/

@@ -6,10 +6,10 @@ let playerIndexMap = {
 }
 
 let staticPlayerData = {
-  0: { name: 'BLUE ARROW', id: 0, frame: 70, color: 0x4060C0, AIexploreAgressiveness: 2, AIbuildAgressiveness: 4 },
-  1: { name: 'RED SWORD', id: 1, frame: 70, color: 0xA04040, AIexploreAgressiveness: 3, AIbuildAgressiveness: 4 },
-  2: { name: 'BLACK SHEILD', id: 2, frame: 70, color: 0x404040, AIexploreAgressiveness: 4, AIbuildAgressiveness: 4 },
-  3: { name: 'YELLOW LEAF', id: 3, frame: 70, color: 0xE0E040, AIexploreAgressiveness: 2, AIbuildAgressiveness: 4 },
+  0: { name: 'BLUE ARROW', id: 0, frame: 150, color: 0x4060C0, AIexploreAgressiveness: 2, AIbuildAgressiveness: 4 },
+  1: { name: 'RED SWORD', id: 1, frame: 150, color: 0xA04040, AIexploreAgressiveness: 3, AIbuildAgressiveness: 4 },
+  2: { name: 'BLACK SHEILD', id: 2, frame: 150, color: 0x404040, AIexploreAgressiveness: 4, AIbuildAgressiveness: 4 },
+  3: { name: 'YELLOW LEAF', id: 3, frame: 150, color: 0xE0E040, AIexploreAgressiveness: 2, AIbuildAgressiveness: 4 },
 }
 /*
 characteristics 
@@ -24,17 +24,33 @@ class Player {
     this.name = name
     this.frame = frame
     this.human = human
-    this.luxuries = [0, 0, 0, 0, 0, 0, 0, 0]//HORSES,GAME, SILVER, COPPER, GRAPES, WOOL, SPICES, FLAX
+    this.luxuries = [0, 0, 0, 0, 0, 0, 0, 0]//HORSES,GAME, SILVER, COPPER, GRAPES, WOOL, SPICES, GEMS
     this.resources = startResource//[75, 250, 0, 0, 0, 0]//startingValues[gameOptions.difficulty] // [33, 122, 72, 55, 231, 888]  [250, 250, 250, 250, 250, 250] [75, 250, 0, 0, 0, 0]
     this.metrics = [0, 0, 0, 0, 0]//strength, defense, culture, science, happiness
     this.level = 1
     this.currentTech = null
     this.techs = []
+    this.cities = []
     this.era = 'ANCIENT'
   }
 }
 
+class CITY {
+  constructor(owner, day, frame, center, era) {
 
+    this.owner = owner //index in array/owner
+    this.center = center
+    this.name = 'CITY'
+    this.frame = frame
+
+    this.dayFounded = day
+    //this.luxuries = [0, 0, 0, 0, 0, 0, 0, 0]//HORSES,GAME, SILVER, COPPER, GRAPES, WOOL, SPICES, GEMS
+
+    this.level = 1
+
+    this.eraFounded = era
+  }
+}
 //tech techIndex requires
 /* THEOLOGY: { name: 'THEOLOGY', cost: [100, 0, 0, 100, 0, 0], days: 10, id: 0, iconIndex: 0 },
 LITERACY: { name: 'LITERACY', cost: [100, 0, 0, 100, 0, 0], days: 10, id: 0, iconIndex: 1 },

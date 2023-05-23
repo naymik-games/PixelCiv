@@ -364,36 +364,32 @@ let menus = {
       index: 'COLLECTSPICES'
     }
   ],
-  flax: [
+  gems: [
     {
       name: 'COLLECT',
-      index: 'COLLECTFLAX'
+      index: 'COLLECTGEMS'
     }
   ],
   units: [
+    {
+      name: 'SETTLER',
+      index: 'SETTLER'
+    },
+    {
+      name: 'WARRIOR',
+      index: 'WARRIOR'
+    },
     {
       name: 'SPEARMAN',
       index: 'SPEARMAN'
     },
     {
-      name: 'SWORDSMAN',
-      index: 'SWORDSMAN'
+      name: 'LEGION',
+      index: 'LEGION'
     },
     {
       name: 'ARCHER',
       index: 'ARCHER'
-    },
-    {
-      name: 'KNIGHT',
-      index: 'KNIGHT'
-    },
-    {
-      name: 'LEADER',
-      index: 'LEADER'
-    },
-    {
-      name: 'CATAPULT',
-      index: 'CATAPULT'
     }
   ]
 }

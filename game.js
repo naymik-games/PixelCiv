@@ -69,9 +69,9 @@ class playGame extends Phaser.Scene {
     super("playGame");
   }
   preload() {
-    this.load.tilemapTiledJSON('test2', 'assets/sprites/test2.json');
+    this.load.tilemapTiledJSON('test3', 'assets/sprites/test3.json');
 
-    this.load.json('level1', 'assets/sprites/test2.json');
+    this.load.json('level1', 'assets/sprites/test3.json');
 
   }
   create() {
@@ -180,7 +180,7 @@ class playGame extends Phaser.Scene {
         fire.displayWidth = gameOptions.tileSize// - 5
         fire.displayHeight = gameOptions.tileSize// - 5
         improvementayerImage[playerObj.y][playerObj.x] = fire
-        fire.play('fire_anim')
+        // fire.play('fire_anim')
         var tiles = this.moveRange(playerObj.y, playerObj.x, gameOptions.initialTileRange)
         // console.log(tiles)
         for (let m = 0; m < tiles.length; m++) {
@@ -197,7 +197,9 @@ class playGame extends Phaser.Scene {
           // this.exploreTile(tile.row, tile.column, playerArray[i].playerIndex)
           this.revealTile(tile.row, tile.column, playerArray[i].playerIndex)
         }
+        playerArray[i].cities.push(new CITY(i, 1, playerArray[i].frame, { row: playerObj.y, column: playerObj.x }, 'ANCIENT'))
       }
+      console.log(playerArray)
       //END NEW GAME//////////////////////////
     } else {
       // LOAD GAME////////////////////////
@@ -275,7 +277,7 @@ class playGame extends Phaser.Scene {
     easystar = new EasyStar.js();
     easystar.setGrid(map);
 
-    easystar.setAcceptableTiles([GRASS, FOREST, ORCHARD, HILL, DUNE, GOLD, GOLDMINE, QUARRY, MUSHROOM, HOUSE, BIGHOUSE, LUMBER, LUMBERCAMP, FARM, PALMTREE, CATTLE, MUSHROOM, CAMP, FORT, CASTLE, HORSES, GAME, SILVER, COPPER, GRAPES, WOOL, SPICES, FLAX])
+    easystar.setAcceptableTiles([GRASS, FOREST, ORCHARD, HILL, DUNE, GOLD, GOLDMINE, QUARRY, MUSHROOM, HOUSE, BIGHOUSE, LUMBER, LUMBERCAMP, FARM, PALMTREE, CATTLE, MUSHROOM, CAMP, FORT, CASTLE, HORSES, GAME, SILVER, COPPER, GRAPES, WOOL, SPICES, GEMS])
 
 
     this.cursor = this.add.image(0, 0, 'cursors', 0).setScale(gameOptions.scale).setDepth(cursorDepth)
@@ -381,8 +383,8 @@ class playGame extends Phaser.Scene {
         this.collectwool(this.selectedTile.row, this.selectedTile.column)
       } else if (this.selectedAction == 'COLLECTSPICES') {
         this.collectspices(this.selectedTile.row, this.selectedTile.column)
-      } else if (this.selectedAction == 'COLLECTFLAX') {
-        this.collectflax(this.selectedTile.row, this.selectedTile.column)
+      } else if (this.selectedAction == 'COLLECTGEMS') {
+        this.collectgems(this.selectedTile.row, this.selectedTile.column)
       } else if (this.selectedAction == 'UPGRADEHOUSE') {
         this.addImprovementAction(this.selectedTile.row, this.selectedTile.column, BIGHOUSE)
       } else if (this.selectedAction == 'UPGRADECAMP') {
@@ -391,10 +393,14 @@ class playGame extends Phaser.Scene {
         this.addImprovementAction(this.selectedTile.row, this.selectedTile.column, CASTLE)
       } else if (this.selectedAction == 'SPEARMAN') {
         this.addUnitAction(this.selectedTile.row, this.selectedTile.column, 'SPEARMAN')
-      } else if (this.selectedAction == 'SWORDSMAN') {
-        this.addUnitAction(this.selectedTile.row, this.selectedTile.column, 'SWORDSMAN')
+      } else if (this.selectedAction == 'WARRIOR') {
+        this.addUnitAction(this.selectedTile.row, this.selectedTile.column, 'WARRIOR')
+      } else if (this.selectedAction == 'SETTLER') {
+        this.addUnitAction(this.selectedTile.row, this.selectedTile.column, 'SETTLER')
       } else if (this.selectedAction == 'ARCHER') {
         this.addUnitAction(this.selectedTile.row, this.selectedTile.column, 'ARCHER')
+      } else if (this.selectedAction == 'LEGION') {
+        this.addUnitAction(this.selectedTile.row, this.selectedTile.column, 'LEGION')
       } else if (this.selectedAction == 'KNIGHT') {
         this.addUnitAction(this.selectedTile.row, this.selectedTile.column, 'KNIGHT')
       } else if (this.selectedAction == 'LEADER') {
@@ -447,7 +453,7 @@ class playGame extends Phaser.Scene {
     this.addUnit(row, column, gameData.currentPlayer, type)
   }
 
-  //luxuries[0, 0, 0, 0, 0, 0, 0, 0]//HORSES,GAME, SILVER, COPPER, GRAPES, WOOL, SPICES, FLAX
+  //luxuries[0, 0, 0, 0, 0, 0, 0, 0]//HORSES,GAME, SILVER, COPPER, GRAPES, WOOL, SPICES, GEMS
   collecthorses(row, column) {
     playerArray[gameData.currentPlayer].luxuries[0] += 1 + countType(MARKET)
     this.explode(row, column)
@@ -483,7 +489,7 @@ class playGame extends Phaser.Scene {
     this.explode(row, column)
     this.addTile(row, column, gameData.currentPlayer, GRASS)
   }
-  collectflax(row, column) {
+  collectgems(row, column) {
     playerArray[gameData.currentPlayer].luxuries[7] += 1 + countType(MARKET)
     this.explode(row, column)
     this.addTile(row, column, gameData.currentPlayer, GRASS)
@@ -819,6 +825,10 @@ class playGame extends Phaser.Scene {
     for (var i = 0; i < tempPath.length; i++) {
       var pos = getPosition(tempPath[i].y, tempPath[i].x)
       cost += getCost(tempPath[i].y, tempPath[i].x)
+      console.log(groundLayerData[tempPath[i].y][tempPath[i].x].revealed)
+      if (!groundLayerData[tempPath[i].y][tempPath[i].x].revealed) {
+        this.revealTile(tempPath[i].y, tempPath[i].x)
+      }
       //var ex = path[i + 1].x;
       //var ey = path[i + 1].y;
       tweens1.push({
@@ -953,6 +963,42 @@ class playGame extends Phaser.Scene {
     var frame = playerArray[owner].id
     unitLayerImage[row][column].setFrame(unitTypes[type].frames[frame])
     this.events.emit('updateUnit', unitLayerData[row][column]);
+  }
+  addCity() {
+    console.log(this.selectedTile)
+    var pos = getPosition(this.selectedTile.row, this.selectedTile.column)
+    improvementLayerData[this.selectedTile.row][this.selectedTile.column] = new Improvement(playerArray[gameData.currentPlayer].frame, gameData.currentPlayer, gameData.day, true, false)
+    // improvementLayerData[playerObj.y][playerObj.x].complete = true
+    // improvementLayerData[playerObj.y][playerObj.x].isHome = true
+    groundLayerData[this.selectedTile.row][this.selectedTile.column].improved = true
+    groundLayerData[this.selectedTile.row][this.selectedTile.column].owner = gameData.currentPlayer
+    groundLayerData[this.selectedTile.row][this.selectedTile.column].revealed = true
+    var fire = this.add.sprite(pos.x, pos.y, 'tiles', playerArray[gameData.currentPlayer].frame).setDepth(improvementDepth)
+    fire.displayWidth = gameOptions.tileSize// - 5
+    fire.displayHeight = gameOptions.tileSize// - 5
+    improvementayerImage[this.selectedTile.row][this.selectedTile.column] = fire
+    // fire.play('fire_anim')
+    var tiles = this.moveRange(this.selectedTile.row, this.selectedTile.column, gameOptions.initialTileRange)
+    // console.log(tiles)
+    for (let m = 0; m < tiles.length; m++) {
+      const tile = tiles[m];
+      //this.exploreTile(tile.row, tile.column, playerArray[i].playerIndex)
+      //this.revealTile(tile.row, tile.column, playerArray[i].playerIndex)
+      //fogArray[tile.row][tile.column].setAlpha(0)
+      groundLayerData[tile.row][tile.column].owner = gameData.currentPlayer
+      groundLayerData[tile.row][tile.column].explored = true
+    }
+    var tiles = this.moveRange(this.selectedTile.row, this.selectedTile.column, gameOptions.initialTileRange + 1)
+    for (let m = 0; m < tiles.length; m++) {
+      const tile = tiles[m];
+      // this.exploreTile(tile.row, tile.column, playerArray[i].playerIndex)
+      this.revealTile(tile.row, tile.column)
+    }
+
+
+    playerArray[gameData.currentPlayer].cities.push(new CITY(gameData.currentPlayer, gameData.day, 150, this.selectedTile, playerArray[gameData.currentPlayer].era))
+    this.removeUnit(this.selectedTile.row, this.selectedTile.column)
+    border(gameData.currentPlayer)
   }
   exploreTile(row, column, owner) {
     groundLayerData[row][column].explored = true
