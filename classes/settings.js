@@ -107,10 +107,6 @@ let menus = {
       index: 'MARKET'
     },
     {
-      name: 'WELL',
-      index: 'WELL'
-    },
-    {
       name: 'COURTHOUSE',
       index: 'COURTHOUSE'
     },

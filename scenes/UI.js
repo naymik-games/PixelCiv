@@ -14,22 +14,24 @@ class UI extends Phaser.Scene {
 
     this.Main = this.scene.get('playGame');
     //////////////////////
-    console.log(gameData.currentPlayer)
-    this.header = this.add.image(game.config.width / 2, 0, 'blank').setOrigin(.5, 0).setTint(0x444444).setAlpha(.9);//0x3e5e71
-    this.header.displayWidth = game.config.width;
-    this.header.displayHeight = 90;
-    this.playerIcon = this.add.image(25, 5, 'player_icons', playerArray[gameData.currentPlayer].id).setScale(4).setOrigin(0, 0).setInteractive()
+    //console.log(gameData.currentPlayer)
+    this.headerL = this.add.image(0, 0, 'main_header', 0).setOrigin(0, 0).setAlpha(.9);//0x3e5e71
+    this.headerM = this.add.image(25, 0, 'main_header', 1).setOrigin(0, 0).setAlpha(.9);//0x3e5e71
+    this.headerM.displayWidth = game.config.width - 50;
+    this.headerR = this.add.image(game.config.width, 0, 'main_header', 2).setOrigin(1, 0).setAlpha(.9);//0x3e5e71
+
+    this.playerIcon = this.add.image(25, 25, 'player_icons', playerArray[gameData.currentPlayer].id).setScale(4).setOrigin(0, 0).setInteractive()
     this.playerIcon.on('pointerdown', function () {
       this.scene.pause()
       this.scene.pause('playGame')
       this.scene.launch('pauseGame')
     }, this)
-    this.playerText = this.add.text(100, 25, playerArray[gameData.currentPlayer].name, { fontFamily: 'KenneyMiniSquare', fontSize: '60px', color: '#fafafa', align: 'left' }).setOrigin(0, .5)//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
+    this.playerText = this.add.text(100, 45, playerArray[gameData.currentPlayer].name, { fontFamily: 'KenneyMiniSquare', fontSize: '60px', color: '#fafafa', align: 'left' }).setOrigin(0, .5)//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
 
-    this.turnText = this.add.text(game.config.width - 225, 25, gameData.day, { fontFamily: 'KenneyMiniSquare', fontSize: '60px', color: '#3EA270', align: 'left' }).setOrigin(1, .5).setInteractive()//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
+    this.turnText = this.add.text(game.config.width - 225, 45, gameData.day, { fontFamily: 'KenneyMiniSquare', fontSize: '60px', color: '#3EA270', align: 'left' }).setOrigin(1, .5).setInteractive()//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
 
 
-    this.endTurnText = this.add.text(game.config.width - 25, 25, 'END >', { fontFamily: 'KenneyMiniSquare', fontSize: '60px', color: '#fafafa', align: 'left' }).setOrigin(1, .5).setInteractive()//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
+    this.endTurnText = this.add.text(game.config.width - 25, 45, 'END >', { fontFamily: 'KenneyMiniSquare', fontSize: '60px', color: '#fafafa', align: 'left' }).setOrigin(1, .5).setInteractive()//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
     this.endTurnText.on('pointerdown', function () {
       this.endTurn()
     }, this)
@@ -75,23 +77,23 @@ class UI extends Phaser.Scene {
     }, this)
     // RESOURCE CONTAINER/////////////////////////////////////////////////
     this.resourceContainer = this.add.container()
-    this.resourceBack = this.add.image(game.config.width / 2, 90, 'blank').setOrigin(.5, 0).setTint(0x000000).setAlpha(.9);//0x3e5e71
+    this.resourceBack = this.add.image(game.config.width / 2, 0, 'blank').setOrigin(.5, 0).setTint(0x000000).setAlpha(.9);//0x3e5e71
     this.resourceBack.displayWidth = game.config.width;
     this.resourceBack.displayHeight = 160;
     this.resourceContainer.add(this.resourceBack)
     this.resourceHolder = []
     for (let i = 0; i < 6; i++) {
-      var icon = this.add.image(128.5 + i * 128.5, 100, 'resource_icons', i).setScale(4).setOrigin(.5, 0)
+      var icon = this.add.image(128.5 + i * 128.5, 15, 'resource_icons', i).setScale(4).setOrigin(.5, 0)
       this.resourceContainer.add(icon)
-      var text = this.add.text(128.5 + i * 128.5, 175, playerArray[gameData.currentPlayer].resources[i], { fontFamily: 'KenneyMiniSquare', fontSize: '50px', color: '#fafafa', align: 'center' }).setOrigin(.5, 0).setInteractive()//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
+      var text = this.add.text(128.5 + i * 128.5, 90, playerArray[gameData.currentPlayer].resources[i], { fontFamily: 'KenneyMiniSquare', fontSize: '50px', color: '#fafafa', align: 'center' }).setOrigin(.5, 0).setInteractive()//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
       this.resourceHolder.push(text)
       this.resourceContainer.add(text)
     }
-    this.border = this.add.image(game.config.width / 2, 250, 'blank').setOrigin(.5, 0).setTint(0x444444).setAlpha(.9);//0x3e5e71
+    this.border = this.add.image(game.config.width / 2, 155, 'blank').setOrigin(.5, 0).setTint(0x444444).setAlpha(.9);//0x3e5e71
     this.border.displayWidth = game.config.width;
     this.border.displayHeight = 15;
     this.resourceContainer.add(this.border)
-    this.resourceContainer.setAlpha(1).setPosition(0, 90)
+    this.resourceContainer.setAlpha(1).setPosition(0, 230)
     ///////////////////
 
     // COST/GAIN CONTAINER //////////////////////////////////////////////////////////
@@ -123,8 +125,15 @@ class UI extends Phaser.Scene {
     /////////////////////
 
     // RESEARCH CONTAINER///////////////////////////////////////////////////////
-    this.researchIndicator = this.add.image(game.config.width, 100, 'tech_icons', 1).setScale(4).setOrigin(1, 0)
-    this.researchText = this.add.text(game.config.width - 70, 95, '?', { fontFamily: 'KenneyMiniSquare', fontSize: '55px', color: '#fafafa', align: 'right' }).setOrigin(1, 0)//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
+    // this.researchHeader = this.add.image(game.config.width / 2, 90, 'blank').setOrigin(.5, 0).setTint(0x444444).setAlpha(.9);//0x3e5e71
+    //this.researchHeader.displayWidth = game.config.width;
+    //this.researchHeader.displayHeight = 90;
+
+    this.levelBack = this.add.image(30, 120, 'level_numbers', playerArray[gameData.currentPlayer].level).setScale(4).setOrigin(0, 0)
+    //this.levelText = this.add.text(85, 150, playerArray[gameData.currentPlayer].level, { fontFamily: 'KenneyMiniSquare', fontSize: '55px', color: '#fafafa', align: 'right' }).setOrigin(.5)//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
+
+    this.researchIndicator = this.add.image(game.config.width - 25, 125, 'tech_icons', 1).setScale(4).setOrigin(1, 0)
+    this.researchText = this.add.text(game.config.width - 95, 120, '?', { fontFamily: 'KenneyMiniSquare', fontSize: '55px', color: '#fafafa', align: 'right' }).setOrigin(1, 0)//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
     if (playerArray[gameData.currentPlayer].currentTech != null) {
       this.researchText.setText(techDaysTillComplete())
       this.researchIndicator.setFrame(tech[playerArray[gameData.currentPlayer].currentTech.techIndex].iconIndex)
@@ -142,25 +151,25 @@ class UI extends Phaser.Scene {
     this.createImprovementPanel()
     this.createUnitPanel()
     this.upgradeUnitIcon.on('pointerdown', function () {
-      console.log('upgrade unit')
-      console.log(this.Main.selectedTile)
+      // console.log('upgrade unit')
+      // console.log(this.Main.selectedTile)
       var type = unitTypes[unitLayerData[this.Main.selectedTile.row][this.Main.selectedTile.column].id].upgradeAction
       this.Main.upgradeUnit(this.Main.selectedTile.row, this.Main.selectedTile.column, gameData.currentPlayer, type)
     }, this)
     this.moveUnitIcon.on('pointerdown', function () {
-      console.log('move unit')
+      // console.log('move unit')
       this.Main.startMove = true
       this.Main.cursor.setFrame(1)
     }, this)
     this.attackUnitIcon.on('pointerdown', function () {
-      console.log('attack!')
+      // console.log('attack!')
     }, this)
     this.settleUnitIcon.on('pointerdown', function () {
-      console.log('settle!')
+      // console.log('settle!')
       this.Main.addCity()
     }, this)
     this.removeUnitIcon.on('pointerdown', function () {
-      console.log('remove unit')
+      // console.log('remove unit')
       this.Main.removeUnit(this.Main.selectedTile.row, this.Main.selectedTile.column, gameData.currentPlayer)
       /*   console.log(groundLayerData[this.Main.selectedTile.row][this.Main.selectedTile.column])
         var tile = groundLayerData[this.Main.selectedTile.row][this.Main.selectedTile.column]
@@ -311,17 +320,17 @@ class UI extends Phaser.Scene {
       gameData.day++
     }
     console.log('Current Player ' + gameData.currentPlayer)
-    console.log(playerArray[gameData.currentPlayer].currentTech)
+    //console.log(playerArray[gameData.currentPlayer].currentTech)
     if (gameData.currentPlayer == 0) {
-      console.log('You, human')
-      this.header.setTint(0x444444)
+      // console.log('You, human')
+      // this.header.setTint(0x444444)
       this.resourceContainer.setAlpha(1)
 
       border(0)
     } else {
-      console.log('AI Player')
-      this.header.setTint(0x000000)
-      this.resourceContainer.setAlpha(1)
+      // console.log('AI Player')
+      // this.header.setTint(0x000000)
+      this.resourceContainer.setAlpha(0)
       //AI do chop and pick first check every turn
       for (var i = 0; i < 2; i++) {
         chopAI(this.Main, gameData.currentPlayer, FOREST)
@@ -347,6 +356,7 @@ class UI extends Phaser.Scene {
       } */
 
       border(gameData.currentPlayer)
+
     }
     ////////////////
     // MOVE UNITS
@@ -355,7 +365,7 @@ class UI extends Phaser.Scene {
       for (let j = 0; j < gameOptions.columns; j++) {
         if (unitLayerData[i][j] != null) {
           if (unitLayerData[i][j].owner == gameData.currentPlayer && unitLayerData[i][j].path.length > 0) {
-            console.log(unitLayerData[i][j].path)
+            // console.log(unitLayerData[i][j].path)
             this.Main.moveUnit(unitLayerData[i][j], { row: i, column: j })
           }
         }
@@ -370,10 +380,11 @@ class UI extends Phaser.Scene {
     oreCalc()
     stoneCalc()
     goldCalc()
+    cultureCalc()
     var researchDone = checkResearch()
     if (playerArray[gameData.currentPlayer].currentTech != null) {
       if (researchDone) {
-        console.log('done researching ' + tech[playerArray[gameData.currentPlayer].currentTech.techIndex].name)
+        // console.log('done researching ' + tech[playerArray[gameData.currentPlayer].currentTech.techIndex].name)
         playerArray[gameData.currentPlayer].techs.push(playerArray[gameData.currentPlayer].currentTech.techIndex)
         playerArray[gameData.currentPlayer].currentTech = null
         this.researchText.setText('?')
@@ -404,7 +415,12 @@ class UI extends Phaser.Scene {
     this.playerText.setText(playerArray[gameData.currentPlayer].name)
 
     this.updateResources()
-    console.log(playerArray[0].resources)
+    ///CHECK LEVEL
+    if (playerArray[gameData.currentPlayer].resources[0] >= (gameOptions.growthThreshold * playerArray[gameData.currentPlayer].level)) {
+      console.log('grow next level')
+      playerArray[gameData.currentPlayer].level++
+    }
+    //console.log(playerArray[gameData.currentPlayer].metrics[2])
     localStorage.setItem('PixelCivPlayers', JSON.stringify(playerArray));
     localStorage.setItem('PixelCivMap', JSON.stringify(map));
     localStorage.setItem('PixelCivGroundData', JSON.stringify(groundLayerData));
@@ -419,11 +435,28 @@ class UI extends Phaser.Scene {
       var resourceText = this.resourceHolder[i]
       resourceText.setText(playerArray[gameData.currentPlayer].resources[i])
     }
+    this.levelBack.setFrame(playerArray[gameData.currentPlayer].level)
+  }
+  canDo(requires, have) {
+    var count = requires.length
+    var matches = 0
+    for (let i = 0; i < requires.length; i++) {
+      const require = requires[i];
+      if (have.indexOf(require) > -1) {
+        matches++
+      }
+
+    }
+    return count == matches
   }
   displayMenu(type) {
     console.log(type)
+    console.log(playerArray[gameData.currentPlayer].techs)
+    console.log(playerArray[gameData.currentPlayer].era)
+
+    //  let success = array_a.every((val) => array_b.includes(val))
     this.zoomContainer.setAlpha(0)
-    this.selector = this.add.image(game.config.width, -50, 'blank').setOrigin(1, 0).setDepth(1).setTint(0x000000).setAlpha(1)
+    this.selector = this.add.image(game.config.width, -50, 'blank').setOrigin(1, 0).setDepth(1).setTint(0x000000).setAlpha(0)
     this.selector.displayWidth = 400
     this.selector.displayHeight = 60
     this.menu1 = this.add.container()
@@ -433,22 +466,61 @@ class UI extends Phaser.Scene {
     this.menu1.add(this.menuBack)
     this.menu1.add(this.selector)
     // if (tileInfo[cardIndex].menu != null) {
-    for (let i = 0; i < menus[type].length; i++) {
-      const menuItem = menus[type][i];
-      // var item = this.add.bitmapText(game.config.width - 10, menuOffsetY + i * 65, 'topaz', menuItem.name, 50).setOrigin(1,.5).setTint(0xfafafa).setInteractive();
-      var item = this.add.text(game.config.width - 25, this.menuOffsetY + i * 75, menuItem.name, { fontFamily: 'KenneyMiniSquare', fontSize: '55px', color: '#fafafa', align: 'right', }).setOrigin(1, 0).setInteractive().setDepth(5)//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
+    if (type == 'units') {
+      let unittypes = Object.keys(unitTypes)
+      //console.log(unittypes)
+      var i = 0
+      unittypes.forEach((unit) => {
+        //console.log(`There are ${unitTypes[unit].movement} ${unit}`);
+        if (unitTypes[unit].available.indexOf(playerArray[gameData.currentPlayer].era) > -1) {
 
-      item.menuItem = menuItem.index
-      console.log(item.menuItem)
-      if (checkCost(item.menuItem) && checkRequirements(item.menuItem) && checkRestrictions(item.menuItem)) {
-        item.setTint(0xfafafa)
-      } else {
-        item.setTint(0xAF335C)
+          if (this.canDo(unitTypes[unit].requires, playerArray[gameData.currentPlayer].techs)) {//playerArray[gameData.currentPlayer].techs.indexOf(unitTypes[unit].requires[0]) > -1    unitTypes[unit].requires.every(i => playerArray[gameData.currentPlayer].techs.includes(i))
+
+
+            var item = this.add.text(game.config.width - 25, this.menuOffsetY + i * 75, unitTypes[unit].name, { fontFamily: 'KenneyMiniSquare', fontSize: '55px', color: '#fafafa', align: 'right', }).setOrigin(1, 0).setInteractive().setDepth(5)//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
+
+            item.menuItem = unit
+            //console.log(item.menuItem)
+            if (checkCost(item.menuItem) && checkRequirements(item.menuItem) && checkRestrictions(item.menuItem)) {
+              item.setTint(0xfafafa)
+            } else {
+              item.setTint(0xAF335C)
+            }
+            item.on('pointerdown', this.menuPress.bind(this, item))
+            this.menu1.add(item)
+            i++
+
+            console.log(`${unitTypes[unit].name} is available`);
+          }
+        }
+      })
+
+    } else {
+      var count = 0
+      for (let i = 0; i < menus[type].length; i++) {
+        const menuItem = menus[type][i];
+        // var item = this.add.bitmapText(game.config.width - 10, menuOffsetY + i * 65, 'topaz', menuItem.name, 50).setOrigin(1,.5).setTint(0xfafafa).setInteractive();
+
+        //console.log(item.menuItem)
+        if (checkCost(menuItem.index) && checkRequirements(menuItem.index) && checkRestrictions(menuItem.index)) {
+          var item = this.add.text(game.config.width - 25, this.menuOffsetY + count * 75, menuItem.name, { fontFamily: 'KenneyMiniSquare', fontSize: '55px', color: '#fafafa', align: 'right', }).setOrigin(1, 0).setInteractive().setDepth(5)//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
+          item.menuItem = menuItem.index
+          item.setTint(0xfafafa)
+          item.on('pointerdown', this.menuPress.bind(this, item))
+          this.menu1.add(item)
+          count++
+        } /* else {
+          item.setTint(0xAF335C)
+        } */
       }
-      item.on('pointerdown', this.menuPress.bind(this, item))
-      this.menu1.add(item)
-
+      this.menuBack.displayHeight = count * 75
+      if (count < 1) {
+        this.menuBack.setAlpha(0)
+      }
     }
+
+
+
     this.menu1.setPosition(0, 100)
     //}
 
@@ -471,6 +543,7 @@ class UI extends Phaser.Scene {
     this.costContainer.setAlpha(1)
     //item.setBackgroundColor('#333333');
     // var textData = item.getTextBounds()
+    this.selector.setAlpha(1)
     var tween = this.tweens.add({
       targets: this.selector,
       y: item.y + 7,
@@ -488,9 +561,9 @@ class UI extends Phaser.Scene {
 
     this.buildContainer.add(this.buildcBackb)
 
-    this.okIcon = this.add.image(buildOffsetX - 84, buildOffsetY, 'build_icons', 0).setScale(gameOptions.scale + 1).setInteractive().setDepth(3).setOrigin(.5)
+    this.okIcon = this.add.image(buildOffsetX - 84, buildOffsetY, 'game_icons', 7).setScale(.75).setInteractive().setDepth(3).setOrigin(.5)
     this.buildContainer.add(this.okIcon)
-    this.cancelIcon = this.add.image(buildOffsetX + 84, buildOffsetY, 'build_icons', 1).setScale(gameOptions.scale + 1).setInteractive().setDepth(3).setOrigin(.5)
+    this.cancelIcon = this.add.image(buildOffsetX + 84, buildOffsetY, 'game_icons', 5).setScale(.75).setInteractive().setDepth(3).setOrigin(.5)
     this.buildContainer.add(this.cancelIcon)
     this.buildText = this.add.text(buildOffsetX, buildOffsetY - 100, 'BUILD?', { fontFamily: 'KenneyMiniSquare', fontSize: '50px', color: '#fafafa', align: 'center' }).setOrigin(.5)//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
     this.buildContainer.add(this.buildText)
@@ -540,7 +613,7 @@ class UI extends Phaser.Scene {
     this.buildImpIcon.on('pointerdown', function () {
 
       var tile = improvementLayerData[this.Main.selectedTile.row][this.Main.selectedTile.column]
-      console.log(tile)
+      //console.log(tile)
       if (this.menu1) {
         this.menu1.destroy()
       }
@@ -557,8 +630,8 @@ class UI extends Phaser.Scene {
   }
   updateImprovementPanel(tile) {
     this.improvementDetailsContainer.setAlpha(1)
-    console.log(tile)
-    console.log(playerArray[tile.owner].id)
+    // console.log(tile)
+    //console.log(playerArray[tile.owner].id)
     //this.improvmentOwnerText.setText(playerArray[tile.owner].name)
     this.improvementIcon.setFrame(playerArray[tile.owner].id)
     this.improvementText.setText(improvementStaticData[tile.id].name)
@@ -585,7 +658,7 @@ class UI extends Phaser.Scene {
 
     this.buildIcon = this.add.image(900 - 137, game.config.height - 57, 'unit_icons', 5).setInteractive().setAlpha(0).setOrigin(.5)
     this.buildIcon.on('pointerdown', function () {
-      console.log(groundLayerData[this.Main.selectedTile.row][this.Main.selectedTile.column])
+      //console.log(groundLayerData[this.Main.selectedTile.row][this.Main.selectedTile.column])
       var tile = groundLayerData[this.Main.selectedTile.row][this.Main.selectedTile.column]
       if (this.menu1) {
         this.menu1.destroy()
@@ -608,7 +681,7 @@ class UI extends Phaser.Scene {
     //this.terrainStars = this.add.image(game.config.width - 137.5, game.config.height - 75, 'stars', 0).setScale(5)
   }
   updateGroundPanel(tile, connected) {
-    console.log(tile)
+    //console.log(tile)
     if (tile.revealed) {
       this.terrainText.setText(groundStaticData[tile.frame].name)
       this.selectedTerrain.setFrame(tile.frame)
@@ -724,9 +797,9 @@ class UI extends Phaser.Scene {
   }
   updateUnitPanel(tile) {
     this.unitDetailsContainer.setAlpha(1)
-    console.log(tile.owner)
+    /* console.log(tile.owner)
     console.log(unitTypes[tile.id].frames[tile.owner])
-    console.log(tile.tookAction)
+    console.log(tile.tookAction) */
     this.unitText.setText(unitTypes[tile.id].name)
     //this.unitOwnerText.setText(playerArray[tile.owner].name)
     //  this.improvementText.setText(unitStaticData[tile.id].name)

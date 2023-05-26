@@ -92,6 +92,10 @@ class preloadGame extends Phaser.Scene {
       frameWidth: 16,
       frameHeight: 16
     });
+    this.load.spritesheet("level_numbers", "assets/sprites/level_numbers.png", {
+      frameWidth: 16,
+      frameHeight: 16
+    });
     this.load.spritesheet("resource_icons", "assets/sprites/resource_icons.png", {
       frameWidth: 16,
       frameHeight: 16
@@ -125,17 +129,28 @@ class preloadGame extends Phaser.Scene {
        spacing: 1,
        margin: 1
      }); */
+    this.load.spritesheet("main_header", "assets/sprites/main_header.png", {
+      frameWidth: 25,
+      frameHeight: 230,
+      spacing: 1,
+      margin: 1
+    });
+    this.load.spritesheet("tech_tree_full", "assets/sprites/tech_tree_full.png", {
+      frameWidth: 160,
+      frameHeight: 176,
+      spacing: 1,
+      margin: 1
+    });
     this.load.spritesheet("borders", "assets/sprites/borders.png", {
       frameWidth: 16,
       frameHeight: 16,
       spacing: 1,
       margin: 1
     });
-    this.load.spritesheet("tech_icons", "assets/sprites/techs.png", {
+    this.load.spritesheet("tech_icons", "assets/sprites/tech_icons.png", {
       frameWidth: 16,
       frameHeight: 16,
-      spacing: 1,
-      margin: 1
+
     });
     this.load.spritesheet("cursors", "assets/sprites/cursors.png", {
       frameWidth: 52,
@@ -158,6 +173,7 @@ class preloadGame extends Phaser.Scene {
     this.load.image('nation_panel_top', 'assets/sprites/nation_panel_top.png');
     this.load.image('nation_panel_bottom', 'assets/sprites/nation_panel_bottom.png');
     this.load.image('tech_tree', 'assets/sprites/tech_tree.png');
+    this.load.image('level_back', 'assets/sprites/level_back.png');
   }
   create() {
     this.scene.start("startGame");

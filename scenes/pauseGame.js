@@ -27,12 +27,13 @@ class pauseGame extends Phaser.Scene {
     //console.log(countImprovements(gameData.currentPlayer))
     // var sizeIndex = playerArray[gameData.currentPlayer].resources[0] * ownerTileCount(gameData.currentPlayer)// * countImprovements(gameData.currentPlayer)
     //var sizeIndex = ownerTileCount(gameData.currentPlayer)// * countImprovements(gameData.currentPlayer)
+
     var sizeIndex = ownerTileCount(gameData.currentPlayer) * countImprovements(gameData.currentPlayer)
     let idealSize = Math.floor((gameOptions.rows * gameOptions.columns) / gameOptions.numberOfPlayers)
     let maxSizeIndex = idealSize * (idealSize * .75)
-    console.log('size index ' + sizeIndex)
-    console.log('max size index ' + maxSizeIndex)
-    console.log(Math.round((sizeIndex / maxSizeIndex) * 100))
+    //console.log('size index ' + sizeIndex)
+    // console.log('max size index ' + maxSizeIndex)
+    // console.log(Math.round((sizeIndex / maxSizeIndex) * 100))
     // 0 pop 1 food 2 lumber 3 ore 4 stone 5 gold
     var score = 0
     //The amount of Gold Gold in a player's treasury
@@ -59,8 +60,12 @@ class pauseGame extends Phaser.Scene {
 
 
 
-    this.indexText = this.add.text(50, 325, 'SIZE INDEX: ' + sizeIndex, { fontFamily: 'KenneyMiniSquare', fontSize: '60px', color: '#fafafa', align: 'left' }).setOrigin(0)//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
-    this.scoreText = this.add.text(50, 275, 'SCORE: ' + score, { fontFamily: 'KenneyMiniSquare', fontSize: '60px', color: '#fafafa', align: 'left' }).setOrigin(0)//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
+    this.levelText = this.add.text(50, 275, 'LEVEL: ' + playerArray[gameData.currentPlayer].level, { fontFamily: 'KenneyMiniSquare', fontSize: '60px', color: '#fafafa', align: 'left' }).setOrigin(0)//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
+    this.eraText = this.add.text(325, 285, eras[playerArray[gameData.currentPlayer].era].name, { fontFamily: 'KenneyMiniSquare', fontSize: '50px', color: '#fafafa', align: 'left' }).setOrigin(0)//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
+
+
+    this.scoreText = this.add.text(50, 350, 'SCORE: ' + score, { fontFamily: 'KenneyMiniSquare', fontSize: '50px', color: '#fafafa', align: 'left' }).setOrigin(0)//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
+    this.indexText = this.add.text(50, 400, 'SIZE INDEX: ' + sizeIndex, { fontFamily: 'KenneyMiniSquare', fontSize: '50px', color: '#fafafa', align: 'left' }).setOrigin(0)//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
 
     var resourceMap = [8, 9, 10, 11, 12, 13, 14, 15]
     for (let i = 0; i < 8; i++) {
@@ -99,13 +104,18 @@ class pauseGame extends Phaser.Scene {
     }
 
 
-    this.techIcon = this.add.image(game.config.width - 75, 700, 'tech_icons', 1).setScale(6).setOrigin(.5).setInteractive()
+    this.techIcon = this.add.image(game.config.width - 75, 700, 'tech_icons', 162).setScale(6).setOrigin(.5).setInteractive()
     this.techIcon.on('pointerdown', function () {
       this.scene.pause()
 
       this.scene.launch('techScreen')
 
     }, this)
+
+
+    this.culturehText = this.add.text(50, 950, 'CULTURE ' + playerArray[gameData.currentPlayer].metrics[2], { fontFamily: 'KenneyMiniSquare', fontSize: '40px', color: '#fafafa', align: 'left' }).setOrigin(0)//C6EFD8  backgroundColor: '#000000', padding: { left: 7, right: 7, top: 0, bottom: 15 }, fixedWidth: 350,
+
+    this.cultureIcon = this.add.image(game.config.width - 75, 1000, 'build_icons', 2).setScale(6).setOrigin(.5).setInteractive()
     //this.techTree = this.add.image(game.config.width / 2, game.config.height / 2, 'tech_tree').setScale(1).setOrigin(.5)
 
   }

@@ -122,8 +122,8 @@ function checkRequirements(index) {
 }
 function canShowUnitMenu(unit) {
 
-  console.log(unit.path)
-  console.log(unit.tookAction)
+  // console.log(unit.path)
+  // console.log(unit.tookAction)
   if (unit.tookAction == gameData.day) {
     return false
   } else {
@@ -162,7 +162,7 @@ function checkCost(index) {
 }
 
 function populationCalc() {
-  console.log('Pop current player' + gameData.currentPlayer)
+  // console.log('Pop current player' + gameData.currentPlayer)
   var houses = countType(HOUSE)
   var bighouses = countType(BIGHOUSE)
   playerArray[gameData.currentPlayer].resources[0] += gameOptions.autopay + (houses * gameOptions.baseUnit) + ((bighouses * gameOptions.baseUnit) * 2)
@@ -188,6 +188,10 @@ function stoneCalc() {
 function goldCalc() {
   var gmines = countType(GOLDMINE)
   playerArray[gameData.currentPlayer].resources[5] += gmines * gameOptions.baseUnit
+}
+function cultureCalc() {
+  //var gmines = countType(GOLDMINE)
+  playerArray[gameData.currentPlayer].metrics[2] += 1
 }
 function checkResearch() {
 

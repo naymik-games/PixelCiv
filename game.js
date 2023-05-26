@@ -15,7 +15,8 @@ let gameOptionsDefault = {
   initialTileRange: 2,//used for difficulty level starting explored tiles 1 = 5 | tiles 2 = 13 | tiles 3 = 27 tiles
   aiExploreProbability: 8,//used for difficulty level 10 means will do it, 1 means very unlikely
   bonusProbability: 7, //used for difficulty. higher number for more chance of bonus
-  difficulty: 1 //0 easy, 1 normal, 2 hard
+  difficulty: 1, //0 easy, 1 normal, 2 hard
+  growthThreshold: 250
 
 }
 
@@ -95,7 +96,7 @@ class playGame extends Phaser.Scene {
       //  console.log(data.layers[1].data)
       this.width = data.width;
       this.height = data.height;
-      console.log(data.layers[0].objects)
+      //console.log(data.layers[0].objects)
       var playerObjects = data.layers[0].objects
       //create index arrays from json one for terrain (map, one for starting units, unitMap)
       map = []
@@ -199,7 +200,7 @@ class playGame extends Phaser.Scene {
         }
         playerArray[i].cities.push(new CITY(i, 1, playerArray[i].frame, { row: playerObj.y, column: playerObj.x }, 'ANCIENT'))
       }
-      console.log(playerArray)
+      // console.log(playerArray)
       //END NEW GAME//////////////////////////
     } else {
       // LOAD GAME////////////////////////
@@ -263,7 +264,7 @@ class playGame extends Phaser.Scene {
       // END LOAD GAME////////////////////////
     }
 
-    console.log(map)
+    //console.log(map)
     this.lineArray = []
     this.rectArray = []
     //graphics.lineBetween(bounds., y1, x2, y2);
@@ -277,7 +278,7 @@ class playGame extends Phaser.Scene {
     easystar = new EasyStar.js();
     easystar.setGrid(map);
 
-    easystar.setAcceptableTiles([GRASS, FOREST, ORCHARD, HILL, DUNE, GOLD, GOLDMINE, QUARRY, MUSHROOM, HOUSE, BIGHOUSE, LUMBER, LUMBERCAMP, FARM, PALMTREE, CATTLE, MUSHROOM, CAMP, FORT, CASTLE, HORSES, GAME, SILVER, COPPER, GRAPES, WOOL, SPICES, GEMS])
+    easystar.setAcceptableTiles([GRASS, FOREST, ORCHARD, HILL, MOUNTAIN, SWAMP, DUNE, GOLD, GOLDMINE, QUARRY, MUSHROOM, HOUSE, BIGHOUSE, LUMBER, LUMBERCAMP, FARM, PALMTREE, CATTLE, MUSHROOM, CAMP, FORT, CASTLE, HORSES, GAME, SILVER, COPPER, GRAPES, WOOL, SPICES, GEMS])
 
 
     this.cursor = this.add.image(0, 0, 'cursors', 0).setScale(gameOptions.scale).setDepth(cursorDepth)
@@ -287,7 +288,7 @@ class playGame extends Phaser.Scene {
     this.selectedAction = null
     this.selectedUnit = null
     this.scene.launch('UI');
-    console.log(playerArray)
+    //console.log(playerArray)
     highlightAllBorders()
     this.start = false
     this.events.emit('showControls')
@@ -298,7 +299,7 @@ class playGame extends Phaser.Scene {
        //callbackScope: thisArg,
        repeat: -1
      }); */
-
+    playerArray[0].era = 0
 
   }
   update() {
@@ -422,7 +423,7 @@ class playGame extends Phaser.Scene {
     }
   }
   explore(row, column) {
-    console.log('Explore tile ' + row + ', ' + column)
+    // console.log('Explore tile ' + row + ', ' + column)
     this.explode(row, column)
     this.revealTile(row, column, gameData.currentPlayer)
     border(gameData.currentPlayer)
@@ -505,7 +506,7 @@ class playGame extends Phaser.Scene {
     //console.log(this.selectedTile)
     //console.log(row + ', ' + col)
     if (isSameTile(this.selectedTile, { row: row, column: col })) {
-      console.log('yes, same tile')
+      //console.log('yes, same tile')
       this.maxPath = 4
       this.continueMove = true
       this.previousTile = { row: row, column: col }
@@ -514,7 +515,7 @@ class playGame extends Phaser.Scene {
       this.currentPathLength = 0
       this.finalTile = null
     } else {
-      console.log('no, different tile')
+      //console.log('no, different tile')
     }
   }
   clickMove(pointer) {
@@ -522,20 +523,20 @@ class playGame extends Phaser.Scene {
       if (this.continueMove) {
         let row = Math.floor((pointer.worldY - gameOptions.offsetY) / gameOptions.tileSize);
         let col = Math.floor((pointer.worldX - gameOptions.offsetX) / gameOptions.tileSize);
-        console.log(row + ', ' + col)
+        //console.log(row + ', ' + col)
         if (this.validPick(row, col)) {
           // console.log('valid')
           this.currentTile = { row: row, column: col }
           if (!isSameTile(this.previousTile, this.currentTile) && areNext(this.previousTile, this.currentTile)) { //&& !this.unitAtTile(row, col) && this.currentPathCost < this.getUnitMovement(this.selectedTile.row, this.selectedTile.column) && this.currentPathCost < 10
             this.clearPath()
             this.currentPathCost = 0
-            console.log('good pick')
+            //  console.log('good pick')
             this.previousTile = { row: row, column: col }
             easystar.findPath(this.selectedTile.column, this.selectedTile.row, this.currentTile.column, this.currentTile.row, function (path) {
               if (path === null) {
                 console.log("Path was not found.");
               } else {
-                console.log("Path was found. The first Point is " + path[0].x + " " + path[0].y);
+                // console.log("Path was found. The first Point is " + path[0].x + " " + path[0].y);
                 //console.log(path)
                 this.drawPath(path)
                 finalPath = path
@@ -571,7 +572,7 @@ class playGame extends Phaser.Scene {
     if (this.startMove) {
       if (this.continueMove) {
         var pl = finalPath.length - 1
-        console.log('final Path length' + pl)
+        // console.log('final Path length' + pl)
         //  console.log('Path cost: ' + this.currentPathCost)
         var start = finalPath.shift()
         this.selectedUnit.path = finalPath
@@ -592,15 +593,14 @@ class playGame extends Phaser.Scene {
         this.events.emit('hideImprovement')
         this.selectedTile = null
         this.selectedUnit = null
-        console.log(row + ', ' + col)
-        console.log('Border number: ' + getBorderNumber(row, col))
+        //console.log(row + ', ' + col)
+        // console.log('Border number: ' + getBorderNumber(row, col))
         var pos = getPosition(row, col)
         //this.cameras.main.centerOn(pos.x, pos.y)
         this.cursor.setPosition(pos.x, pos.y)
         this.selectedTile = { row: row, column: col }
-        console.log('Owner ' + groundLayerData[row][col].owner)
-        console.log('Revealed ' + groundLayerData[row][col].revealed)
-        console.log('explored ' + groundLayerData[row][col].explored)
+        console.log('Owner ' + groundLayerData[row][col].owner + ' Revealed ' + groundLayerData[row][col].revealed + ' explored ' + groundLayerData[row][col].explored)
+
         //if revealed 
         //      and owner == player
         //      or owner == null
@@ -614,7 +614,7 @@ class playGame extends Phaser.Scene {
             this.events.emit('showBuild');
             this.events.emit('showGroundHelp');
             if (improvementLayerData[row][col] != null) {
-              console.log(improvementLayerData[row][col])
+              // console.log(improvementLayerData[row][col])
               this.events.emit('showImpBuild');
               this.events.emit('hideBuild');
 
@@ -690,58 +690,7 @@ class playGame extends Phaser.Scene {
           }
 
         }
-        /* if (groundLayerData[row][col].revealed) {
-          console.log(groundStaticData[groundLayerData[row][col].frame].name)
-          console.log(groundLayerData[row][col])
-          this.events.emit('updateGround', groundLayerData[row][col]);
 
-          this.events.emit('showBuild');
-          this.events.emit('showGroundHelp');
-
-          if (improvementLayerData[row][col] != null) {
-            console.log(improvementLayerData[row][col])
-            this.events.emit('showImpBuild');
-            this.events.emit('hideBuild');
-
-            this.events.emit('updateImprovement', improvementLayerData[row][col]);
-          } else {
-            this.events.emit('hideImprovement')
-            this.events.emit('showBuild');
-            this.events.emit('hideImpBuild')
-          }
-          if (unitLayerData[row][col] != null) {
-            this.selectedUnit = unitLayerData[row][col]
-            console.log(unitLayerData[row][col])
-            this.events.emit('hideUnitBuild')
-            this.events.emit('updateUnit', unitLayerData[row][col]);
-          } else {
-            this.events.emit('hideUnit')
-            this.events.emit('showUnitBuild');
-          }
-
-        } else {
-          console.log('???')
-          console.log(groundStaticData[11].name)
-          this.events.emit('hideGroundHelp');
-          if (isConnectedOwner(row, col)) {
-            console.log('connected to owner')
-            this.events.emit('updateGroundUnknown', true)
-            this.events.emit('hideUnit')
-            this.events.emit('hideImprovement')
-            this.events.emit('showBuild');
-            this.events.emit('hideImpBuild')
-          } else {
-            console.log('NOT connected to owner')
-            this.events.emit('updateGroundUnknown', false)
-            this.events.emit('hideUnit')
-            this.events.emit('hideImprovement')
-            this.events.emit('hideBuild');
-            this.events.emit('hideImpBuild')
-          }
-
-
-
-        } */
 
         // console.log(groundLayerData[row][col])
       }
@@ -803,11 +752,11 @@ class playGame extends Phaser.Scene {
     this.cursor.setFrame(0)
     unit.tookAction = gameData.day
     // this.events.emit('statusText', 'Moving...');
-    console.log('full path')
-    console.log(unit.path)
+    //console.log('full path')
+    // console.log(unit.path)
     var tempPath = unit.path.splice(0, unitTypes[unit.id].movement)
-    console.log('temp path')
-    console.log(tempPath)
+    // console.log('temp path')
+    // console.log(tempPath)
 
     var end = { row: tempPath[tempPath.length - 1].y, column: tempPath[tempPath.length - 1].x }
     var tweens1 = [];
@@ -825,7 +774,7 @@ class playGame extends Phaser.Scene {
     for (var i = 0; i < tempPath.length; i++) {
       var pos = getPosition(tempPath[i].y, tempPath[i].x)
       cost += getCost(tempPath[i].y, tempPath[i].x)
-      console.log(groundLayerData[tempPath[i].y][tempPath[i].x].revealed)
+      //  console.log(groundLayerData[tempPath[i].y][tempPath[i].x].revealed)
       if (!groundLayerData[tempPath[i].y][tempPath[i].x].revealed) {
         this.revealTile(tempPath[i].y, tempPath[i].x)
       }
@@ -836,7 +785,7 @@ class playGame extends Phaser.Scene {
         y: pos.y
       });
     }
-    console.log(cost)
+    //console.log(cost)
     //unitDataArray[finalPath[0].y][finalPath[0].x].fuel -= cost
 
     var timeline = this.tweens.timeline({
@@ -899,12 +848,12 @@ class playGame extends Phaser.Scene {
     border(owner)
   }
   removeImprovement(row, column) {
-    console.log(improvementayerImage[row][column])
+    // console.log(improvementayerImage[row][column])
     improvementLayerData[row][column] = null
     groundLayerData[row][column].improved = false
     improvementayerImage[row][column].destroy()
     improvementayerImage[row][column] = null
-    console.log(improvementayerImage[row][column])
+    //console.log(improvementayerImage[row][column])
   }
 
   addImprovement(row, column, owner, type) {
@@ -953,10 +902,10 @@ class playGame extends Phaser.Scene {
 
     this.events.emit('updateResources')
     this.explode(row, column)
-    console.log('Upgrade')
-    console.log(row + ', ' + column)
-    console.log(owner)
-    console.log(type)
+    // console.log('Upgrade')
+    //console.log(row + ', ' + column)
+    // console.log(owner)
+    //console.log(type)
     unitLayerData[row][column].id = type
     unitLayerData[row][column].hp = 100
     unitLayerData[row][column].tookAction = gameData.day
@@ -965,7 +914,7 @@ class playGame extends Phaser.Scene {
     this.events.emit('updateUnit', unitLayerData[row][column]);
   }
   addCity() {
-    console.log(this.selectedTile)
+    //console.log(this.selectedTile)
     var pos = getPosition(this.selectedTile.row, this.selectedTile.column)
     improvementLayerData[this.selectedTile.row][this.selectedTile.column] = new Improvement(playerArray[gameData.currentPlayer].frame, gameData.currentPlayer, gameData.day, true, false)
     // improvementLayerData[playerObj.y][playerObj.x].complete = true
@@ -999,6 +948,7 @@ class playGame extends Phaser.Scene {
     playerArray[gameData.currentPlayer].cities.push(new CITY(gameData.currentPlayer, gameData.day, 150, this.selectedTile, playerArray[gameData.currentPlayer].era))
     this.removeUnit(this.selectedTile.row, this.selectedTile.column)
     border(gameData.currentPlayer)
+    console.log(playerArray)
   }
   exploreTile(row, column, owner) {
     groundLayerData[row][column].explored = true
